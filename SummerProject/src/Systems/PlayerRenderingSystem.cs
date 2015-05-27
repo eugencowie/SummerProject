@@ -39,7 +39,7 @@ namespace SummerProject
                     destinationRect,
                     null,
                     Color.White,
-                    transformComponent.Rotation,
+                    transformComponent.Rotation, // TODO: make player always face toward the mouse cursor
                     textureOrigin,
                     SpriteEffects.None,
                     0.0f);
