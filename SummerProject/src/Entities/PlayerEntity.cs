@@ -7,7 +7,7 @@ namespace SummerProject
     {
         public static int nextPlayerId = 1;
 
-        public static Entity BuildEntity(EntityWorld entityManager)
+        public static Entity BuildEntity(EntityWorld entityManager, Vector2 position)
         {
             Entity entity = entityManager.CreateEntity();
             entity.Tag = "player";
@@ -20,7 +20,7 @@ namespace SummerProject
 
             // The transform component contains position, size and orientation data.
             entity.AddComponent(new TransformComponent() {
-                Position = new Vector2(40 * 2, 40 * 2),
+                Position = position,
                 Size = new Vector2(40, 40)
             });
 

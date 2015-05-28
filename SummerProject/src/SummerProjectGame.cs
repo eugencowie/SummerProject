@@ -49,8 +49,18 @@ namespace SummerProject
             // Create the level.
             Entity level = LevelEntity.BuildEntity(entityManager, "Tilemap.txt");
 
+            // Get the player start position.
+            SymbolicBlock[,] symbolic = level.GetComponent<TilemapComponent>().SymbolicBlocks;
+            int blockSize = level.GetComponent<TilemapComponent>().BlockSize;
+            Vector2 playerStart = Vector2.One;
+            for (int y = 0; y < symbolic.GetLength(1); y++)
+                for (int x = 0; x < symbolic.GetLength(0); x++)
+                    if (symbolic[x, y] == SymbolicBlock.PlayerStart)
+                        playerStart = new Vector2(x * blockSize, y * blockSize);
+
             // Create the block.
-            Entity player = PlayerEntity.BuildEntity(entityManager);
+            Entity player = PlayerEntity.BuildEntity(entityManager, playerStart);
+            camera.Position = player.GetComponent<TransformComponent>().Position;
         }
 
         protected override void Update(GameTime gameTime)

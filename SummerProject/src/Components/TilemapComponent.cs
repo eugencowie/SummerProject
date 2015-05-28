@@ -3,6 +3,7 @@
 namespace SummerProject
 {
     enum VisualBlock {
+        None,
         Ground,
         UnpassableGround,
         LockedGround,
@@ -11,6 +12,7 @@ namespace SummerProject
     }
 
     enum SymbolicBlock {
+        None,
         PlayerStart,
         General,
         Boss,

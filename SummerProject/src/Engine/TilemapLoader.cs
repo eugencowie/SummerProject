@@ -35,10 +35,15 @@ namespace SummerProject
             VisualBlock[,] visual = new VisualBlock[fileLines[0].Length, fileLines.Length];
             SymbolicBlock[,] symbolic = new SymbolicBlock[fileLines[0].Length, fileLines.Length];
 
-            // Fill the map with ground by default.
+            // Fill the visual blocks with ground by default.
             for (int j = 0; j < visual.GetLength(1); j++)
                 for (int i = 0; i < visual.GetLength(0); i++)
                     visual[i, j] = VisualBlock.Ground;
+
+            // Fill the symbolic blocks with none by default.
+            for (int j = 0; j < symbolic.GetLength(1); j++)
+                for (int i = 0; i < symbolic.GetLength(0); i++)
+                    symbolic[i, j] = SymbolicBlock.None;
 
             string line;
             for (int i = 0; i < fileLines.Length; ++i)
