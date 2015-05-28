@@ -4,19 +4,7 @@ namespace SummerProject
 {
     static class TilemapLoader
     {
-        public static int[,] DefaultMap = {
-            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1 },
-            { 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0 },
-            { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-            { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-            { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-        };
-
+        /*
         public static void WriteMapToFile(string file, int[,] map)
         {
             StreamWriter sw = new StreamWriter(file);
@@ -38,11 +26,19 @@ namespace SummerProject
 
             sw.Close();
         }
+        */
 
-        public static int[,] ReadMapFromFile(string file)
+        public static TilemapComponent ReadMapFromFile(string file)
         {
             string[] fileLines = File.ReadAllLines(file);
-            int[,] map = new int[fileLines[0].Length, fileLines.Length];
+
+            VisualBlock[,] visual = new VisualBlock[fileLines[0].Length, fileLines.Length];
+            SymbolicBlock[,] symbolic = new SymbolicBlock[fileLines[0].Length, fileLines.Length];
+
+            // Fill the map with ground by default.
+            for (int j = 0; j < visual.GetLength(1); j++)
+                for (int i = 0; i < visual.GetLength(0); i++)
+                    visual[i, j] = VisualBlock.Ground;
 
             string line;
             for (int i = 0; i < fileLines.Length; ++i)
@@ -50,18 +46,37 @@ namespace SummerProject
                 line = fileLines[i];
                 for (int j = 0; j < line.Length; ++j)
                 {
-                    int? c = null;
+                    VisualBlock? vb = null;
+                    SymbolicBlock? sb = null;
+
                     switch (line[j]) {
-                        case '-': c = 0; break;
-                        case '0': c = 1; break;
-                        default: c = null; break;
+                        case '0': vb = VisualBlock.Wall; break;
+                        case '@': vb = VisualBlock.UnpassableGround; break;
+                        case '#': vb = VisualBlock.LockedGround; break;
+                        case '=': vb = VisualBlock.LockedDoor; break;
+                        case 'S': sb = SymbolicBlock.PlayerStart; break;
+                        case 'M': sb = SymbolicBlock.Mob; break;
+                        case 'T': sb = SymbolicBlock.Trap; break;
+                        case 'C': sb = SymbolicBlock.Chest; break;
+                        case 'G': sb = SymbolicBlock.General; break;
+                        case 'B': sb = SymbolicBlock.Button; break;
+                        case 'H': sb = SymbolicBlock.HealthPack; break;
+                        case 'Q': sb = SymbolicBlock.MobSpawn; break;
+                        case '?': sb = SymbolicBlock.Boss; break;
                     }
-                    if (c.HasValue && i < map.GetLength(0) && j < map.GetLength(1))
-                        map[j, i] = c.Value;
+
+                    if (vb.HasValue && i < visual.GetLength(0) && j < visual.GetLength(1))
+                        visual[j, i] = vb.Value;
+                    if (sb.HasValue && i < symbolic.GetLength(0) && j < symbolic.GetLength(1))
+                        symbolic[j, i] = sb.Value;
                 }
             }
 
-            return map;
+            return new TilemapComponent() {
+                VisualBlocks = visual,
+                SymbolicBlocks = symbolic,
+                BlockSize = 40
+            };
         }
     }
 }

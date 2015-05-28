@@ -2,9 +2,30 @@
 
 namespace SummerProject
 {
-    public class TilemapComponent : IComponent
+    enum VisualBlock {
+        Ground,
+        UnpassableGround,
+        LockedGround,
+        LockedDoor,
+        Wall,
+    }
+
+    enum SymbolicBlock {
+        PlayerStart,
+        General,
+        Boss,
+        Mob,
+        MobSpawn,
+        Chest,
+        Trap,
+        HealthPack,
+        Button,
+    }
+
+    class TilemapComponent : IComponent
     {
-        public int[,] Blocks;
+        public VisualBlock[,] VisualBlocks;
+        public SymbolicBlock[,] SymbolicBlocks;
         public int BlockSize;
     }
 }

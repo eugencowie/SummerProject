@@ -41,7 +41,7 @@ namespace SummerProject
 
             TilemapComponent tilemapComponent = level.GetComponent<TilemapComponent>();
             LevelCollisionComponent tilemapCollisionComponent = level.GetComponent<LevelCollisionComponent>();
-            int[,] blocks = tilemapComponent.Blocks;
+            VisualBlock[,] blocks = tilemapComponent.VisualBlocks;
             int blockSize = tilemapComponent.BlockSize;
 
             // Convert position and destination from pixel coords to block coords.

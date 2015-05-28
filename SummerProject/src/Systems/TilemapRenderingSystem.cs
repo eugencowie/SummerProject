@@ -29,15 +29,15 @@ namespace SummerProject
         {
             if (!renderableComponent.Hidden)
             {
-                for (int y = 0; y < tilemapComponent.Blocks.GetLength(1); y++)
+                for (int y = 0; y < tilemapComponent.VisualBlocks.GetLength(1); y++)
                 {
-                    for (int x = 0; x < tilemapComponent.Blocks.GetLength(0); x++)
+                    for (int x = 0; x < tilemapComponent.VisualBlocks.GetLength(0); x++)
                     {
                         // Use the correct texture for each block.
                         Texture2D texture = null;
-                        switch (tilemapComponent.Blocks[x, y]) {
-                            case 0: texture = ground; break;
-                            case 1: texture = block; break;
+                        switch (tilemapComponent.VisualBlocks[x, y]) {
+                            case VisualBlock.Ground: texture = ground; break;
+                            case VisualBlock.Wall: texture = block; break;
                         }
 
                         if (texture != null)
