@@ -76,20 +76,17 @@
     <Compile Include="src\Components\Actions\PlayerMoveAction.cs" />
     <Compile Include="src\Components\PlayerComponent.cs" />
     <Compile Include="src\Components\RenderableComponent.cs" />
-    <Compile Include="src\Components\LevelCollisionComponent.cs" />
     <Compile Include="src\Components\TilemapComponent.cs" />
     <Compile Include="src\Components\TransformComponent.cs" />
-    <Compile Include="src\Engine\AStar.cs" />
-    <Compile Include="src\Engine\Camera.cs" />
-    <Compile Include="src\Engine\TilemapLoader.cs" />
+    <Compile Include="src\Utilities\AStar.cs" />
+    <Compile Include="src\Utilities\Camera.cs" />
+    <Compile Include="src\Utilities\TilemapLoader.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Systems\PlayerInputSystem.cs" />
     <Compile Include="src\Systems\TilemapRenderingSystem.cs" />
     <Compile Include="src\Systems\PlayerRenderingSystem.cs" />
     <Compile Include="src\SummerProjectGame.cs" />
     <Compile Include="src\Systems\MovementSystem.cs" />
-    <Compile Include="src\Entities\LevelEntity.cs" />
-    <Compile Include="src\Entities\PlayerEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="res\Game.ico" />

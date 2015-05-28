@@ -28,6 +28,7 @@ namespace SummerProject
     {
         public VisualBlock[,] VisualBlocks;
         public SymbolicBlock[,] SymbolicBlocks;
+        public AStar.TileInfo[,] CollisionBlocks;
         public int BlockSize;
     }
 }

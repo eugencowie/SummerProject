@@ -49,6 +49,10 @@ namespace SummerProject
             for (int i = 0; i < fileLines.Length; ++i)
             {
                 line = fileLines[i];
+
+                if (line.Length == 0)
+                    break;
+
                 for (int j = 0; j < line.Length; ++j)
                 {
                     VisualBlock? vb = null;
@@ -77,9 +81,30 @@ namespace SummerProject
                 }
             }
 
+            // Generate a A* tile info array based on the level (TODO: this should possible be based on a separate collision map).
+            AStar.TileInfo[,] collision = new AStar.TileInfo[visual.GetLength(0), visual.GetLength(1)];
+            for (int y = 0; y < collision.GetLength(1); y++)
+            {
+                for (int x = 0; x < collision.GetLength(0); x++)
+                {
+                    collision[x, y] = new AStar.TileInfo();
+
+                    switch (visual[x, y])
+                    {
+                        case VisualBlock.Wall:
+                        case VisualBlock.UnpassableGround:
+                        case VisualBlock.LockedGround:
+                        case VisualBlock.LockedDoor:
+                            collision[x, y].TileType = AStar.TileType.Wall;
+                            break;
+                    }
+                }
+            }     
+
             return new TilemapComponent() {
                 VisualBlocks = visual,
                 SymbolicBlocks = symbolic,
+                CollisionBlocks = collision,
                 BlockSize = 40
             };
         }

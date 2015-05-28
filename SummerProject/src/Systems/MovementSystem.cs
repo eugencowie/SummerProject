@@ -40,7 +40,6 @@ namespace SummerProject
             float speed = goToLocationAction.Speed;
 
             TilemapComponent tilemapComponent = level.GetComponent<TilemapComponent>();
-            LevelCollisionComponent tilemapCollisionComponent = level.GetComponent<LevelCollisionComponent>();
             VisualBlock[,] blocks = tilemapComponent.VisualBlocks;
             int blockSize = tilemapComponent.BlockSize;
 
@@ -99,7 +98,7 @@ namespace SummerProject
 
             if (a_star == null)
             {
-                AStar.TileInfo[,] tileInfo = tilemapCollisionComponent.Blocks;
+                AStar.TileInfo[,] tileInfo = tilemapComponent.CollisionBlocks;
 
                 // Pass the tile information and a weight for the H
                 // the lower the H weight value shorter the path
