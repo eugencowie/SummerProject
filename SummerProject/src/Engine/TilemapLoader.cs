@@ -54,8 +54,9 @@ namespace SummerProject
                     switch (line[j]) {
                         case '-': c = 0; break;
                         case '0': c = 1; break;
+                        default: c = null; break;
                     }
-                    if (c.HasValue)
+                    if (c.HasValue && i < map.GetLength(0) && j < map.GetLength(1))
                         map[i, j] = c.Value;
                 }
             }

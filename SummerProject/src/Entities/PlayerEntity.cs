@@ -20,6 +20,7 @@ namespace SummerProject
 
             // The transform component contains position, size and orientation data.
             entity.AddComponent(new TransformComponent() {
+                Position = new Vector2(40 * 2, 40 * 2),
                 Size = new Vector2(40, 40)
             });
 
