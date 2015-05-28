@@ -57,7 +57,7 @@ namespace SummerProject
                         default: c = null; break;
                     }
                     if (c.HasValue && i < map.GetLength(0) && j < map.GetLength(1))
-                        map[i, j] = c.Value;
+                        map[j, i] = c.Value;
                 }
             }
 
