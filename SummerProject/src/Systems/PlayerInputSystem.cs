@@ -82,19 +82,23 @@ namespace SummerProject
                 if (IsKeyClicked(keyboard, Keys.Escape))
                     EntitySystem.BlackBoard.GetEntry<Game>("Game").Exit();
 
+                // Normalise the mouse coords so that (0,0) is the center instead of the top left.
+                Vector2 mousePos = new Vector2(
+                    mouse.X - (viewport.Width / 2.0f),
+                    mouse.Y - (viewport.Height / 2.0f));
+
+                // Figure out the destination (in pixels).
+                Vector2 destination = new Vector2(
+                    playerTransform.Position.X + (camera.Position.X - playerTransform.Position.X) + (mousePos.X * (1.0f / camera.Zoom)),
+                    playerTransform.Position.Y + (camera.Position.Y - playerTransform.Position.Y) + (mousePos.Y * (1.0f / camera.Zoom)));
+
+                // Make player always face the mouse pointer.
+                Vector2 direction = playerTransform.Position - destination;
+                playerTransform.Rotation = (float)Math.Atan2(direction.Y, direction.X) - ((float)Math.PI / 2.0f);
+
                 // Move the player when the right mouse button is clicked.
                 if (IsRightMouseButtonClicked(mouse))
                 {
-                    // Normalise the mouse coords so that (0,0) is the center instead of the top left.
-                    Vector2 mousePos = new Vector2(
-                        mouse.X - (viewport.Width / 2.0f),
-                        mouse.Y - (viewport.Height / 2.0f));
-
-                    // Figure out the destination (in pixels).
-                    Vector2 destination = new Vector2(
-                        playerTransform.Position.X + (camera.Position.X - playerTransform.Position.X) + (mousePos.X * (1.0f / camera.Zoom)),
-                        playerTransform.Position.Y + (camera.Position.Y - playerTransform.Position.Y) + (mousePos.Y * (1.0f / camera.Zoom)));
-
                     // Convert destination from pixel coords to block coords.
                     Entity level = entityWorld.TagManager.GetEntity("level");
                     TilemapComponent tilemapComponent = level.GetComponent<TilemapComponent>();

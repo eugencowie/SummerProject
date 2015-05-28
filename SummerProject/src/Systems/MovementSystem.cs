@@ -139,9 +139,6 @@ namespace SummerProject
 
                 position += direction * speed;
                 transformComponent.Position = position;
-
-                float angle = (float)Math.Atan2(direction.Y, direction.X);
-                transformComponent.Rotation = angle + MathHelper.ToRadians(90);
             }
         }
     }
