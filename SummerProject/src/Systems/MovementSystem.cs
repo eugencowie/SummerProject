@@ -107,6 +107,16 @@ namespace SummerProject
                 a_star = new AStar.AStar(tileInfo, 1, 100);
                 a_star.Start(positionBlock.X, positionBlock.Y, destinationBlock.X, destinationBlock.Y);
 
+                if (a_star.Path.Count == 0)
+                {
+                    // Special case for moving to adjacent blocks.
+                    Vector2 positionVector = new Vector2(positionBlock.X, positionBlock.Y);
+                    Vector2 destinationVector = new Vector2(destinationBlock.X, destinationBlock.Y);
+                    Vector2 distance = destinationVector - positionVector;
+                    if (distance.Length() < 2.0f)
+                        a_star.Path.Add(destinationVector);
+                }
+
                 currentIndex = 0;
             }
 
