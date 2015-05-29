@@ -15,6 +15,7 @@ namespace SummerProject
         SpriteBatch spriteBatch;
         Texture2D groundTexture;
         Texture2D blockTexture;
+        Texture2D unpassableGroundTexture;
 
         public override void LoadContent()
         {
@@ -22,6 +23,7 @@ namespace SummerProject
             spriteBatch = BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
             groundTexture = contentManager.Load<Texture2D>("textures/ground");
             blockTexture = contentManager.Load<Texture2D>("textures/block");
+            unpassableGroundTexture = contentManager.Load<Texture2D>("textures/unpassable_ground");
         }
 
         public override void Process(Entity entity, TilemapComponent tilemapComponent)
@@ -35,6 +37,7 @@ namespace SummerProject
                     switch (tilemapComponent.VisualBlocks[x, y]) {
                         case VisualBlock.Ground: texture = groundTexture; break;
                         case VisualBlock.Wall: texture = blockTexture; break;
+                        case VisualBlock.UnpassableGround: texture = unpassableGroundTexture; break;
                     }
 
                     if (texture != null)
