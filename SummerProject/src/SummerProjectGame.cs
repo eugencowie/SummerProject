@@ -53,7 +53,6 @@ namespace SummerProject
             // Create the level.
             Entity level = entityManager.CreateEntity();
             level.Tag = "level";
-            level.AddComponent(new RenderableComponent());
             TilemapComponent levelTilemap = TilemapLoader.ReadMapFromFile("Tilemap.txt");
             level.AddComponent(levelTilemap);
 
@@ -67,7 +66,6 @@ namespace SummerProject
             player.Tag = "player";
             player.AddComponent(new PlayerComponent() { PlayerId = 1, LocalPlayer = true });
             player.AddComponent(new TransformComponent() { Position = playerStart, Size = new Vector2(40, 40) });
-            player.AddComponent(new RenderableComponent());
 
             // Center the camera on the player.
             camera.Position = playerStart;
