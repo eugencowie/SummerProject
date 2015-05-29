@@ -2,15 +2,28 @@ using Artemis;
 using Artemis.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace SummerProject
 {
     public class SummerProjectGame : Microsoft.Xna.Framework.Game
     {
+        enum GameState {
+            MainMenu,
+            Options,
+            Playing,
+        }
+
+        GameState currentGameState = GameState.MainMenu;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Camera camera;
 
+        // MainMenu
+        Button playButton;
+
+        // Playing
+        Camera camera;
         EntityWorld entityManager;
 
         public SummerProjectGame()
@@ -50,6 +63,10 @@ namespace SummerProject
 
         protected override void LoadContent()
         {
+            // Create the main menu buttons.
+            playButton = new Button(Content.Load<Texture2D>("textures/button_play"), GraphicsDevice);
+            playButton.SetPosition(new Vector2(350, 300));
+
             // Create the level.
             Entity level = entityManager.CreateEntity();
             level.Tag = "level";
@@ -73,8 +90,20 @@ namespace SummerProject
 
         protected override void Update(GameTime gameTime)
         {
-            // Run the systems.
-            entityManager.Update();
+            switch (currentGameState)
+            {
+                case GameState.MainMenu:
+                    // Update the buttons.
+                    playButton.Update(Mouse.GetState());
+                    if (playButton.isClicked == true)
+                        currentGameState = GameState.Playing;
+                    break;
+
+                case GameState.Playing:
+                    // Run the systems.
+                    entityManager.Update();
+                    break;
+            }
 
             base.Update(gameTime);
         }
@@ -84,15 +113,25 @@ namespace SummerProject
             // Clear the screen.
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // Begin the spritebatch and apply the camera's transformation matrix.
-            spriteBatch.Begin(
-                SpriteSortMode.BackToFront,
-                BlendState.AlphaBlend,
-                null, null, null, null,
-                camera.GetTransformationMatrix(GraphicsDevice));
+            switch (currentGameState)
+            {
+                case GameState.MainMenu:
+                    // Draw the buttons.
+                    spriteBatch.Begin();
+                    playButton.Draw(spriteBatch);
+                    break;
 
-            // Run the draw systems.
-            entityManager.Draw();
+                case GameState.Playing:
+                    // Begin the spritebatch and apply the camera's transformation matrix.
+                    spriteBatch.Begin(
+                        SpriteSortMode.BackToFront,
+                        BlendState.AlphaBlend,
+                        null, null, null, null,
+                        camera.GetTransformationMatrix(GraphicsDevice));
+                    // Run the draw systems.
+                    entityManager.Draw();
+                    break;
+            }
 
             // End the spritebatch.
             spriteBatch.End();

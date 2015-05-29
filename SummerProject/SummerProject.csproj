@@ -79,6 +79,7 @@
     <Compile Include="src\Components\TransformComponent.cs" />
     <Compile Include="src\Utilities\AStar.cs" />
     <Compile Include="src\Utilities\Camera.cs" />
+    <Compile Include="src\Utilities\Button.cs" />
     <Compile Include="src\Utilities\TilemapLoader.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Systems\PlayerInputSystem.cs" />
