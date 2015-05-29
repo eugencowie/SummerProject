@@ -13,27 +13,31 @@ namespace SummerProject
     {
         ContentManager contentManager;
         SpriteBatch spriteBatch;
-        Texture2D player;
+        Texture2D playerTexture;
 
         public override void LoadContent()
         {
             contentManager = BlackBoard.GetEntry<Game>("Game").Content;
             spriteBatch = BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
-            player = contentManager.Load<Texture2D>("textures/player");
+            playerTexture = contentManager.Load<Texture2D>("textures/player");
         }
 
         public override void Process(Entity entity, PlayerComponent playerComponent, TransformComponent transformComponent)
         {
-            Vector2 textureOrigin = new Vector2(player.Width / 2.0f, player.Height / 2.0f);
+            Vector2 textureOrigin = new Vector2(playerTexture.Width / 2.0f, playerTexture.Height / 2.0f);
+
+            Vector2 size = new Vector2(playerTexture.Width, playerTexture.Height);
+            if (transformComponent.Size != Vector2.Zero)
+                size = transformComponent.Size;
             Rectangle destinationRect = new Rectangle() {
                 X = (int)transformComponent.Position.X,
                 Y = (int)transformComponent.Position.Y,
-                Width = (int)transformComponent.Size.X,
-                Height = (int)transformComponent.Size.Y,
+                Width = (int)size.X,
+                Height = (int)size.Y,
             };
 
             spriteBatch.Draw(
-                player,
+                playerTexture,
                 destinationRect,
                 null,
                 Color.White,

@@ -1,6 +1,5 @@
 ﻿using Artemis.Interface;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace SummerProject
 {

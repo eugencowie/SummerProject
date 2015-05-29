@@ -13,15 +13,15 @@ namespace SummerProject
     {
         ContentManager contentManager;
         SpriteBatch spriteBatch;
-        Texture2D ground;
-        Texture2D block;
+        Texture2D groundTexture;
+        Texture2D blockTexture;
 
         public override void LoadContent()
         {
             contentManager = BlackBoard.GetEntry<Game>("Game").Content;
             spriteBatch = BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
-            ground = contentManager.Load<Texture2D>("textures/ground");
-            block = contentManager.Load<Texture2D>("textures/block");
+            groundTexture = contentManager.Load<Texture2D>("textures/ground");
+            blockTexture = contentManager.Load<Texture2D>("textures/block");
         }
 
         public override void Process(Entity entity, TilemapComponent tilemapComponent)
@@ -33,8 +33,8 @@ namespace SummerProject
                     // Use the correct texture for each block.
                     Texture2D texture = null;
                     switch (tilemapComponent.VisualBlocks[x, y]) {
-                        case VisualBlock.Ground: texture = ground; break;
-                        case VisualBlock.Wall: texture = block; break;
+                        case VisualBlock.Ground: texture = groundTexture; break;
+                        case VisualBlock.Wall: texture = blockTexture; break;
                     }
 
                     if (texture != null)
