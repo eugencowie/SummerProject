@@ -15,6 +15,8 @@ namespace SummerProject
         KeyboardState prevKeyboard;
         MouseState prevMouse;
 
+        bool lockCameraToPlayer = false;
+
         public override void LoadContent()
         {
             prevKeyboard = Keyboard.GetState();
@@ -38,19 +40,49 @@ namespace SummerProject
 
                 #region Camera movement
 
-                // Reset camera position to player position when spacebar is pressed.
+                // Switch between free camera and locked to player.
                 if (IsKeyClicked(keyboard, Keys.Space))
-                    camera.Position = playerTransform.Position;
+                    lockCameraToPlayer = !lockCameraToPlayer;
 
-                // Camera movement keyboard controls.
-                if (keyboard.IsKeyDown(Keys.W))
-                    camera.Position.Y -= 1 * (10 - camera.Zoom);
-                if (keyboard.IsKeyDown(Keys.S))
-                    camera.Position.Y += 1 * (10 - camera.Zoom);
-                if (keyboard.IsKeyDown(Keys.A))
-                    camera.Position.X -= 1 * (10 - camera.Zoom);
-                if (keyboard.IsKeyDown(Keys.D))
-                    camera.Position.X += 1 * (10 - camera.Zoom);
+                if (lockCameraToPlayer)
+                {
+                    // Lock camera to player.
+                    camera.Position = playerTransform.Position;
+                }
+                else
+                {
+                    // Camera movement keyboard controls.
+                    if (keyboard.IsKeyDown(Keys.W))
+                        camera.Position.Y -= 1 * (10 - camera.Zoom);
+                    if (keyboard.IsKeyDown(Keys.S))
+                        camera.Position.Y += 1 * (10 - camera.Zoom);
+                    if (keyboard.IsKeyDown(Keys.A))
+                        camera.Position.X -= 1 * (10 - camera.Zoom);
+                    if (keyboard.IsKeyDown(Keys.D))
+                        camera.Position.X += 1 * (10 - camera.Zoom);
+
+                    // Check the mouse in within the bounds of the window...
+                    if (mouse.X >= 0 && mouse.X <= viewport.Width &&
+                        mouse.Y >= 0 && mouse.Y <= viewport.Height)
+                    {
+                        // Camera movement mouse controls.
+                        int screenEdgeBuffer = 60;
+                        if (mouse.Y < screenEdgeBuffer)
+                            camera.Position.Y -= 1 * (10 - camera.Zoom);
+                        if (mouse.Y > viewport.Height - screenEdgeBuffer)
+                            camera.Position.Y += 1 * (10 - camera.Zoom);
+                        if (mouse.X < screenEdgeBuffer)
+                            camera.Position.X -= 1 * (10 - camera.Zoom);
+                        if (mouse.X > viewport.Width - screenEdgeBuffer)
+                            camera.Position.X += 1 * (10 - camera.Zoom);
+                        if (IsMouseScolledUp(mouse))
+                            camera.Zoom += 0.1f;
+                        if (IsMouseScrollDown(mouse))
+                            camera.Zoom -= 0.1f;
+                    }
+                }
+
+                // Camera zoom.
                 if (keyboard.IsKeyDown(Keys.LeftShift))
                     camera.Zoom += 0.01f;
                 if (keyboard.IsKeyDown(Keys.LeftControl))
@@ -60,16 +92,6 @@ namespace SummerProject
                 if (mouse.X >= 0 && mouse.X <= viewport.Width &&
                     mouse.Y >= 0 && mouse.Y <= viewport.Height)
                 {
-                    // Camera movement mouse controls.
-                    int screenEdgeBuffer = 60;
-                    if (mouse.Y < screenEdgeBuffer)
-                        camera.Position.Y -= 1 * (10 - camera.Zoom);
-                    if (mouse.Y > viewport.Height - screenEdgeBuffer)
-                        camera.Position.Y += 1 * (10 - camera.Zoom);
-                    if (mouse.X < screenEdgeBuffer)
-                        camera.Position.X -= 1 * (10 - camera.Zoom);
-                    if (mouse.X > viewport.Width - screenEdgeBuffer)
-                        camera.Position.X += 1 * (10 - camera.Zoom);
                     if (IsMouseScolledUp(mouse))
                         camera.Zoom += 0.1f;
                     if (IsMouseScrollDown(mouse))
