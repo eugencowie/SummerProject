@@ -83,6 +83,7 @@ namespace SummerProject
             player.Tag = "player";
             player.AddComponent(new PlayerComponent() { PlayerId = 1, LocalPlayer = true });
             player.AddComponent(new TransformComponent() { Position = playerStart, Size = new Vector2(40, 40) });
+            player.AddComponent(new InventoryComponent() { HasKey = false });
 
             // Center the camera on the player.
             camera.Position = playerStart;

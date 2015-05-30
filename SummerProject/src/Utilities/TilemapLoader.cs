@@ -13,18 +13,17 @@ namespace SummerProject
             VisualBlock[,] visual = new VisualBlock[map.Width, map.Height];
             SymbolicBlock[,] symbolic = new SymbolicBlock[map.Width, map.Height];
             AStar.TileInfo[,] collision = new AStar.TileInfo[map.Width, map.Height];
+            int[,] rotation = new int[map.Width, map.Height];
 
             // Get Tiled map layers.
             TmxLayer baseLayer = map.Layers[0];
-            TmxLayer objectLayer = map.Layers[1];
 
             for (int i = 0; i < baseLayer.Tiles.Count; i++)
             {
-                TmxLayerTile baseTile = baseLayer.Tiles[i];
-                TmxLayerTile objectTile = objectLayer.Tiles[i];
+                TmxLayerTile tile = baseLayer.Tiles[i];
 
-                int x = baseTile.X;
-                int y = baseTile.Y;
+                int x = tile.X;
+                int y = tile.Y;
 
                 // Fill the visual blocks with none by default.
                 VisualBlock vb = VisualBlock.None;
@@ -32,33 +31,39 @@ namespace SummerProject
                 // Fill the symbolic blocks with none by default.
                 SymbolicBlock sb = SymbolicBlock.None;
 
-                // Fill the collision blocks with floor by default.
-                AStar.TileInfo cbinfo = new AStar.TileInfo();
-                AStar.TileType cb = AStar.TileType.Floor;
+                // Default rotation is 0.
+                int rot = 0;
 
-                switch (baseTile.Gid) {
-                    case 1: vb = VisualBlock.Wall; cb = AStar.TileType.Wall; break;
-                    case 2: vb = VisualBlock.Ground; break;
-                    case 4: vb = VisualBlock.UnpassableGround; cb = AStar.TileType.Wall; break;
-                }
-
-                switch (objectTile.Gid) {
-                    case 3: sb = SymbolicBlock.PlayerStart; break;
+                switch (tile.Gid) {
+                    case 1: /* wall */ vb = VisualBlock.Wall; break;
+                    case 2: /* ground */ vb = VisualBlock.Ground; break;
+                    case 3: /* player start */ vb = VisualBlock.Ground; sb = SymbolicBlock.PlayerStart; break;
+                    case 4: /* unpassable ground */ vb = VisualBlock.UnpassableGround; break;
+                    case 5: /* chest */ vb = VisualBlock.Ground; sb = SymbolicBlock.Chest; break;
+                    case 6: /* door */ vb = VisualBlock.Ground; sb = SymbolicBlock.LockedDoor; break;
+                    case 7: /* vertical door */ vb = VisualBlock.Ground; sb = SymbolicBlock.LockedDoor; rot = 90; break;
+                    case 8: /* key */ vb = VisualBlock.Ground; sb = SymbolicBlock.Key; break;
                 }
 
                 visual[x, y] = vb;
                 symbolic[x, y] = sb;
+                rotation[x, y] = rot;
 
-                cbinfo.TileType = cb;
-                collision[x, y] = cbinfo;
+                // Fill the collision blocks with floor by default.
+                collision[x, y] = new AStar.TileInfo() { TileType = AStar.TileType.Floor };
             }
 
-            return new TilemapComponent() {
+            TilemapComponent tilemap = new TilemapComponent() {
                 VisualBlocks = visual,
                 SymbolicBlocks = symbolic,
                 CollisionBlocks = collision,
+                Rotations = rotation,
                 BlockSize = 40
             };
+
+            tilemap.RecalculateCollisionBlocks();
+
+            return tilemap;
         }
     }
 }

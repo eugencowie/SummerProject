@@ -7,13 +7,12 @@ namespace SummerProject
         None,
         Ground,
         UnpassableGround,
-        LockedGround,
-        LockedDoor,
         Wall,
     }
 
     enum SymbolicBlock {
         None,
+        LockedDoor,
         PlayerStart,
         General,
         Boss,
@@ -23,6 +22,7 @@ namespace SummerProject
         Trap,
         HealthPack,
         Button,
+        Key
     }
 
     class TilemapComponent : IComponent
@@ -30,6 +30,7 @@ namespace SummerProject
         public VisualBlock[,] VisualBlocks;
         public SymbolicBlock[,] SymbolicBlocks;
         public AStar.TileInfo[,] CollisionBlocks;
+        public int[,] Rotations;
         public int BlockSize;
 
         public Point? FirstSymbolicBlockOfType(SymbolicBlock blockType)
@@ -45,6 +46,33 @@ namespace SummerProject
         public Vector2 BlockCoordsToPixels(Point blockCoords)
         {
             return new Vector2(blockCoords.X * BlockSize, blockCoords.Y * BlockSize);
+        }
+
+        public void RecalculateCollisionBlocks()
+        {
+            for (int y = 0; y < VisualBlocks.GetLength(1); y++)
+            {
+                for (int x = 0; x < VisualBlocks.GetLength(0); x++)
+                {
+                    CollisionBlocks[x, y].TileType = AStar.TileType.Floor;
+
+                    switch (VisualBlocks[x, y])
+                    {
+                        case VisualBlock.Wall:
+                        case VisualBlock.UnpassableGround:
+                            CollisionBlocks[x, y].TileType = AStar.TileType.Wall;
+                            break;
+                    }
+
+                    switch (SymbolicBlocks[x, y])
+                    {
+                        case SymbolicBlock.Chest:
+                        case SymbolicBlock.LockedDoor:
+                            CollisionBlocks[x, y].TileType = AStar.TileType.Wall;
+                            break;
+                    }
+                }
+            }
         }
     }
 }

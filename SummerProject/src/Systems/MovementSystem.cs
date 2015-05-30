@@ -12,7 +12,6 @@ namespace SummerProject
     class MovementSystem : EntityComponentProcessingSystem<PlayerMoveAction, TransformComponent>
     {
         GraphicsDevice graphics;
-        Entity level;
 
         AStar.AStar a_star;
         int currentIndex;
@@ -28,12 +27,12 @@ namespace SummerProject
             previousDestination = null;
             debugBatch = EntitySystem.BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
             debugTexture = EntitySystem.BlackBoard.GetEntry<Game>("Game").Content.Load<Texture2D>("textures/selector");
+            a_star = null;
         }
 
         public override void Process(Entity entity, PlayerMoveAction goToLocationAction, TransformComponent transformComponent)
         {
-            if (level == null)
-                level = entityWorld.TagManager.GetEntity("level");
+            Entity level = entityWorld.TagManager.GetEntity("level");
 
             Vector2 position = transformComponent.Position;
             Point destinationBlock = new Point((int)goToLocationAction.Destination.X, (int)goToLocationAction.Destination.Y);

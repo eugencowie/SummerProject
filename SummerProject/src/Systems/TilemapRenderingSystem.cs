@@ -16,6 +16,9 @@ namespace SummerProject
         Texture2D groundTexture;
         Texture2D blockTexture;
         Texture2D unpassableGroundTexture;
+        Texture2D lockedDoorTexture;
+        Texture2D chestTexture;
+        Texture2D keyTexture;
 
         public override void LoadContent()
         {
@@ -24,6 +27,9 @@ namespace SummerProject
             groundTexture = contentManager.Load<Texture2D>("textures/ground");
             blockTexture = contentManager.Load<Texture2D>("textures/block");
             unpassableGroundTexture = contentManager.Load<Texture2D>("textures/unpassable_ground");
+            lockedDoorTexture = contentManager.Load<Texture2D>("textures/locked_door");
+            chestTexture = contentManager.Load<Texture2D>("textures/chest");
+            keyTexture = contentManager.Load<Texture2D>("textures/key");
         }
 
         public override void Process(Entity entity, TilemapComponent tilemapComponent)
@@ -61,10 +67,52 @@ namespace SummerProject
                             destinationRect,
                             null,
                             Color.White,
-                            0.0f,
+                            MathHelper.ToRadians(tilemapComponent.Rotations[x, y]),
                             textureOrigin,
                             SpriteEffects.None,
                             1.0f);
+                        //}
+                    }
+                }
+            }
+
+            for (int y = 0; y < tilemapComponent.SymbolicBlocks.GetLength(1); y++)
+            {
+                for (int x = 0; x < tilemapComponent.SymbolicBlocks.GetLength(0); x++)
+                {
+                    // Use the correct texture for each block.
+                    Texture2D texture = null;
+                    switch (tilemapComponent.SymbolicBlocks[x, y]) {
+                        case SymbolicBlock.LockedDoor: texture = lockedDoorTexture; break;
+                        case SymbolicBlock.Chest: texture = chestTexture; break;
+                        case SymbolicBlock.Key: texture = keyTexture; break;
+                    }
+
+                    if (texture != null)
+                    {
+                        Vector2 textureOrigin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
+                        Rectangle destinationRect = new Rectangle() {
+                            X = x * tilemapComponent.BlockSize,
+                            Y = y * tilemapComponent.BlockSize,
+                            Width = tilemapComponent.BlockSize,
+                            Height = tilemapComponent.BlockSize,
+                        };
+
+                        // TODO: Fog of war stuff
+                        //Entity player = entityWorld.TagManager.GetEntity("player");
+                        //Vector2 playerPos = player.GetComponent<TransformComponent>().Position;
+                        //Vector2 destPos = new Vector2(destinationRect.X, destinationRect.Y);
+                        //if ((playerPos - destPos).Length() < 500)
+                        //{
+                        spriteBatch.Draw(
+                            texture,
+                            destinationRect,
+                            null,
+                            Color.White,
+                            MathHelper.ToRadians(tilemapComponent.Rotations[x, y]),
+                            textureOrigin,
+                            SpriteEffects.None,
+                            0.9f);
                         //}
                     }
                 }

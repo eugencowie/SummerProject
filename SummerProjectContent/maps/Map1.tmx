@@ -13,15 +13,22 @@
   <tile id="3">
    <image width="40" height="40" source="../textures/unpassable_ground.png"/>
   </tile>
+  <tile id="4">
+   <image width="40" height="40" source="../textures/chest.png"/>
+  </tile>
+  <tile id="5">
+   <image width="40" height="40" source="../textures/locked_door.png"/>
+  </tile>
+  <tile id="6">
+   <image width="40" height="40" source="../textures/locked_door_vertical.png"/>
+  </tile>
+  <tile id="7">
+   <image width="40" height="40" source="../textures/key.png"/>
+  </tile>
  </tileset>
  <layer name="Base layer" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJztVlsOwzAIo9Puf+ZpfxEKwRho2m6R0NQ8AGOT7BCR4yH2Iow912F/HH04LL8rDVVrjakho3kLR0Xsbj6qcezgCT0TqT2TmyRqFcnvSnywOrsDDqTvr/QOsHWswsH2UvQciyPzfyaTl7df1C/yNrI5oPU5Q1cav64Bi2O1B33nPX0cThxWE1FjMFbF+ePAY+4yPXbmkum3q9Y3gkMmuY9zFX7vyMcuTq1R4RfBGanpqtYrHJF4yHpFzlU4xMibxVHFB7oW/ZbJuoUj0wsez2jeFj8MHxp7Bx9ZPVToysIZ5aPjvl/xgfIT5WPmF63nVfgQx1cFjozvs/k4jLlqvVbFyOjqDVqUD81D9FvjkGHPLA46GA0yNsZ6Gh9d/eHp+Yw4CJ+IZbhd8W31B4oD1Ww3DhEfx6rmFXxkxi/ycdf+6L6vOu8l5p336ozqMapbJJevyTAnExwy8VWFQ4w9EvAb4UPj7eAjOo/woevUxUclDkYLHbpazY+5ymTeiu3x0WFsjN33Z6V9ABwTEFY=
-  </data>
- </layer>
- <layer name="Object Layer" width="50" height="50">
-  <data encoding="base64" compression="zlib">
-   eJztzgEJAAAMA6DB+3d+jMHQBCYAAAAAAAAAANBz7QAw4wE0AAAE
+   eJztVtFyAyEI5Nqk7f9/cSdvDiOyrKDmJg9McpwCyy56l4hcN7Evwth9FfbBUYfDijvSULbWmB4ymrdwZOSu5iMbxw6e0D2R3jO1yUSvIvWdxAers3fAgcz9SfcA28csHOwsRfexOGa+Z2bq8taL+kXuRrYGtD8rdKXx6x6wOEZr0Hve08fl5GE1ETUGY1aeDw485y77Ubazlpl5O7W/ERzSqb31sXGfi3pRxccuTvVsZM2IFaPiLBrF0O+8fMj7jJqzcMgEzhP58J6l897CMTMLHs9o3RY/DB9PJ0YGH7N6yNCV5pjVVcV53/p0nVbds3z04qL9PIUPcWJl4Fg1Hxl8XIYvW69ZOWZ09QAtyofmIfqscUizJkNXv+Q+1Fo8d+Ojaj48Pa/Ig/CJ2Ay3I76t+UBxjKw3S1U4RHwcoxnN4IM9A6x9d+fjXeej+ryqPJeYe97rM6rHqG6RWl4mjU86OKQTC8Xx3fz/66yTzp6e/hEciF/jreAj6kf40H1i+ViJI5pbjH1sLMTf1iodv5Xb46PC2By7z89M+weVRhEv
   </data>
  </layer>
 </map>

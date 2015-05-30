@@ -74,9 +74,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Components\Actions\PlayerMoveAction.cs" />
+    <Compile Include="src\Components\InventoryComponent.cs" />
     <Compile Include="src\Components\PlayerComponent.cs" />
     <Compile Include="src\Components\TilemapComponent.cs" />
     <Compile Include="src\Components\TransformComponent.cs" />
+    <Compile Include="src\Systems\PickupSystem.cs" />
     <Compile Include="src\Utilities\AStar.cs" />
     <Compile Include="src\Utilities\Camera.cs" />
     <Compile Include="src\Utilities\Button.cs" />
