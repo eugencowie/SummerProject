@@ -105,7 +105,7 @@ namespace SummerProject
                 a_star = new AStar.AStar(tileInfo, 1, 100);
                 a_star.Start(positionBlock.X, positionBlock.Y, destinationBlock.X, destinationBlock.Y);
 
-                if (a_star.Path.Count == 0)
+                if (a_star.Path.Count == 0 && tilemap.Tiles[destinationBlock.X, destinationBlock.Y].Collision.TileType == AStar.TileType.Floor)
                 {
                     // Special case for moving to adjacent blocks.
                     Vector2 positionVector = new Vector2(positionBlock.X, positionBlock.Y);
