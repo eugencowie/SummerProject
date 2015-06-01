@@ -19,7 +19,7 @@ namespace SummerProject
         {
             contentManager = BlackBoard.GetEntry<Game>("Game").Content;
             spriteBatch = BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
-            playerTexture = contentManager.Load<Texture2D>("textures/player");
+            playerTexture = contentManager.Load<Texture2D>("textures/objects/player");
         }
 
         public override void Process(Entity entity, PlayerInfo playerInfo, Transform transform)

@@ -77,7 +77,7 @@ namespace SummerProject
             level.AddComponent(levelTilemap);
 
             // Get the player start position from the level tilemap.
-            Point? playerStartBlock = levelTilemap.FirstSymbolicBlockOfType(SymbolicBlock.PlayerStart);
+            Point? playerStartBlock = levelTilemap.FirstObjectBlockOfType(ObjectBlock.PlayerStart);
             if (!playerStartBlock.HasValue) playerStartBlock = new Point(1, 1);
             Vector2 playerStart = levelTilemap.BlockCoordsToPixels(playerStartBlock.Value);
 

@@ -23,17 +23,17 @@ namespace SummerProject
             };
 
             // If the player is standing on a key...
-            if (tilemap.Tiles[position.X, position.Y].Symbolic == SymbolicBlock.Key)
+            if (tilemap.Tiles[position.X, position.Y].Object == ObjectBlock.Key)
             {
                 // Remove the key and add it to the player's inventory.
-                tilemap.Tiles[position.X, position.Y].Symbolic = SymbolicBlock.None;
+                tilemap.Tiles[position.X, position.Y].Object = ObjectBlock.None;
                 inventory.HasKey = true;
 
                 // Remove all locked doors.
                 for (int y = 0; y < tilemap.Tiles.GetLength(1); y++) {
                     for (int x = 0; x < tilemap.Tiles.GetLength(0); x++) {
-                        if (tilemap.Tiles[x, y].Symbolic == SymbolicBlock.LockedDoor) {
-                            tilemap.Tiles[x, y].Symbolic = SymbolicBlock.None;
+                        if (tilemap.Tiles[x, y].Object == ObjectBlock.LockedDoor) {
+                            tilemap.Tiles[x, y].Object = ObjectBlock.None;
                             tilemap.RecalculateCollisionBlocks();
                         }
                     }

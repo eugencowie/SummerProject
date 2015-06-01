@@ -30,13 +30,6 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="textures\player.png">
-      <Name>player</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="textures\block.png">
       <Name>block</Name>
       <Importer>TextureImporter</Importer>
@@ -72,23 +65,25 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="textures\locked_door.png">
-      <Name>locked_door</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="textures\chest.png">
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\objects\chest.png">
       <Name>chest</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="textures\locked_door_vertical.png">
-      <Name>locked_door_vertical</Name>
+    <Compile Include="textures\objects\key.png">
+      <Name>key</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="textures\key.png">
-      <Name>key</Name>
+    <Compile Include="textures\objects\locked_door.png">
+      <Name>locked_door</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\objects\player.png">
+      <Name>player</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

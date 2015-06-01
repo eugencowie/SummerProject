@@ -1,4 +1,6 @@
-﻿using TiledSharp;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
+using TiledSharp;
 
 namespace SummerProject
 {
@@ -13,38 +15,92 @@ namespace SummerProject
             Tile[,] tiles = new Tile[map.Width, map.Height];
 
             // Get Tiled map layers.
-            TmxLayer baseLayer = map.Layers[0];
+            TmxLayer baseLayer = map.Layers["Base layer"];
+            TmxLayer objectLayer = map.Layers["Object layer"];
+
+            // Get Tiled tileset initial gids.
+            int firstBaseGid = map.Tilesets["Base tileset"].FirstGid - 1;
+            int firstObjectGid = map.Tilesets["Object tileset"].FirstGid - 1;
 
             for (int i = 0; i < baseLayer.Tiles.Count; i++)
             {
-                TmxLayerTile tile = baseLayer.Tiles[i];
+                TmxLayerTile baseTile = baseLayer.Tiles[i];
+                TmxLayerTile objectTile = objectLayer.Tiles[i];
 
-                int x = tile.X;
-                int y = tile.Y;
+                int x = baseTile.X;
+                int y = baseTile.Y;
 
                 // Fill the visual blocks with none by default.
-                VisualBlock vb = VisualBlock.None;
+                BaseBlock baseBlock = BaseBlock.None;
 
                 // Fill the symbolic blocks with none by default.
-                SymbolicBlock sb = SymbolicBlock.None;
+                ObjectBlock objectBlock = ObjectBlock.None;
 
-                // Default rotation is 0.
-                int rot = 0;
-
-                switch (tile.Gid) {
-                    case 1: /* wall */ vb = VisualBlock.Wall; break;
-                    case 2: /* ground */ vb = VisualBlock.Ground; break;
-                    case 3: /* player start */ vb = VisualBlock.Ground; sb = SymbolicBlock.PlayerStart; break;
-                    case 4: /* unpassable ground */ vb = VisualBlock.UnpassableGround; break;
-                    case 5: /* chest */ vb = VisualBlock.Ground; sb = SymbolicBlock.Chest; break;
-                    case 6: /* door */ vb = VisualBlock.Ground; sb = SymbolicBlock.LockedDoor; break;
-                    case 7: /* vertical door */ vb = VisualBlock.Ground; sb = SymbolicBlock.LockedDoor; rot = 90; break;
-                    case 8: /* key */ vb = VisualBlock.Ground; sb = SymbolicBlock.Key; break;
+                switch (baseTile.Gid - firstBaseGid) {
+                    case 1: /* block */ baseBlock = BaseBlock.Wall; break;
+                    case 2: /* ground */ baseBlock = BaseBlock.Ground; break;
+                    case 3: /* unpassable ground */ baseBlock = BaseBlock.UnpassableGround; break;
                 }
 
-                tiles[x, y].Visual = vb;
-                tiles[x, y].Symbolic = sb;
-                tiles[x, y].Rotation = rot;
+                switch (objectTile.Gid - firstObjectGid) {
+                    case 1: /* player start */ objectBlock = ObjectBlock.PlayerStart; break;
+                    case 2: /* chest */ objectBlock = ObjectBlock.Chest; break;
+                    case 3: /* key */ objectBlock = ObjectBlock.Key; break;
+                    case 4: /* door */ objectBlock = ObjectBlock.LockedDoor; break;
+                }
+
+                // Default rotation is 0.
+                float baseRot = 0.0f;
+                SpriteEffects baseEffect = SpriteEffects.None;
+                if (baseTile.HorizontalFlip)
+                    baseEffect ^= SpriteEffects.FlipHorizontally;
+                if (baseTile.VerticalFlip)
+                    baseEffect ^= SpriteEffects.FlipVertically;
+                if (baseTile.DiagonalFlip)
+                {
+                    if (baseTile.HorizontalFlip && baseTile.VerticalFlip) {
+                        baseRot = (float)(Math.PI / 2);
+                        baseEffect ^= SpriteEffects.FlipVertically;
+                    }
+                    else if (baseTile.HorizontalFlip) {
+                        baseRot = (float)-(Math.PI / 2);
+                        baseEffect ^= SpriteEffects.FlipVertically;
+                    }
+                    else {
+                        baseRot = (float)(Math.PI / 2);
+                        baseEffect ^= SpriteEffects.FlipHorizontally;
+                    }
+                }
+
+                // Default rotation is 0.
+                float objectRot = 0.0f;
+                SpriteEffects objectEffect = SpriteEffects.None;
+                if (objectTile.HorizontalFlip)
+                    objectEffect ^= SpriteEffects.FlipHorizontally;
+                if (objectTile.VerticalFlip)
+                    objectEffect ^= SpriteEffects.FlipVertically;
+                if (objectTile.DiagonalFlip)
+                {
+                    if (objectTile.HorizontalFlip && baseTile.VerticalFlip) {
+                        objectRot = (float)(Math.PI / 2);
+                        objectEffect ^= SpriteEffects.FlipVertically;
+                    }
+                    else if (objectTile.HorizontalFlip) {
+                        objectRot = (float)-(Math.PI / 2);
+                        objectEffect ^= SpriteEffects.FlipVertically;
+                    }
+                    else {
+                        objectRot = (float)(Math.PI / 2);
+                        objectEffect ^= SpriteEffects.FlipHorizontally;
+                    }
+                }
+
+                tiles[x, y].Base = baseBlock;
+                tiles[x, y].Object = objectBlock;
+                tiles[x, y].BaseRotation = baseRot;
+                tiles[x, y].ObjectRotation = objectRot;
+                tiles[x, y].BaseEffect = baseEffect;
+                tiles[x, y].ObjectEffect = objectEffect;
 
                 // Fill the collision blocks with floor by default.
                 tiles[x, y].Collision = new AStar.TileInfo() { TileType = AStar.TileType.Floor };

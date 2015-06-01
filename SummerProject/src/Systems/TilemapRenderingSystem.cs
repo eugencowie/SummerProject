@@ -27,9 +27,9 @@ namespace SummerProject
             groundTexture = contentManager.Load<Texture2D>("textures/ground");
             blockTexture = contentManager.Load<Texture2D>("textures/block");
             unpassableGroundTexture = contentManager.Load<Texture2D>("textures/unpassable_ground");
-            lockedDoorTexture = contentManager.Load<Texture2D>("textures/locked_door");
-            chestTexture = contentManager.Load<Texture2D>("textures/chest");
-            keyTexture = contentManager.Load<Texture2D>("textures/key");
+            lockedDoorTexture = contentManager.Load<Texture2D>("textures/objects/locked_door");
+            chestTexture = contentManager.Load<Texture2D>("textures/objects/chest");
+            keyTexture = contentManager.Load<Texture2D>("textures/objects/key");
         }
 
         public override void Process(Entity entity, Tilemap tilemap)
@@ -40,10 +40,10 @@ namespace SummerProject
                 {
                     // Use the correct texture for each block.
                     Texture2D texture = null;
-                    switch (tilemap.Tiles[x, y].Visual) {
-                        case VisualBlock.Ground: texture = groundTexture; break;
-                        case VisualBlock.Wall: texture = blockTexture; break;
-                        case VisualBlock.UnpassableGround: texture = unpassableGroundTexture; break;
+                    switch (tilemap.Tiles[x, y].Base) {
+                        case BaseBlock.Ground: texture = groundTexture; break;
+                        case BaseBlock.Wall: texture = blockTexture; break;
+                        case BaseBlock.UnpassableGround: texture = unpassableGroundTexture; break;
                     }
 
                     if (texture != null)
@@ -67,26 +67,25 @@ namespace SummerProject
                             destinationRect,
                             null,
                             Color.White,
-                            MathHelper.ToRadians(tilemap.Tiles[x, y].Rotation),
+                            tilemap.Tiles[x, y].BaseRotation,
                             textureOrigin,
-                            SpriteEffects.None,
+                            tilemap.Tiles[x, y].BaseEffect,
                             1.0f);
                         //}
                     }
 
                     // Use the correct texture for each block.
                     texture = null;
-                    switch (tilemap.Tiles[x, y].Symbolic) {
-                        case SymbolicBlock.LockedDoor: texture = lockedDoorTexture; break;
-                        case SymbolicBlock.Chest: texture = chestTexture; break;
-                        case SymbolicBlock.Key: texture = keyTexture; break;
+                    switch (tilemap.Tiles[x, y].Object) {
+                        case ObjectBlock.LockedDoor: texture = lockedDoorTexture; break;
+                        case ObjectBlock.Chest: texture = chestTexture; break;
+                        case ObjectBlock.Key: texture = keyTexture; break;
                     }
 
                     if (texture != null)
                     {
                         Vector2 textureOrigin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
-                        Rectangle destinationRect = new Rectangle()
-                        {
+                        Rectangle destinationRect = new Rectangle() {
                             X = x * tilemap.BlockSize,
                             Y = y * tilemap.BlockSize,
                             Width = tilemap.BlockSize,
@@ -104,9 +103,9 @@ namespace SummerProject
                             destinationRect,
                             null,
                             Color.White,
-                            MathHelper.ToRadians(tilemap.Tiles[x, y].Rotation),
+                            tilemap.Tiles[x, y].ObjectRotation,
                             textureOrigin,
-                            SpriteEffects.None,
+                            tilemap.Tiles[x, y].ObjectEffect,
                             0.9f);
                         //}
                     }

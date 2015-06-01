@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="40" tileheight="40" nextobjectid="1">
- <tileset firstgid="1" name="Tileset1" tilewidth="40" tileheight="40">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="40" tileheight="40" nextobjectid="5">
+ <tileset firstgid="1" name="Base tileset" tilewidth="40" tileheight="40">
   <tile id="0">
    <image width="40" height="40" source="../textures/block.png"/>
   </tile>
@@ -8,27 +8,31 @@
    <image width="40" height="40" source="../textures/ground.png"/>
   </tile>
   <tile id="2">
-   <image width="40" height="40" source="../textures/player.png"/>
-  </tile>
-  <tile id="3">
    <image width="40" height="40" source="../textures/unpassable_ground.png"/>
   </tile>
-  <tile id="4">
-   <image width="40" height="40" source="../textures/chest.png"/>
+ </tileset>
+ <tileset firstgid="4" name="Object tileset" tilewidth="40" tileheight="40">
+  <tile id="0">
+   <image width="40" height="40" source="../textures/objects/player.png"/>
   </tile>
-  <tile id="5">
-   <image width="40" height="40" source="../textures/locked_door.png"/>
+  <tile id="1">
+   <image width="40" height="40" source="../textures/objects/chest.png"/>
   </tile>
-  <tile id="6">
-   <image width="40" height="40" source="../textures/locked_door_vertical.png"/>
+  <tile id="2">
+   <image width="40" height="40" source="../textures/objects/key.png"/>
   </tile>
-  <tile id="7">
-   <image width="40" height="40" source="../textures/key.png"/>
+  <tile id="3">
+   <image width="40" height="40" source="../textures/objects/locked_door.png"/>
   </tile>
  </tileset>
  <layer name="Base layer" width="50" height="50">
-  <data encoding="base64" compression="zlib">
-   eJztVtFyAyEI5Nqk7f9/cSdvDiOyrKDmJg9McpwCyy56l4hcN7Evwth9FfbBUYfDijvSULbWmB4ymrdwZOSu5iMbxw6e0D2R3jO1yUSvIvWdxAers3fAgcz9SfcA28csHOwsRfexOGa+Z2bq8taL+kXuRrYGtD8rdKXx6x6wOEZr0Hve08fl5GE1ETUGY1aeDw485y77Ubazlpl5O7W/ERzSqb31sXGfi3pRxccuTvVsZM2IFaPiLBrF0O+8fMj7jJqzcMgEzhP58J6l897CMTMLHs9o3RY/DB9PJ0YGH7N6yNCV5pjVVcV53/p0nVbds3z04qL9PIUPcWJl4Fg1Hxl8XIYvW69ZOWZ09QAtyofmIfqscUizJkNXv+Q+1Fo8d+Ojaj48Pa/Ig/CJ2Ay3I76t+UBxjKw3S1U4RHwcoxnN4IM9A6x9d+fjXeej+ryqPJeYe97rM6rHqG6RWl4mjU86OKQTC8Xx3fz/66yTzp6e/hEciF/jreAj6kf40H1i+ViJI5pbjH1sLMTf1iodv5Xb46PC2By7z89M+weVRhEv
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2WwY7DMAhEJ93//+dVbxYyAQZISNQDqkIcw2PA7gHgeIl9CGO/67AfRx+Htu9ZD1X3GlNDpuc1jorY3XpUc9yhk/ebSO2Z3JCoVSS/SXqwffYEDs/cT7oH2DpWcbCzFP2O5cj8n8nkZa2H+PXcjWwO3vpc0VeSX9aA5Thb473nrf44jDhsT0SNYayK8+Pwx7zLJuWSzX1ifSMc2OS++irq80Q97tK0q5+0PTrOIosjEs/zviLnKg4kOCfqYT1j817jyMyCZz4y+kzVIxu/gkNqzPZVx/m4+mSeWt5ZPXb7eus5RQ8Ye13BMUmPQ/FNvs9ZPf6cFtVD6hB9lhxY1nTd8ZW28rxNj675sPr5ijgePT2W0fZMb20+vBxR6+IAbA7vfLEc1fZ2PZ46H93nVee5xNzzVp29/RjtW08uX8Piw4YDm72qOKCsQWDfiB6St0OPqN+jh6xTlx6VHEwvdPTVmX/NFRu/FtvSo8PYGHefn5X2D9yM0O0QJwAA
+  </data>
+ </layer>
+ <layer name="Object layer" width="50" height="50">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3WOwrAIBAFQIt8rpmj5Sg5WiyDkCKi8cMMCDbKFr5dQwAAAIDy9mQxn7V1AYNKs1EqI3LGaHqfEXocvIv5uFrXwHziuzpyzsU5cpatBMbW2x+mdkZz7/+rd5iZ8M3y2G/NqgBmcANZp90eECcAAA==
   </data>
  </layer>
 </map>

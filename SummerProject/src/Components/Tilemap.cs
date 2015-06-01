@@ -1,16 +1,17 @@
 ﻿using Artemis.Interface;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace SummerProject
 {
-    enum VisualBlock {
+    enum BaseBlock {
         None,
         Ground,
         UnpassableGround,
         Wall,
     }
 
-    enum SymbolicBlock {
+    enum ObjectBlock {
         None,
         LockedDoor,
         PlayerStart,
@@ -26,10 +27,13 @@ namespace SummerProject
     }
 
     struct Tile {
-        public VisualBlock Visual;
-        public SymbolicBlock Symbolic;
+        public BaseBlock Base;
+        public ObjectBlock Object;
         public AStar.TileInfo Collision;
-        public int Rotation;
+        public float BaseRotation;
+        public float ObjectRotation;
+        public SpriteEffects BaseEffect;
+        public SpriteEffects ObjectEffect;
     }
 
     class Tilemap : IComponent
@@ -37,11 +41,11 @@ namespace SummerProject
         public Tile[,] Tiles;
         public int BlockSize;
 
-        public Point? FirstSymbolicBlockOfType(SymbolicBlock blockType)
+        public Point? FirstObjectBlockOfType(ObjectBlock blockType)
         {
             for (int y = 0; y < Tiles.GetLength(1); y++)
                 for (int x = 0; x < Tiles.GetLength(0); x++)
-                    if (Tiles[x, y].Symbolic == blockType)
+                    if (Tiles[x, y].Object == blockType)
                         return new Point(x, y);
 
             return null;
@@ -60,18 +64,18 @@ namespace SummerProject
                 {
                     Tiles[x, y].Collision.TileType = AStar.TileType.Floor;
 
-                    switch (Tiles[x, y].Visual)
+                    switch (Tiles[x, y].Base)
                     {
-                        case VisualBlock.Wall:
-                        case VisualBlock.UnpassableGround:
+                        case BaseBlock.Wall:
+                        case BaseBlock.UnpassableGround:
                             Tiles[x, y].Collision.TileType = AStar.TileType.Wall;
                             break;
                     }
 
-                    switch (Tiles[x, y].Symbolic)
+                    switch (Tiles[x, y].Object)
                     {
-                        case SymbolicBlock.Chest:
-                        case SymbolicBlock.LockedDoor:
+                        case ObjectBlock.Chest:
+                        case ObjectBlock.LockedDoor:
                             Tiles[x, y].Collision.TileType = AStar.TileType.Wall;
                             break;
                     }
