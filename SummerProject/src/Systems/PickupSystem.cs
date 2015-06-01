@@ -8,9 +8,9 @@ using System;
 namespace SummerProject
 {
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Draw, Layer = 0)]
-    class PickupSystem : EntityComponentProcessingSystem<Player, Inventory, Transform>
+    class PickupSystem : EntityComponentProcessingSystem<PlayerInfo, Inventory, Transform>
     {
-        public override void Process(Entity entity, Player player, Inventory inventory, Transform transform)
+        public override void Process(Entity entity, PlayerInfo playerInfo, Inventory inventory, Transform transform)
         {
             Vector2 position = transform.Position;
 

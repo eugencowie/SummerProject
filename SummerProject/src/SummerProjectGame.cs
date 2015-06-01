@@ -84,7 +84,7 @@ namespace SummerProject
             // Create the player entity.
             Entity player = entityManager.CreateEntity();
             player.Tag = "player";
-            player.AddComponent(new Player() { PlayerId = 1, LocalPlayer = true });
+            player.AddComponent(new PlayerInfo() { PlayerId = 1, LocalPlayer = true });
             player.AddComponent(new Transform() { Position = playerStart, Size = new Vector2(40, 40) });
             player.AddComponent(new Inventory() { HasKey = false });
 

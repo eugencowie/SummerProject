@@ -10,7 +10,7 @@ using System;
 namespace SummerProject
 {
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Update, Layer = 0)]
-    class PlayerInputSystem : EntityComponentProcessingSystem<Player>
+    class PlayerInputSystem : EntityComponentProcessingSystem<PlayerInfo>
     {
         KeyboardState prevKeyboard;
         MouseState prevMouse;
@@ -23,9 +23,9 @@ namespace SummerProject
             prevMouse = Mouse.GetState();
         }
 
-        public override void Process(Entity entity, Player player)
+        public override void Process(Entity entity, PlayerInfo playerInfo)
         {
-            if (player.LocalPlayer)
+            if (playerInfo.LocalPlayer)
             {
                 // Get keyboard and mouse state.
                 KeyboardState keyboard = Keyboard.GetState();

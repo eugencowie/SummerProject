@@ -2,7 +2,7 @@
 
 namespace SummerProject
 {
-    struct Player : IComponent
+    struct PlayerInfo : IComponent
     {
         public int PlayerId;
         public bool LocalPlayer;

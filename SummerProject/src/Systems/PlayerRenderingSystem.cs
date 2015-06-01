@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace SummerProject
 {
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Draw, Layer = 0)]
-    class PlayerRenderingSystem : EntityComponentProcessingSystem<Player, Transform>
+    class PlayerRenderingSystem : EntityComponentProcessingSystem<PlayerInfo, Transform>
     {
         ContentManager contentManager;
         SpriteBatch spriteBatch;
@@ -22,7 +22,7 @@ namespace SummerProject
             playerTexture = contentManager.Load<Texture2D>("textures/player");
         }
 
-        public override void Process(Entity entity, Player player, Transform transform)
+        public override void Process(Entity entity, PlayerInfo playerInfo, Transform transform)
         {
             Vector2 textureOrigin = new Vector2(playerTexture.Width / 2.0f, playerTexture.Height / 2.0f);
 
