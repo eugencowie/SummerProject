@@ -10,7 +10,7 @@ using System;
 namespace SummerProject
 {
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Update, Layer = 0)]
-    class PlayerInputSystem : EntityComponentProcessingSystem<PlayerComponent>
+    class PlayerInputSystem : EntityComponentProcessingSystem<Player>
     {
         KeyboardState prevKeyboard;
         MouseState prevMouse;
@@ -23,9 +23,9 @@ namespace SummerProject
             prevMouse = Mouse.GetState();
         }
 
-        public override void Process(Entity entity, PlayerComponent playerComponent)
+        public override void Process(Entity entity, Player player)
         {
-            if (playerComponent.LocalPlayer)
+            if (player.LocalPlayer)
             {
                 // Get keyboard and mouse state.
                 KeyboardState keyboard = Keyboard.GetState();
@@ -35,7 +35,7 @@ namespace SummerProject
                 Viewport viewport = EntitySystem.BlackBoard.GetEntry<Game>("Game").GraphicsDevice.Viewport;
 
                 // Get the camera and player transform.
-                TransformComponent playerTransform = entity.GetComponent<TransformComponent>();
+                Transform playerTransform = entity.GetComponent<Transform>();
                 Camera camera = EntitySystem.BlackBoard.GetEntry<Camera>("Camera");
 
                 #region Camera movement
@@ -123,8 +123,8 @@ namespace SummerProject
                 {
                     // Convert destination from pixel coords to block coords.
                     Entity level = entityWorld.TagManager.GetEntity("level");
-                    TilemapComponent tilemapComponent = level.GetComponent<TilemapComponent>();
-                    int blockSize = tilemapComponent.BlockSize;
+                    Tilemap tilemap = level.GetComponent<Tilemap>();
+                    int blockSize = tilemap.BlockSize;
                     Vector2 destinationBlock = new Vector2() {
                         X = (int)Math.Round(destination.X / blockSize),
                         Y = (int)Math.Round(destination.Y / blockSize),

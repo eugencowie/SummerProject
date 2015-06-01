@@ -9,7 +9,7 @@ using System;
 namespace SummerProject
 {
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Draw, Layer = 0)]
-    class MovementSystem : EntityComponentProcessingSystem<PlayerMoveAction, TransformComponent>
+    class MovementSystem : EntityComponentProcessingSystem<PlayerMoveAction, Transform>
     {
         GraphicsDevice graphics;
 
@@ -30,17 +30,17 @@ namespace SummerProject
             a_star = null;
         }
 
-        public override void Process(Entity entity, PlayerMoveAction goToLocationAction, TransformComponent transformComponent)
+        public override void Process(Entity entity, PlayerMoveAction goToLocationAction, Transform transform)
         {
             Entity level = entityWorld.TagManager.GetEntity("level");
 
-            Vector2 position = transformComponent.Position;
+            Vector2 position = transform.Position;
             Point destinationBlock = new Point((int)goToLocationAction.Destination.X, (int)goToLocationAction.Destination.Y);
             float speed = goToLocationAction.Speed;
 
-            TilemapComponent tilemapComponent = level.GetComponent<TilemapComponent>();
-            VisualBlock[,] blocks = tilemapComponent.VisualBlocks;
-            int blockSize = tilemapComponent.BlockSize;
+            Tilemap tilemap = level.GetComponent<Tilemap>();
+            VisualBlock[,] blocks = tilemap.VisualBlocks;
+            int blockSize = tilemap.BlockSize;
 
             // Convert position and destination from pixel coords to block coords.
             Point positionBlock = new Point() {
@@ -97,7 +97,7 @@ namespace SummerProject
 
             if (a_star == null)
             {
-                AStar.TileInfo[,] tileInfo = tilemapComponent.CollisionBlocks;
+                AStar.TileInfo[,] tileInfo = tilemap.CollisionBlocks;
 
                 // Pass the tile information and a weight for the H
                 // the lower the H weight value shorter the path
@@ -146,7 +146,7 @@ namespace SummerProject
                 direction.Normalize();
 
                 position += direction * speed;
-                transformComponent.Position = position;
+                transform.Position = position;
             }
         }
     }

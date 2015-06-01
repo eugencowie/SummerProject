@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SummerProject
 {
+    /// <summary>
+    /// The main game class.
+    /// </summary>
     public class SummerProjectGame : Microsoft.Xna.Framework.Game
     {
         enum GameState {
@@ -19,10 +22,10 @@ namespace SummerProject
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        // MainMenu
+        // GameState.MainMenu:
         Button playButton;
 
-        // Playing
+        // GameState.Playing:
         Camera camera;
         EntityWorld entityManager;
 
@@ -67,25 +70,25 @@ namespace SummerProject
             playButton = new Button(Content.Load<Texture2D>("textures/button_play"), GraphicsDevice);
             playButton.SetPosition(new Vector2(350, 300));
 
-            // Create the level.
+            // Create the level entity.
             Entity level = entityManager.CreateEntity();
             level.Tag = "level";
-            TilemapComponent levelTilemap = TilemapLoader.ReadMapFromFile("Content/maps/Map1.tmx");
+            Tilemap levelTilemap = TilemapLoader.ReadMapFromFile("Content/maps/Map1.tmx");
             level.AddComponent(levelTilemap);
 
-            // Get the player start position.
+            // Get the player start position from the level tilemap.
             Point? playerStartBlock = levelTilemap.FirstSymbolicBlockOfType(SymbolicBlock.PlayerStart);
             if (!playerStartBlock.HasValue) playerStartBlock = new Point(1, 1);
             Vector2 playerStart = levelTilemap.BlockCoordsToPixels(playerStartBlock.Value);
 
-            // Create the player.
+            // Create the player entity.
             Entity player = entityManager.CreateEntity();
             player.Tag = "player";
-            player.AddComponent(new PlayerComponent() { PlayerId = 1, LocalPlayer = true });
-            player.AddComponent(new TransformComponent() { Position = playerStart, Size = new Vector2(40, 40) });
-            player.AddComponent(new InventoryComponent() { HasKey = false });
+            player.AddComponent(new Player() { PlayerId = 1, LocalPlayer = true });
+            player.AddComponent(new Transform() { Position = playerStart, Size = new Vector2(40, 40) });
+            player.AddComponent(new Inventory() { HasKey = false });
 
-            // Center the camera on the player.
+            // Center the camera on the player at the start.
             camera.Position = playerStart;
         }
 
@@ -120,22 +123,25 @@ namespace SummerProject
                     // Draw the buttons.
                     spriteBatch.Begin();
                     playButton.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
 
                 case GameState.Playing:
+
                     // Begin the spritebatch and apply the camera's transformation matrix.
                     spriteBatch.Begin(
                         SpriteSortMode.BackToFront,
                         BlendState.AlphaBlend,
                         null, null, null, null,
                         camera.GetTransformationMatrix(GraphicsDevice));
+
                     // Run the draw systems.
                     entityManager.Draw();
+
+                    // End the spritebatch.
+                    spriteBatch.End();
                     break;
             }
-
-            // End the spritebatch.
-            spriteBatch.End();
 
             base.Draw(gameTime);
         }

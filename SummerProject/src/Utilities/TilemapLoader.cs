@@ -4,7 +4,7 @@ namespace SummerProject
 {
     static class TilemapLoader
     {
-        public static TilemapComponent ReadMapFromFile(string file)
+        public static Tilemap ReadMapFromFile(string file)
         {
             // Read file.
             TmxMap map = new TmxMap(file);
@@ -53,7 +53,7 @@ namespace SummerProject
                 collision[x, y] = new AStar.TileInfo() { TileType = AStar.TileType.Floor };
             }
 
-            TilemapComponent tilemap = new TilemapComponent() {
+            Tilemap tilemap = new Tilemap() {
                 VisualBlocks = visual,
                 SymbolicBlocks = symbolic,
                 CollisionBlocks = collision,

@@ -9,14 +9,14 @@ using System;
 namespace SummerProject
 {
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Draw, Layer = 0)]
-    class PickupSystem : EntityComponentProcessingSystem<PlayerComponent, InventoryComponent, TransformComponent>
+    class PickupSystem : EntityComponentProcessingSystem<Player, Inventory, Transform>
     {
-        public override void Process(Entity entity, PlayerComponent player, InventoryComponent inventory, TransformComponent transform)
+        public override void Process(Entity entity, Player player, Inventory inventory, Transform transform)
         {
             Vector2 position = transform.Position;
 
             Entity level = entityWorld.TagManager.GetEntity("level");
-            TilemapComponent tilemap = level.GetComponent<TilemapComponent>();
+            Tilemap tilemap = level.GetComponent<Tilemap>();
             SymbolicBlock[,] blocks = tilemap.SymbolicBlocks;
             int blockSize = tilemap.BlockSize;
 

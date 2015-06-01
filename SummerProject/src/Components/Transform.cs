@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace SummerProject
 {
-    class TransformComponent : IComponent
+    class Transform : IComponent
     {
         public Vector2 Position = Vector2.Zero;
         public Vector2 Size = Vector2.Zero;

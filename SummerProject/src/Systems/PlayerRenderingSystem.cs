@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace SummerProject
 {
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Draw, Layer = 0)]
-    class PlayerRenderingSystem : EntityComponentProcessingSystem<PlayerComponent, TransformComponent>
+    class PlayerRenderingSystem : EntityComponentProcessingSystem<Player, Transform>
     {
         ContentManager contentManager;
         SpriteBatch spriteBatch;
@@ -22,16 +22,16 @@ namespace SummerProject
             playerTexture = contentManager.Load<Texture2D>("textures/player");
         }
 
-        public override void Process(Entity entity, PlayerComponent playerComponent, TransformComponent transformComponent)
+        public override void Process(Entity entity, Player player, Transform transform)
         {
             Vector2 textureOrigin = new Vector2(playerTexture.Width / 2.0f, playerTexture.Height / 2.0f);
 
             Vector2 size = new Vector2(playerTexture.Width, playerTexture.Height);
-            if (transformComponent.Size != Vector2.Zero)
-                size = transformComponent.Size;
+            if (transform.Size != Vector2.Zero)
+                size = transform.Size;
             Rectangle destinationRect = new Rectangle() {
-                X = (int)transformComponent.Position.X,
-                Y = (int)transformComponent.Position.Y,
+                X = (int)transform.Position.X,
+                Y = (int)transform.Position.Y,
                 Width = (int)size.X,
                 Height = (int)size.Y,
             };
@@ -41,7 +41,7 @@ namespace SummerProject
                 destinationRect,
                 null,
                 Color.White,
-                transformComponent.Rotation,
+                transform.Rotation,
                 textureOrigin,
                 SpriteEffects.None,
                 0.0f);

@@ -25,7 +25,7 @@ namespace SummerProject
         Key
     }
 
-    class TilemapComponent : IComponent
+    class Tilemap : IComponent
     {
         public VisualBlock[,] VisualBlocks;
         public SymbolicBlock[,] SymbolicBlocks;

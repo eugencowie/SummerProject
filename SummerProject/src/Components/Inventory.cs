@@ -2,7 +2,7 @@
 
 namespace SummerProject
 {
-    struct InventoryComponent : IComponent
+    struct Inventory : IComponent
     {
         public bool HasKey;
     }
