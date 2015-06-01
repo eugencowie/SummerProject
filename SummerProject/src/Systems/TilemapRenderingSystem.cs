@@ -39,75 +39,70 @@ namespace SummerProject
                 for (int x = 0; x < tilemap.Tiles.GetLength(0); x++)
                 {
                     // Use the correct texture for each block.
-                    Texture2D texture = null;
+                    Texture2D[] textures = new Texture2D[2] { null, null };
+
+                    // Set base texture.
                     switch (tilemap.Tiles[x, y].Base) {
-                        case BaseBlock.Ground: texture = groundTexture; break;
-                        case BaseBlock.Wall: texture = blockTexture; break;
-                        case BaseBlock.UnpassableGround: texture = unpassableGroundTexture; break;
+                        case BaseBlock.Ground: textures[0] = groundTexture; break;
+                        case BaseBlock.Wall: textures[0] = blockTexture; break;
+                        case BaseBlock.UnpassableGround: textures[0] = unpassableGroundTexture; break;
                     }
 
-                    if (texture != null)
-                    {
-                        Vector2 textureOrigin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
-                        Rectangle destinationRect = new Rectangle() {
-                            X = x * tilemap.BlockSize,
-                            Y = y * tilemap.BlockSize,
-                            Width = tilemap.BlockSize,
-                            Height = tilemap.BlockSize,
-                        };
-
-                        // TODO: Fog of war stuff
-                        //Entity player = entityWorld.TagManager.GetEntity("player");
-                        //Vector2 playerPos = player.GetComponent<TransformComponent>().Position;
-                        //Vector2 destPos = new Vector2(destinationRect.X, destinationRect.Y);
-                        //if ((playerPos - destPos).Length() < 500)
-                        //{
-                        spriteBatch.Draw(
-                            texture,
-                            destinationRect,
-                            null,
-                            Color.White,
-                            tilemap.Tiles[x, y].BaseRotation,
-                            textureOrigin,
-                            tilemap.Tiles[x, y].BaseEffect,
-                            1.0f);
-                        //}
-                    }
-
-                    // Use the correct texture for each block.
-                    texture = null;
+                    // Set object texture.
                     switch (tilemap.Tiles[x, y].Object) {
-                        case ObjectBlock.LockedDoor: texture = lockedDoorTexture; break;
-                        case ObjectBlock.Chest: texture = chestTexture; break;
-                        case ObjectBlock.Key: texture = keyTexture; break;
+                        case ObjectBlock.LockedDoor: textures[1] = lockedDoorTexture; break;
+                        case ObjectBlock.Chest: textures[1] = chestTexture; break;
+                        case ObjectBlock.Key: textures[1] = keyTexture; break;
                     }
 
-                    if (texture != null)
+                    // TODO: refactor this
+                    for (int i = 0; i < textures.Length; i++)
                     {
-                        Vector2 textureOrigin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
-                        Rectangle destinationRect = new Rectangle() {
-                            X = x * tilemap.BlockSize,
-                            Y = y * tilemap.BlockSize,
-                            Width = tilemap.BlockSize,
-                            Height = tilemap.BlockSize,
-                        };
+                        if (textures[i] != null)
+                        {
+                            Vector2 textureOrigin = new Vector2(textures[i].Width / 2.0f, textures[i].Height / 2.0f);
+                            Rectangle destinationRect = new Rectangle() {
+                                X = x * tilemap.BlockSize,
+                                Y = y * tilemap.BlockSize,
+                                Width = tilemap.BlockSize,
+                                Height = tilemap.BlockSize,
+                            };
 
-                        // TODO: Fog of war stuff
-                        //Entity player = entityWorld.TagManager.GetEntity("player");
-                        //Vector2 playerPos = player.GetComponent<TransformComponent>().Position;
-                        //Vector2 destPos = new Vector2(destinationRect.X, destinationRect.Y);
-                        //if ((playerPos - destPos).Length() < 500)
-                        //{
-                        spriteBatch.Draw(
-                            texture,
-                            destinationRect,
-                            null,
-                            Color.White,
-                            tilemap.Tiles[x, y].ObjectRotation,
-                            textureOrigin,
-                            tilemap.Tiles[x, y].ObjectEffect,
-                            0.9f);
-                        //}
+                            float layerDepth = 1.0f;
+                            float rotation = 0.0f;
+                            SpriteEffects effect = SpriteEffects.None;
+                            switch (i)
+                            {
+                                case 0:
+                                    layerDepth = 1.0f;
+                                    rotation = tilemap.Tiles[x, y].BaseRotation;
+                                    effect = tilemap.Tiles[x, y].BaseEffect;
+                                    break;
+
+                                case 1:
+                                    layerDepth = 0.9f;
+                                    rotation = tilemap.Tiles[x, y].ObjectRotation;
+                                    effect = tilemap.Tiles[x, y].ObjectEffect;
+                                    break;
+                            }
+
+                            // TODO: Fog of war stuff
+                            //Entity player = entityWorld.TagManager.GetEntity("player");
+                            //Vector2 playerPos = player.GetComponent<Transform>().Position;
+                            //Vector2 destPos = new Vector2(destinationRect.X, destinationRect.Y);
+                            //if ((playerPos - destPos).Length() < 500)
+                            //{
+                            spriteBatch.Draw(
+                                textures[i],
+                                destinationRect,
+                                null,
+                                Color.White,
+                                rotation,
+                                textureOrigin,
+                                effect,
+                                layerDepth);
+                            //}
+                        }
                     }
                 }
             }
