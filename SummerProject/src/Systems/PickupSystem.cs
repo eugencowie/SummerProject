@@ -3,7 +3,6 @@ using Artemis.Attributes;
 using Artemis.Manager;
 using Artemis.System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace SummerProject
@@ -17,7 +16,6 @@ namespace SummerProject
 
             Entity level = entityWorld.TagManager.GetEntity("level");
             Tilemap tilemap = level.GetComponent<Tilemap>();
-            SymbolicBlock[,] blocks = tilemap.SymbolicBlocks;
             int blockSize = tilemap.BlockSize;
 
             // Convert position and destination from pixel coords to block coords.
@@ -26,17 +24,16 @@ namespace SummerProject
                 Y = (int)Math.Round(position.Y / blockSize),
             };
 
-            if (blocks[positionBlock.X, positionBlock.Y] == SymbolicBlock.Key)
+            if (tilemap.Tiles[positionBlock.X, positionBlock.Y].Symbolic == SymbolicBlock.Key)
             {
                 inventory.HasKey = true;
 
-                for (int y = 0; y < tilemap.SymbolicBlocks.GetLength(1); y++)
+                for (int y = 0; y < tilemap.Tiles.GetLength(1); y++)
                 {
-                    for (int x = 0; x < tilemap.SymbolicBlocks.GetLength(0); x++)
+                    for (int x = 0; x < tilemap.Tiles.GetLength(0); x++)
                     {
-                        if (tilemap.SymbolicBlocks[x, y] == SymbolicBlock.LockedDoor)
-                        {
-                            tilemap.SymbolicBlocks[x, y] = SymbolicBlock.None;
+                        if (tilemap.Tiles[x, y].Symbolic == SymbolicBlock.LockedDoor) {
+                            tilemap.Tiles[x, y].Symbolic = SymbolicBlock.None;
                             tilemap.RecalculateCollisionBlocks();
                         }
                     }

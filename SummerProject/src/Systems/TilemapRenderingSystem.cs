@@ -34,13 +34,13 @@ namespace SummerProject
 
         public override void Process(Entity entity, Tilemap tilemap)
         {
-            for (int y = 0; y < tilemap.VisualBlocks.GetLength(1); y++)
+            for (int y = 0; y < tilemap.Tiles.GetLength(1); y++)
             {
-                for (int x = 0; x < tilemap.VisualBlocks.GetLength(0); x++)
+                for (int x = 0; x < tilemap.Tiles.GetLength(0); x++)
                 {
                     // Use the correct texture for each block.
                     Texture2D texture = null;
-                    switch (tilemap.VisualBlocks[x, y]) {
+                    switch (tilemap.Tiles[x, y].Visual) {
                         case VisualBlock.Ground: texture = groundTexture; break;
                         case VisualBlock.Wall: texture = blockTexture; break;
                         case VisualBlock.UnpassableGround: texture = unpassableGroundTexture; break;
@@ -67,22 +67,16 @@ namespace SummerProject
                             destinationRect,
                             null,
                             Color.White,
-                            MathHelper.ToRadians(tilemap.Rotations[x, y]),
+                            MathHelper.ToRadians(tilemap.Tiles[x, y].Rotation),
                             textureOrigin,
                             SpriteEffects.None,
                             1.0f);
                         //}
                     }
-                }
-            }
 
-            for (int y = 0; y < tilemap.SymbolicBlocks.GetLength(1); y++)
-            {
-                for (int x = 0; x < tilemap.SymbolicBlocks.GetLength(0); x++)
-                {
                     // Use the correct texture for each block.
-                    Texture2D texture = null;
-                    switch (tilemap.SymbolicBlocks[x, y]) {
+                    texture = null;
+                    switch (tilemap.Tiles[x, y].Symbolic) {
                         case SymbolicBlock.LockedDoor: texture = lockedDoorTexture; break;
                         case SymbolicBlock.Chest: texture = chestTexture; break;
                         case SymbolicBlock.Key: texture = keyTexture; break;
@@ -91,7 +85,8 @@ namespace SummerProject
                     if (texture != null)
                     {
                         Vector2 textureOrigin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
-                        Rectangle destinationRect = new Rectangle() {
+                        Rectangle destinationRect = new Rectangle()
+                        {
                             X = x * tilemap.BlockSize,
                             Y = y * tilemap.BlockSize,
                             Width = tilemap.BlockSize,
@@ -109,7 +104,7 @@ namespace SummerProject
                             destinationRect,
                             null,
                             Color.White,
-                            MathHelper.ToRadians(tilemap.Rotations[x, y]),
+                            MathHelper.ToRadians(tilemap.Tiles[x, y].Rotation),
                             textureOrigin,
                             SpriteEffects.None,
                             0.9f);

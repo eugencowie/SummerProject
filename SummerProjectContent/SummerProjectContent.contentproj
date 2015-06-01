@@ -58,10 +58,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="maps\Map1.tmx">
+    <None Include="maps\Map1.tmx">
       <Name>Map1</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <Compile Include="textures\unpassable_ground.png">
       <Name>unpassable_ground</Name>
       <Importer>TextureImporter</Importer>

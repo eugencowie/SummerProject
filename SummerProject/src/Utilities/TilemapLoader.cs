@@ -9,11 +9,8 @@ namespace SummerProject
             // Read file.
             TmxMap map = new TmxMap(file);
 
-            // Create block arrays.
-            VisualBlock[,] visual = new VisualBlock[map.Width, map.Height];
-            SymbolicBlock[,] symbolic = new SymbolicBlock[map.Width, map.Height];
-            AStar.TileInfo[,] collision = new AStar.TileInfo[map.Width, map.Height];
-            int[,] rotation = new int[map.Width, map.Height];
+            // Create tile array.
+            Tile[,] tiles = new Tile[map.Width, map.Height];
 
             // Get Tiled map layers.
             TmxLayer baseLayer = map.Layers[0];
@@ -45,19 +42,16 @@ namespace SummerProject
                     case 8: /* key */ vb = VisualBlock.Ground; sb = SymbolicBlock.Key; break;
                 }
 
-                visual[x, y] = vb;
-                symbolic[x, y] = sb;
-                rotation[x, y] = rot;
+                tiles[x, y].Visual = vb;
+                tiles[x, y].Symbolic = sb;
+                tiles[x, y].Rotation = rot;
 
                 // Fill the collision blocks with floor by default.
-                collision[x, y] = new AStar.TileInfo() { TileType = AStar.TileType.Floor };
+                tiles[x, y].Collision = new AStar.TileInfo() { TileType = AStar.TileType.Floor };
             }
 
             Tilemap tilemap = new Tilemap() {
-                VisualBlocks = visual,
-                SymbolicBlocks = symbolic,
-                CollisionBlocks = collision,
-                Rotations = rotation,
+                Tiles = tiles,
                 BlockSize = 40
             };
 

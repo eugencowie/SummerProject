@@ -39,7 +39,6 @@ namespace SummerProject
             float speed = goToLocationAction.Speed;
 
             Tilemap tilemap = level.GetComponent<Tilemap>();
-            VisualBlock[,] blocks = tilemap.VisualBlocks;
             int blockSize = tilemap.BlockSize;
 
             // Convert position and destination from pixel coords to block coords.
@@ -87,8 +86,8 @@ namespace SummerProject
             // Validate position is in grid.
             if (destinationBlock.X < 0 ||
                 destinationBlock.Y < 0 ||
-                destinationBlock.X > blocks.GetLength(0) - 1 ||
-                destinationBlock.Y > blocks.GetLength(1) - 1)
+                destinationBlock.X > tilemap.Tiles.GetLength(0) - 1 ||
+                destinationBlock.Y > tilemap.Tiles.GetLength(1) - 1)
             {
                 a_star = null;
                 entity.RemoveComponent<PlayerMoveAction>();
@@ -97,7 +96,7 @@ namespace SummerProject
 
             if (a_star == null)
             {
-                AStar.TileInfo[,] tileInfo = tilemap.CollisionBlocks;
+                AStar.TileInfo[,] tileInfo = tilemap.GetCollisionInfo();
 
                 // Pass the tile information and a weight for the H
                 // the lower the H weight value shorter the path
