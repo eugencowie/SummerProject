@@ -105,9 +105,12 @@ namespace SummerProject
                 a_star = new AStar.AStar(tileInfo, 1, 100);
                 a_star.Start(positionBlock.X, positionBlock.Y, destinationBlock.X, destinationBlock.Y);
 
+                // This particular implementation of the A* algorithm does not handle moving to adjacent
+                // blocks consistently and will often not find a path, so if the path is empty and the
+                // destination block is valid, see it the distance to the destination is less than two
+                // blocks and, if so, create a new path to the destination.
                 if (a_star.Path.Count == 0 && tilemap.Tiles[destinationBlock.X, destinationBlock.Y].Collision.TileType == AStar.TileType.Floor)
                 {
-                    // Special case for moving to adjacent blocks.
                     Vector2 positionVector = new Vector2(positionBlock.X, positionBlock.Y);
                     Vector2 destinationVector = new Vector2(destinationBlock.X, destinationBlock.Y);
                     Vector2 distance = destinationVector - positionVector;
