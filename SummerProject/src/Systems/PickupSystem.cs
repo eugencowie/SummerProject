@@ -12,26 +12,26 @@ namespace SummerProject
     {
         public override void Process(Entity entity, PlayerInfo playerInfo, Inventory inventory, Transform transform)
         {
-            Vector2 position = transform.Position;
-
-            Entity level = entityWorld.TagManager.GetEntity("level");
-            Tilemap tilemap = level.GetComponent<Tilemap>();
+            // Get the tilemap and block size.
+            Tilemap tilemap = entityWorld.TagManager.GetEntity("level").GetComponent<Tilemap>();
             int blockSize = tilemap.BlockSize;
 
-            // Convert position and destination from pixel coords to block coords.
-            Point positionBlock = new Point() {
-                X = (int)Math.Round(position.X / blockSize),
-                Y = (int)Math.Round(position.Y / blockSize),
+            // Convert player position from pixel coords to block coords.
+            Point position = new Point() {
+                X = (int)Math.Round(transform.Position.X / blockSize),
+                Y = (int)Math.Round(transform.Position.Y / blockSize),
             };
 
-            if (tilemap.Tiles[positionBlock.X, positionBlock.Y].Symbolic == SymbolicBlock.Key)
+            // If the player is standing on a key...
+            if (tilemap.Tiles[position.X, position.Y].Symbolic == SymbolicBlock.Key)
             {
+                // Remove the key and add it to the player's inventory.
+                tilemap.Tiles[position.X, position.Y].Symbolic = SymbolicBlock.None;
                 inventory.HasKey = true;
 
-                for (int y = 0; y < tilemap.Tiles.GetLength(1); y++)
-                {
-                    for (int x = 0; x < tilemap.Tiles.GetLength(0); x++)
-                    {
+                // Remove all locked doors.
+                for (int y = 0; y < tilemap.Tiles.GetLength(1); y++) {
+                    for (int x = 0; x < tilemap.Tiles.GetLength(0); x++) {
                         if (tilemap.Tiles[x, y].Symbolic == SymbolicBlock.LockedDoor) {
                             tilemap.Tiles[x, y].Symbolic = SymbolicBlock.None;
                             tilemap.RecalculateCollisionBlocks();
