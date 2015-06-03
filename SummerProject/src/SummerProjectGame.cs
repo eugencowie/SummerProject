@@ -93,7 +93,14 @@ namespace SummerProject
             player.Tag = "player";
             player.AddComponent(new PlayerInfo() { PlayerId = 1, LocalPlayer = true });
             player.AddComponent(new Transform() { Position = playerStart, Size = new Vector2(40, 40) });
-            player.AddComponent(new Inventory() { HasKey = false });
+            player.AddComponent(new Inventory());
+
+            // Create an enemy (TODO: use tilemap for this).
+            Entity testEnemy = entityManager.CreateEntity();
+            testEnemy.Group = "enemies";
+            testEnemy.AddComponent(new EnemyInfo());
+            testEnemy.AddComponent(new Transform() { Position = playerStart + new Vector2(3*40, 3*40), Size = new Vector2(40, 40) });
+            testEnemy.AddComponent(new Inventory());
 
             // Center the camera on the player at the start.
             camera.Position = playerStart;
