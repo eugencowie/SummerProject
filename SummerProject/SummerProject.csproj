@@ -74,13 +74,14 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Components\Actions\PlayerMoveAction.cs" />
+    <Compile Include="src\Components\Sprite.cs" />
     <Compile Include="src\Components\Inventory.cs" />
     <Compile Include="src\Components\EnemyInfo.cs" />
     <Compile Include="src\Components\PlayerInfo.cs" />
     <Compile Include="src\Components\Tilemap.cs" />
     <Compile Include="src\Components\Transform.cs" />
     <Compile Include="src\Systems\PickupSystem.cs" />
-    <Compile Include="src\Systems\EnemyRenderingSystem.cs" />
+    <Compile Include="src\Systems\SpriteRenderingSystem.cs" />
     <Compile Include="src\Utilities\AStar.cs" />
     <Compile Include="src\Utilities\Camera.cs" />
     <Compile Include="src\Utilities\Button.cs" />
@@ -88,7 +89,6 @@
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Systems\PlayerInputSystem.cs" />
     <Compile Include="src\Systems\TilemapRenderingSystem.cs" />
-    <Compile Include="src\Systems\PlayerRenderingSystem.cs" />
     <Compile Include="src\SummerProjectGame.cs" />
     <Compile Include="src\Systems\MovementSystem.cs" />
   </ItemGroup>
