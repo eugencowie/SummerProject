@@ -27,6 +27,8 @@ namespace SummerProject
             {
                 // Remove the key and add it to the player's inventory.
                 tilemap.Tiles[position.X, position.Y].Object = ObjectBlock.None;
+                entityWorld.DeleteEntity(tilemap.Tiles[position.X, position.Y].ObjectEntity);
+                tilemap.Tiles[position.X, position.Y].ObjectEntity = null;
                 inventory.HasKey = true;
 
                 // Remove all locked doors.
@@ -34,6 +36,8 @@ namespace SummerProject
                     for (int x = 0; x < tilemap.Tiles.GetLength(0); x++) {
                         if (tilemap.Tiles[x, y].Object == ObjectBlock.LockedDoor) {
                             tilemap.Tiles[x, y].Object = ObjectBlock.None;
+                            entityWorld.DeleteEntity(tilemap.Tiles[x, y].ObjectEntity);
+                            tilemap.Tiles[x, y].ObjectEntity = null;
                             tilemap.RecalculateCollisionBlocks();
                         }
                     }

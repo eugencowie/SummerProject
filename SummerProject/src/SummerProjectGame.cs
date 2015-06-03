@@ -80,7 +80,7 @@ namespace SummerProject
             // Create the level entity.
             Entity level = entityManager.CreateEntity();
             level.Tag = "level";
-            Tilemap levelTilemap = TilemapLoader.ReadMapFromFile("Content/maps/Map1.tmx");
+            Tilemap levelTilemap = TilemapLoader.ReadMapFromFile("Content/maps/Map1.tmx", entityManager);
             level.AddComponent(levelTilemap);
 
             // Get the player start position from the level tilemap.

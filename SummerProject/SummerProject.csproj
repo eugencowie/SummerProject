@@ -76,7 +76,6 @@
     <Compile Include="src\Components\Actions\PlayerMoveAction.cs" />
     <Compile Include="src\Components\Sprite.cs" />
     <Compile Include="src\Components\Inventory.cs" />
-    <Compile Include="src\Components\EnemyInfo.cs" />
     <Compile Include="src\Components\PlayerInfo.cs" />
     <Compile Include="src\Components\Tilemap.cs" />
     <Compile Include="src\Components\Transform.cs" />
@@ -88,7 +87,6 @@
     <Compile Include="src\Utilities\TilemapLoader.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Systems\PlayerInputSystem.cs" />
-    <Compile Include="src\Systems\TilemapRenderingSystem.cs" />
     <Compile Include="src\SummerProjectGame.cs" />
     <Compile Include="src\Systems\MovementSystem.cs" />
   </ItemGroup>

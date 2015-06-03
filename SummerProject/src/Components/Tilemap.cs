@@ -1,4 +1,5 @@
-﻿using Artemis.Interface;
+﻿using Artemis;
+using Artemis.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -27,6 +28,8 @@ namespace SummerProject
     }
 
     struct Tile {
+        public Entity BaseEntity;
+        public Entity ObjectEntity;
         public BaseBlock Base;
         public ObjectBlock Object;
         public AStar.TileInfo Collision;
