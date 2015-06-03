@@ -29,6 +29,9 @@ namespace SummerProject
         Camera camera;
         EntityWorld entityManager;
 
+        Texture2D healthBar;
+        Texture2D manaBar;
+
         public SummerProjectGame()
         {
             // Set up XNA.
@@ -69,6 +72,10 @@ namespace SummerProject
             // Create the main menu buttons.
             playButton = new Button(Content.Load<Texture2D>("textures/button_play"), GraphicsDevice);
             playButton.SetPosition(new Vector2(350, 300));
+
+            // Load the HUD.
+            healthBar = Content.Load<Texture2D>("textures/healthbar");
+            manaBar = Content.Load<Texture2D>("textures/manabar");
 
             // Create the level entity.
             Entity level = entityManager.CreateEntity();
@@ -139,6 +146,13 @@ namespace SummerProject
                     entityManager.Draw();
 
                     // End the spritebatch.
+                    spriteBatch.End();
+
+                    // Draw the HUD.
+                    PlayerInfo playerInfo = entityManager.TagManager.GetEntity("player").GetComponent<PlayerInfo>();
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(manaBar, new Rectangle(630, 580, (int)(150 * playerInfo.Mana.Percentage), 15), Color.White);
+                    spriteBatch.Draw(healthBar, new Rectangle(630, 560, (int)(150 * playerInfo.Health.Percentage), 15), Color.White);
                     spriteBatch.End();
                     break;
             }

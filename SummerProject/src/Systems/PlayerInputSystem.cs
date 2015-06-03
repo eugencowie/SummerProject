@@ -104,6 +104,12 @@ namespace SummerProject
                 if (IsKeyClicked(keyboard, Keys.Escape))
                     EntitySystem.BlackBoard.GetEntry<Game>("Game").Exit();
 
+                // TODO: remove this from final version.
+                if (keyboard.IsKeyDown(Keys.F5))
+                    playerInfo.Health.Current -= 1;
+                if (keyboard.IsKeyDown(Keys.F6))
+                    playerInfo.Health.Current += 1;
+
                 // Normalise the mouse coords so that (0,0) is the center instead of the top left.
                 Vector2 mousePos = new Vector2(
                     mouse.X - (viewport.Width / 2.0f),
