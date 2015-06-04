@@ -42,14 +42,12 @@ namespace SummerProject
             int blockSize = tilemap.BlockSize;
 
             // Convert position and destination from pixel coords to block coords.
-            Point positionBlock = new Point() {
-                X = (int)Math.Round(position.X / blockSize),
-                Y = (int)Math.Round(position.Y / blockSize),
-            };
+            Point positionBlock = tilemap.PixelsToBlockCoords(position);
 
 
             #region Render debug texture
 
+            // TODO: use the sprite rendering system for this?
             if (a_star != null && a_star.Path.Count > 0)
             {
                 foreach (Vector2 node in a_star.Path)

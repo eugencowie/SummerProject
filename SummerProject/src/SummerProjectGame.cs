@@ -96,7 +96,7 @@ namespace SummerProject
             player.AddComponent(new Sprite() { Texture = Content.Load<Texture2D>("textures/objects/player"), LayerDepth = 0.0f });
             player.AddComponent(new Inventory());
 
-            // Create an enemy (TODO: use tilemap for this).
+            // Create an enemy (TODO: use tilemap for enemy location?).
             Entity testEnemy = entityManager.CreateEntity();
             testEnemy.Group = "enemies";
             testEnemy.AddComponent(new Transform() { Position = playerStart + new Vector2(3 * 40, 3 * 40), Size = new Vector2(40, 40) });

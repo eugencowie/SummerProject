@@ -14,13 +14,9 @@ namespace SummerProject
         {
             // Get the tilemap and block size.
             Tilemap tilemap = entityWorld.TagManager.GetEntity("level").GetComponent<Tilemap>();
-            int blockSize = tilemap.BlockSize;
 
             // Convert player position from pixel coords to block coords.
-            Point position = new Point() {
-                X = (int)Math.Round(transform.Position.X / blockSize),
-                Y = (int)Math.Round(transform.Position.Y / blockSize),
-            };
+            Point position = tilemap.PixelsToBlockCoords(transform.Position);
 
             // If the player is standing on a key...
             if (tilemap.Tiles[position.X, position.Y].Object == ObjectBlock.Key)

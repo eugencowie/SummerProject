@@ -2,6 +2,7 @@
 using Artemis.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace SummerProject
 {
@@ -44,6 +45,12 @@ namespace SummerProject
         public Tile[,] Tiles;
         public int BlockSize;
 
+        /// <summary>
+        /// Find the first object block in the tilemap which matches the specified object block. Can
+        /// be useful to find the player start, for example.
+        /// </summary>
+        /// <param name="blockType">The type of object block to find.</param>
+        /// <returns>The location of the first result in block coords, otherwise null.</returns>
         public Point? FirstObjectBlockOfType(ObjectBlock blockType)
         {
             for (int y = 0; y < Tiles.GetLength(1); y++)
@@ -54,11 +61,32 @@ namespace SummerProject
             return null;
         }
 
+        /// <summary>
+        /// Convert block coords to pixels.
+        /// </summary>
         public Vector2 BlockCoordsToPixels(Point blockCoords)
         {
-            return new Vector2(blockCoords.X * BlockSize, blockCoords.Y * BlockSize);
+            return new Vector2() {
+                X = blockCoords.X * BlockSize,
+                Y = blockCoords.Y * BlockSize
+            };
         }
 
+        /// <summary>
+        /// Convert pixels to block coords.
+        /// </summary>
+        public Point PixelsToBlockCoords(Vector2 pixels)
+        {
+            return new Point() {
+                X = (int)Math.Round(pixels.X / (float)BlockSize),
+                Y = (int)Math.Round(pixels.Y / (float)BlockSize),
+            };
+        }
+
+        /// <summary>
+        /// Recalculate the collision block information. Usually needed after removing an obstacle
+        /// such as a door, for example.
+        /// </summary>
         public void RecalculateCollisionBlocks()
         {
             for (int y = 0; y < Tiles.GetLength(1); y++)
@@ -86,6 +114,9 @@ namespace SummerProject
             }
         }
 
+        /// <summary>
+        /// Generate an AStar-compatible array of collision block information.
+        /// </summary>
         public AStar.TileInfo[,] GetCollisionInfo()
         {
             AStar.TileInfo[,] collision = new AStar.TileInfo[Tiles.GetLength(0), Tiles.GetLength(1)];
