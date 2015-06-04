@@ -3,6 +3,7 @@ using Artemis.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace SummerProject
 {
@@ -96,12 +97,24 @@ namespace SummerProject
             player.AddComponent(new Sprite() { Texture = Content.Load<Texture2D>("textures/objects/player"), LayerDepth = 0.0f });
             player.AddComponent(new Inventory());
 
-            // Create an enemy (TODO: use tilemap for enemy location?).
-            Entity testEnemy = entityManager.CreateEntity();
-            testEnemy.Group = "enemies";
-            testEnemy.AddComponent(new Transform() { Position = playerStart + new Vector2(3 * 40, 3 * 40), Size = new Vector2(40, 40) });
-            testEnemy.AddComponent(new Sprite() { Texture = Content.Load<Texture2D>("textures/objects/enemy"), LayerDepth = 0.0f });
-            testEnemy.AddComponent(new Inventory());
+            // Get mob spawn positions from the level tilemap.
+            List<Point> mobSpawnBlocks = levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob);
+            foreach (Point mobSpawn in mobSpawnBlocks)
+            {
+                Vector2 position = levelTilemap.BlockCoordsToPixels(mobSpawn);
+                float rotation = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectRotation;
+                Vector2 size = new Vector2(40, 40);
+
+                Texture2D texture = Content.Load<Texture2D>("textures/objects/enemy");
+                SpriteEffects effect = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectEffect;
+
+                // Create an enemy.
+                Entity enemy = entityManager.CreateEntity();
+                enemy.Group = "enemies";
+                enemy.AddComponent(new Transform() { Position = position, Rotation = rotation, Size = new Vector2(40, 40) });
+                enemy.AddComponent(new Sprite() { Texture = texture, Effects = effect, LayerDepth = 0.0f });
+                enemy.AddComponent(new Inventory());
+            }
 
             // Center the camera on the player at the start.
             camera.Position = playerStart;

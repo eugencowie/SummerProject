@@ -3,6 +3,7 @@ using Artemis.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace SummerProject
 {
@@ -20,11 +21,11 @@ namespace SummerProject
         General,
         Boss,
         Mob,
-        MobSpawn,
+        //MobSpawn,
         Chest,
         Trap,
         HealthPack,
-        Button,
+        //Button,
         Key
     }
 
@@ -46,11 +47,9 @@ namespace SummerProject
         public int BlockSize;
 
         /// <summary>
-        /// Find the first object block in the tilemap which matches the specified object block. Can
+        /// Find the first object block in the tilemap which matches the specified object block type. Can
         /// be useful to find the player start, for example.
         /// </summary>
-        /// <param name="blockType">The type of object block to find.</param>
-        /// <returns>The location of the first result in block coords, otherwise null.</returns>
         public Point? FirstObjectBlockOfType(ObjectBlock blockType)
         {
             for (int y = 0; y < Tiles.GetLength(1); y++)
@@ -59,6 +58,22 @@ namespace SummerProject
                         return new Point(x, y);
 
             return null;
+        }
+
+        /// <summary>
+        /// Find all object blocks in the tilemap which match the specified object block type. Can
+        /// be useful for finding mob spawns, for example.
+        /// </summary>
+        public List<Point> AllObjectBlocksOfType(ObjectBlock blockType)
+        {
+            List<Point> list = new List<Point>();
+
+            for (int y = 0; y < Tiles.GetLength(1); y++)
+                for (int x = 0; x < Tiles.GetLength(0); x++)
+                    if (Tiles[x, y].Object == blockType)
+                        list.Add(new Point(x, y));
+
+            return list;
         }
 
         /// <summary>

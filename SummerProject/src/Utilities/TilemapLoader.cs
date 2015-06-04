@@ -73,6 +73,9 @@ namespace SummerProject
                         objectBlock = ObjectBlock.LockedDoor;
                         objectTexture = "textures/objects/locked_door";
                         break;
+                    case 5: /* mob */
+                        objectBlock = ObjectBlock.Mob;
+                        break;
                 }
 
                 // Default rotation is 0.
