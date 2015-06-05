@@ -101,6 +101,10 @@
       <Project>{22c89af2-e1cf-4976-91b9-7d33773dc6e7}</Project>
       <Name>Artemis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Lidgren.Network\Lidgren.Network.csproj">
+      <Project>{49ba1c69-6104-41ac-a5d8-b54fa9f696e8}</Project>
+      <Name>Lidgren.Network</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SummerProjectContent\SummerProjectContent.contentproj">
       <Name>SummerProjectContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
