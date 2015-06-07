@@ -38,6 +38,14 @@ namespace SummerProject
                 Transform playerTransform = entity.GetComponent<Transform>();
                 Camera camera = EntitySystem.BlackBoard.GetEntry<Camera>("Camera");
 
+                #region Debug networking testing
+
+                if (ClientNetworkingSystem.IsClient && IsKeyClicked(keyboard, Keys.F9))
+                    if (ClientNetworkingSystem.Instance != null)
+                        ClientNetworkingSystem.Instance.Send("Some test text.");
+
+                #endregion
+
                 #region Camera movement
 
                 // Switch between free camera and locked to player.

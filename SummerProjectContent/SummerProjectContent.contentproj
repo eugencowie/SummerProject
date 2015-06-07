@@ -60,8 +60,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="textures\button_play.jpg">
-      <Name>button_play</Name>
+    <Compile Include="textures\button_client.jpg">
+      <Name>button_client</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -105,6 +105,13 @@
   <ItemGroup>
     <Compile Include="textures\objects\enemy.png">
       <Name>enemy</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\button_server.jpg">
+      <Name>button_server</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

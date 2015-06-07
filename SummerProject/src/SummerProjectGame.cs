@@ -24,7 +24,8 @@ namespace SummerProject
         SpriteBatch spriteBatch;
 
         // GameState.MainMenu:
-        Button playButton;
+        Button clientButton;
+        Button serverButton;
 
         // GameState.Playing:
         Camera camera;
@@ -71,8 +72,10 @@ namespace SummerProject
         protected override void LoadContent()
         {
             // Create the main menu buttons.
-            playButton = new Button(Content.Load<Texture2D>("textures/button_play"), GraphicsDevice);
-            playButton.SetPosition(new Vector2(350, 300));
+            clientButton = new Button(Content.Load<Texture2D>("textures/button_client"), GraphicsDevice);
+            clientButton.SetPosition(new Vector2(350, 300));
+            serverButton = new Button(Content.Load<Texture2D>("textures/button_server"), GraphicsDevice);
+            serverButton.SetPosition(new Vector2(350, 330));
 
             // Load the HUD.
             healthBar = Content.Load<Texture2D>("textures/healthbar");
@@ -126,9 +129,16 @@ namespace SummerProject
             {
                 case GameState.MainMenu:
                     // Update the buttons.
-                    playButton.Update(Mouse.GetState());
-                    if (playButton.isClicked == true)
+                    clientButton.Update(Mouse.GetState());
+                    if (clientButton.isClicked) {
+                        ClientNetworkingSystem.IsClient = true;
                         currentGameState = GameState.Playing;
+                    }
+                    serverButton.Update(Mouse.GetState());
+                    if (serverButton.isClicked) {
+                        ServerNetworkingSystem.IsServer = true;
+                        currentGameState = GameState.Playing;
+                    }
                     break;
 
                 case GameState.Playing:
@@ -150,7 +160,8 @@ namespace SummerProject
                 case GameState.MainMenu:
                     // Draw the buttons.
                     spriteBatch.Begin();
-                    playButton.Draw(spriteBatch);
+                    clientButton.Draw(spriteBatch);
+                    serverButton.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
 
