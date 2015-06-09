@@ -3,6 +3,7 @@ using Artemis.Manager;
 using Artemis.System;
 using Lidgren.Network;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace SummerProject
@@ -36,7 +37,7 @@ namespace SummerProject
                     config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
 
                     server = new NetServer(config);
-                    server.RegisterReceivedCallback(new SendOrPostCallback(HandleMessageOnServer));
+                    server.RegisterReceivedCallback(new SendOrPostCallback(Server_OnMessageReceived));
                 }
 
                 // Make sure that the server is running.
@@ -50,27 +51,24 @@ namespace SummerProject
                 if (client == null)
                 {
                     NetPeerConfiguration config = new NetPeerConfiguration("SummerProject");
-                    config.AutoFlushSendQueue = false;
+                    config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
 
                     client = new NetClient(config);
-                    client.RegisterReceivedCallback(new SendOrPostCallback(HandleMessageOnClient));
+                    client.RegisterReceivedCallback(new SendOrPostCallback(Client_OnMessageReceived));
                 }
 
                 // Make sure that the client is connected.
-                if (client.Status == NetPeerStatus.NotRunning)
-                {
+                if (client.Status == NetPeerStatus.NotRunning) {
                     client.Start();
-
-                    NetOutgoingMessage hail = client.CreateMessage("This is the hail message");
-                    client.Connect("127.0.0.1", 14242);
+                    client.DiscoverLocalPeers(14242);
                 }
             }
         }
 
-        private void HandleMessageOnServer(object peer)
+        private void Server_OnMessageReceived(object peer)
         {
-            NetIncomingMessage message;
-            while ((message = server.ReadMessage()) != null)
+            NetIncomingMessage message = ((NetPeer)peer).ReadMessage();
+            if (message != null)
             {
                 switch (message.MessageType)
                 {
@@ -93,41 +91,47 @@ namespace SummerProject
                     case NetIncomingMessageType.Data:
                         string data = message.ReadString();
                         Console.WriteLine("[SERVER] Broadcasting '" + data + "'");
-                        // broadcast this to all connections, except sender
-                        //List<NetConnection> all = server.Connections; // get copy
-                        //all.Remove(im.SenderConnection);
-                        //if (all.Count > 0)
-                        //{
-                        //    NetOutgoingMessage om = server.CreateMessage();
-                        //    om.Write(NetUtility.ToHexString(im.SenderConnection.RemoteUniqueIdentifier) + " said: " + chat);
-                        //    server.SendMessage(om, all, NetDeliveryMethod.ReliableOrdered, 0);
-                        //}
+                        // Broadcast this to all connections, except sender.
+                        List<NetConnection> all = server.Connections; // get copy
+                        all.Remove(message.SenderConnection);
+                        if (all.Count > 0) {
+                            NetOutgoingMessage om = server.CreateMessage();
+                            om.Write(NetUtility.ToHexString(message.SenderConnection.RemoteUniqueIdentifier) + " said: " + data);
+                            server.SendMessage(om, all, NetDeliveryMethod.ReliableOrdered, 0);
+                        }
                         break;
 
+#if DEBUG
                     case NetIncomingMessageType.ErrorMessage:
                     case NetIncomingMessageType.WarningMessage:
                     case NetIncomingMessageType.DebugMessage:
                     case NetIncomingMessageType.VerboseDebugMessage:
                         string text = message.ReadString();
-                        Console.WriteLine("[SERVER] " + text);
+                        Console.WriteLine("[server-debug] " + text);
                         break;
 
                     default:
-                        Console.WriteLine("[SERVER] Unhandled type: " + message.MessageType + " " + message.LengthBytes + " bytes " + message.DeliveryMethod + "|" + message.SequenceChannel);
+                        Console.WriteLine("[server-debug] Unhandled type: " + message.MessageType + " " + message.LengthBytes + " bytes " + message.DeliveryMethod + "|" + message.SequenceChannel);
                         break;
+#endif
                 }
 
                 server.Recycle(message);
             }
         }
 
-        private void HandleMessageOnClient(object peer)
+        private void Client_OnMessageReceived(object peer)
         {
-            NetIncomingMessage message;
-            while ((message = client.ReadMessage()) != null)
+            NetIncomingMessage message = ((NetPeer)peer).ReadMessage();
+            if (message != null)
             {
                 switch (message.MessageType)
                 {
+                    case NetIncomingMessageType.DiscoveryResponse:
+                        Console.WriteLine("[CLIENT] Found server at " + message.SenderEndPoint + " name: " + message.ReadString());
+                        client.Connect(message.SenderEndPoint.Address.ToString(), message.SenderEndPoint.Port);
+                        break;
+
                     case NetIncomingMessageType.StatusChanged:
                         NetConnectionStatus status = (NetConnectionStatus)message.ReadByte();
                         /*if (status == NetConnectionStatus.Connected)
@@ -145,24 +149,26 @@ namespace SummerProject
                         Console.WriteLine("[CLIENT] " + data);
                         break;
 
+#if DEBUG
                     case NetIncomingMessageType.DebugMessage:
                     case NetIncomingMessageType.ErrorMessage:
                     case NetIncomingMessageType.WarningMessage:
                     case NetIncomingMessageType.VerboseDebugMessage:
                         string text = message.ReadString();
-                        Console.WriteLine("[CLIENT] " + text);
+                        Console.WriteLine("[client-debug] " + text);
                         break;
 
                     default:
-                        Console.WriteLine("[CLIENT] Unhandled type: " + message.MessageType + " " + message.LengthBytes + " bytes");
+                        Console.WriteLine("[client-debug] Unhandled type: " + message.MessageType + " " + message.LengthBytes + " bytes");
                         break;
+#endif
                 }
 
                 client.Recycle(message);
             }
         }
 
-        public void Send(string text)
+        public void Client_Send(string text)
         {
             NetOutgoingMessage om = client.CreateMessage(text);
             client.SendMessage(om, NetDeliveryMethod.ReliableOrdered);

@@ -25,6 +25,10 @@ namespace SummerProject
 
         public override void Process(Entity entity, PlayerInfo playerInfo)
         {
+            // Make sure that the game window is the active window.
+            if (!EntitySystem.BlackBoard.GetEntry<Game>("Game").IsActive)
+                return;
+
             if (playerInfo.LocalPlayer)
             {
                 // Get keyboard and mouse state.
@@ -42,7 +46,7 @@ namespace SummerProject
 
                 if (NetworkingSystem.IsClient && IsKeyClicked(keyboard, Keys.F9))
                     if (NetworkingSystem.Instance != null)
-                        NetworkingSystem.Instance.Send("Some test text.");
+                        NetworkingSystem.Instance.Client_Send("Some test text.");
 
                 #endregion
 
