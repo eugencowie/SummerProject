@@ -40,9 +40,9 @@ namespace SummerProject
 
                 #region Debug networking testing
 
-                if (ClientNetworkingSystem.IsClient && IsKeyClicked(keyboard, Keys.F9))
-                    if (ClientNetworkingSystem.Instance != null)
-                        ClientNetworkingSystem.Instance.Send("Some test text.");
+                if (NetworkingSystem.IsClient && IsKeyClicked(keyboard, Keys.F9))
+                    if (NetworkingSystem.Instance != null)
+                        NetworkingSystem.Instance.Send("Some test text.");
 
                 #endregion
 

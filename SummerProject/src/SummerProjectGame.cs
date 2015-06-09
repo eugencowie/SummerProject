@@ -131,12 +131,13 @@ namespace SummerProject
                     // Update the buttons.
                     clientButton.Update(Mouse.GetState());
                     if (clientButton.isClicked) {
-                        ClientNetworkingSystem.IsClient = true;
+                        NetworkingSystem.IsClient = true;
                         currentGameState = GameState.Playing;
                     }
                     serverButton.Update(Mouse.GetState());
                     if (serverButton.isClicked) {
-                        ServerNetworkingSystem.IsServer = true;
+                        NetworkingSystem.IsServer = true;
+                        NetworkingSystem.IsClient = true;
                         currentGameState = GameState.Playing;
                     }
                     break;
