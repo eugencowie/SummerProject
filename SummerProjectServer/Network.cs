@@ -1,5 +1,6 @@
 ﻿using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace SummerProjectServer
@@ -34,6 +35,9 @@ namespace SummerProjectServer
             if (port.HasValue) config.Port = port.Value;
             if (maximumConnections.HasValue) config.MaximumConnections = maximumConnections.Value;
 
+            // Enable DiscoveryRequest messages.
+            config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
+
             server = new NetServer(config);
             server.Start();
         }
@@ -50,6 +54,16 @@ namespace SummerProjectServer
 
             while ((msgIn = server.ReadMessage()) != null)
             {
+                if (msgIn.MessageType == NetIncomingMessageType.DiscoveryRequest)
+                {
+                    NetOutgoingMessage response = server.CreateMessage();
+
+                    string serverName = Environment.UserDomainName + "\\" + Environment.UserName;
+                    response.Write(serverName);
+
+                    server.SendDiscoveryResponse(response, msgIn.SenderEndPoint);
+                }
+
                 if (msgIn.MessageType == NetIncomingMessageType.Data)
                 {
                     switch ((ClientMessage)msgIn.ReadByte())
