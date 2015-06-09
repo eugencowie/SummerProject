@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiledSharp", "TiledSharp\Ti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "Lidgren.Network\Lidgren.Network.csproj", "{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummerProjectServer", "SummerProjectServer\SummerProjectServer.csproj", "{4AF5FB95-FB05-48D6-95F0-2F7501C55738}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,16 +69,6 @@ Global
 		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|x86.ActiveCfg = Release|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{4AF5FB95-FB05-48D6-95F0-2F7501C55738}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
