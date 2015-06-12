@@ -24,8 +24,8 @@ namespace SummerProject
         SpriteBatch spriteBatch;
 
         // GameState.MainMenu:
-        Button clientButton;
-        Button serverButton;
+        CButton clientButton;
+        CButton serverButton;
 
         // GameState.Playing:
         Camera camera;
@@ -61,7 +61,7 @@ namespace SummerProject
             EntitySystem.BlackBoard.SetEntry("Camera", camera);
 
             // Create the entity manager and initialise all systems.  It is important that
-            // the initializeAll() function is called *after* all required BlackBoard entries
+            // the InitializeAll() function is called *after* all required BlackBoard entries
             // have been set.
             entityManager = new EntityWorld();
             entityManager.InitializeAll(true);
@@ -72,9 +72,9 @@ namespace SummerProject
         protected override void LoadContent()
         {
             // Create the main menu buttons.
-            clientButton = new Button(Content.Load<Texture2D>("textures/button_client"), GraphicsDevice);
+            clientButton = new CButton(Content.Load<Texture2D>("textures/button_client"), GraphicsDevice);
             clientButton.SetPosition(new Vector2(350, 300));
-            serverButton = new Button(Content.Load<Texture2D>("textures/button_server"), GraphicsDevice);
+            serverButton = new CButton(Content.Load<Texture2D>("textures/button_server"), GraphicsDevice);
             serverButton.SetPosition(new Vector2(350, 330));
 
             // Load the HUD.

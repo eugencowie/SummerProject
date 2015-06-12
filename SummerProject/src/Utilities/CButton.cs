@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SummerProject
 {
-    class Button
+    class CButton
     {
         Texture2D texture;
         Vector2 position;
@@ -17,7 +17,7 @@ namespace SummerProject
         bool down;
         public bool isClicked;
 
-        public Button(Texture2D newTexture, GraphicsDevice graphics)
+        public CButton(Texture2D newTexture, GraphicsDevice graphics)
         {
             texture = newTexture;
 
