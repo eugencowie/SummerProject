@@ -6,7 +6,6 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace SummerProject
 {
@@ -49,7 +48,7 @@ namespace SummerProject
                     config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
 
                     server = new NetServer(config);
-                    server.RegisterReceivedCallback(new SendOrPostCallback(Server_OnMessageReceived));
+                    server.RegisterReceivedCallback(Server_OnMessageReceived);
                 }
 
                 // Make sure that the server is running.
@@ -66,7 +65,7 @@ namespace SummerProject
                     config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
 
                     client = new NetClient(config);
-                    client.RegisterReceivedCallback(new SendOrPostCallback(Client_OnMessageReceived));
+                    client.RegisterReceivedCallback(Client_OnMessageReceived);
                 }
 
                 // Make sure that the client is connected.

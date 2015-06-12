@@ -26,7 +26,7 @@ namespace SummerProject
         public override void Process(Entity entity, PlayerInfo playerInfo)
         {
             // Make sure that the game window is the active window.
-            if (!EntitySystem.BlackBoard.GetEntry<Game>("Game").IsActive)
+            if (!BlackBoard.GetEntry<Game>("Game").IsActive)
                 return;
 
             if (playerInfo.LocalPlayer)
@@ -36,11 +36,11 @@ namespace SummerProject
                 MouseState mouse = Mouse.GetState();
 
                 // Get the screen viewport.
-                Viewport viewport = EntitySystem.BlackBoard.GetEntry<Game>("Game").GraphicsDevice.Viewport;
+                Viewport viewport = BlackBoard.GetEntry<Game>("Game").GraphicsDevice.Viewport;
 
                 // Get the camera and player transform.
                 Transform playerTransform = entity.GetComponent<Transform>();
-                Camera camera = EntitySystem.BlackBoard.GetEntry<Camera>("Camera");
+                Camera camera = BlackBoard.GetEntry<Camera>("Camera");
 
                 #region Debug networking testing
 
@@ -114,7 +114,7 @@ namespace SummerProject
 
                 // Exit the game when the escape key is pressed (TODO: rebindable keys?).
                 if (IsKeyClicked(keyboard, Keys.Escape))
-                    EntitySystem.BlackBoard.GetEntry<Game>("Game").Exit();
+                    BlackBoard.GetEntry<Game>("Game").Exit();
 
                 // TODO: remove this from final version.
                 if (keyboard.IsKeyDown(Keys.F5))

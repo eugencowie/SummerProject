@@ -13,7 +13,7 @@ namespace SummerProject
     {
         GraphicsDevice graphics;
 
-        AStar.AStar a_star;
+        AStar.AStar astar;
         int currentIndex;
 
         Point? previousDestination;
@@ -23,11 +23,11 @@ namespace SummerProject
 
         public override void LoadContent()
         {
-            graphics = EntitySystem.BlackBoard.GetEntry<Game>("Game").GraphicsDevice;
+            graphics = BlackBoard.GetEntry<Game>("Game").GraphicsDevice;
             previousDestination = null;
-            debugBatch = EntitySystem.BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
-            debugTexture = EntitySystem.BlackBoard.GetEntry<Game>("Game").Content.Load<Texture2D>("textures/selector");
-            a_star = null;
+            debugBatch = BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
+            debugTexture = BlackBoard.GetEntry<Game>("Game").Content.Load<Texture2D>("textures/selector");
+            astar = null;
         }
 
         public override void Process(Entity entity, PlayerMoveAction goToLocationAction, Transform transform)
@@ -48,9 +48,9 @@ namespace SummerProject
             #region Render debug texture
 
             // TODO: use the sprite rendering system for this?
-            if (a_star != null && a_star.Path.Count > 0)
+            if (astar != null && astar.Path.Count > 0)
             {
-                foreach (Vector2 node in a_star.Path)
+                foreach (Vector2 node in astar.Path)
                 {
                     Vector2 textureOrigin = new Vector2(debugTexture.Width / 2.0f, debugTexture.Height / 2.0f);
                     Rectangle destinationRect = new Rectangle()
@@ -77,7 +77,7 @@ namespace SummerProject
 
 
             if (previousDestination.HasValue && previousDestination.Value != destinationBlock)
-                a_star = null;
+                astar = null;
 
             previousDestination = destinationBlock;
 
@@ -87,12 +87,12 @@ namespace SummerProject
                 destinationBlock.X > tilemap.Tiles.GetLength(0) - 1 ||
                 destinationBlock.Y > tilemap.Tiles.GetLength(1) - 1)
             {
-                a_star = null;
+                astar = null;
                 entity.RemoveComponent<PlayerMoveAction>();
                 return;
             }
 
-            if (a_star == null)
+            if (astar == null)
             {
                 AStar.TileInfo[,] tileInfo = tilemap.GetCollisionInfo();
 
@@ -100,40 +100,40 @@ namespace SummerProject
                 // the lower the H weight value shorter the path
                 // the higher it is the less number of checks it take to determine
                 // a path
-                a_star = new AStar.AStar(tileInfo, 1, 100);
-                a_star.Start(positionBlock.X, positionBlock.Y, destinationBlock.X, destinationBlock.Y);
+                astar = new AStar.AStar(tileInfo, 1, 100);
+                astar.Start(positionBlock.X, positionBlock.Y, destinationBlock.X, destinationBlock.Y);
 
                 // This particular implementation of the A* algorithm does not handle moving to adjacent
                 // blocks consistently and will often not find a path, so if the path is empty and the
                 // destination block is valid, see it the distance to the destination is less than two
                 // blocks and, if so, create a new path to the destination.
-                if (a_star.Path.Count == 0 && tilemap.Tiles[destinationBlock.X, destinationBlock.Y].Collision.TileType == AStar.TileType.Floor)
+                if (astar.Path.Count == 0 && tilemap.Tiles[destinationBlock.X, destinationBlock.Y].Collision.TileType == AStar.TileType.Floor)
                 {
                     Vector2 positionVector = new Vector2(positionBlock.X, positionBlock.Y);
                     Vector2 destinationVector = new Vector2(destinationBlock.X, destinationBlock.Y);
                     Vector2 distance = destinationVector - positionVector;
                     if (distance.Length() < 2.0f)
-                        a_star.Path.Add(destinationVector);
+                        astar.Path.Add(destinationVector);
                 }
 
                 currentIndex = 0;
             }
 
-            if (a_star.Path.Count == 0)
+            if (astar.Path.Count == 0)
             {
-                a_star = null;
+                astar = null;
                 entity.RemoveComponent<PlayerMoveAction>();
                 return;
             }
 
-            Vector2 newDestination = (a_star.Path[currentIndex] * blockSize);
+            Vector2 newDestination = (astar.Path[currentIndex] * blockSize);
 
             if (Math.Abs(newDestination.X - position.X) <= speed &&
                 Math.Abs(newDestination.Y - position.Y) <= speed)
             {
-                if (currentIndex == a_star.Path.Count - 1)
+                if (currentIndex == astar.Path.Count - 1)
                 {
-                    a_star = null;
+                    astar = null;
                     entity.RemoveComponent<PlayerMoveAction>();
                     return;
                 }

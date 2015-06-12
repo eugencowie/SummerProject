@@ -3,7 +3,6 @@ using Artemis.Attributes;
 using Artemis.Manager;
 using Artemis.System;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace SummerProject
 {
