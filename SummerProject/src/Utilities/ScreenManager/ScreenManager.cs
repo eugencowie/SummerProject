@@ -104,8 +104,8 @@ namespace SummerProject
             ContentManager content = Game.Content;
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Font = content.Load<SpriteFont>("menufont");
-            BlankTexture = content.Load<Texture2D>("blank");
+            Font = content.Load<SpriteFont>("fonts/menufont");
+            BlankTexture = content.Load<Texture2D>("textures/blank");
 
             // Tell each of the screens to load their content.
             foreach (GameScreen screen in screens)
