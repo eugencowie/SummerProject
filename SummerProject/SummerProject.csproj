@@ -85,6 +85,12 @@
     <Compile Include="src\Utilities\AStar.cs" />
     <Compile Include="src\Utilities\Camera.cs" />
     <Compile Include="src\Utilities\Button.cs" />
+    <Compile Include="src\Utilities\ScreenManager\BasicScreenFactory.cs" />
+    <Compile Include="src\Utilities\ScreenManager\GameScreen.cs" />
+    <Compile Include="src\Utilities\ScreenManager\InputAction.cs" />
+    <Compile Include="src\Utilities\ScreenManager\InputState.cs" />
+    <Compile Include="src\Utilities\ScreenManager\IScreenFactory.cs" />
+    <Compile Include="src\Utilities\ScreenManager\ScreenManager.cs" />
     <Compile Include="src\Utilities\TilemapLoader.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Systems\PlayerInputSystem.cs" />
