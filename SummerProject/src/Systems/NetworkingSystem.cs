@@ -1,13 +1,25 @@
-﻿using Artemis.Attributes;
+﻿using Artemis;
+using Artemis.Attributes;
 using Artemis.Manager;
 using Artemis.System;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace SummerProject
 {
+    enum ServerMessage {
+        SetPlayerToRemote,
+        MoveRemotePlayer
+    }
+
+    enum ClientMessage {
+        IsReady,
+        PlayerHasMoved
+    }
+
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Update, Layer = 0)]
     class NetworkingSystem : ProcessingSystem
     {
@@ -89,16 +101,38 @@ namespace SummerProject
                         break;
 
                     case NetIncomingMessageType.Data:
-                        string data = message.ReadString();
-                        Console.WriteLine("[SERVER] Broadcasting '" + data + "'");
-                        // Broadcast this to all connections, except sender.
-                        List<NetConnection> all = server.Connections; // get copy
-                        all.Remove(message.SenderConnection);
-                        if (all.Count > 0) {
-                            NetOutgoingMessage om = server.CreateMessage();
-                            om.Write(NetUtility.ToHexString(message.SenderConnection.RemoteUniqueIdentifier) + " said: " + data);
-                            server.SendMessage(om, all, NetDeliveryMethod.ReliableOrdered, 0);
+                        ClientMessage msgType = (ClientMessage)message.ReadByte();
+                        if (msgType == ClientMessage.IsReady) {
+                            response = server.CreateMessage();
+                            response.Write((byte)ServerMessage.SetPlayerToRemote);
+                            server.SendMessage(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);
                         }
+                        if (msgType == ClientMessage.PlayerHasMoved) {
+                            int x = message.ReadInt32();
+                            int y = message.ReadInt32();
+                            // Broadcast this to all connections, except sender.
+                            List<NetConnection> all = server.Connections; // get copy
+                            all.Remove(message.SenderConnection);
+                            if (all.Count > 0) {
+                                //NetOutgoingMessage om = server.CreateMessage();
+                                //om.Write(NetUtility.ToHexString(message.SenderConnection.RemoteUniqueIdentifier) + " said: " + data);
+                                NetOutgoingMessage om = server.CreateMessage();
+                                om.Write((byte)ServerMessage.MoveRemotePlayer);
+                                om.Write(x);
+                                om.Write(y);
+                                server.SendMessage(om, all, NetDeliveryMethod.ReliableOrdered, 0);
+                            }
+                        }
+                        //string data = message.ReadString();
+                        //Console.WriteLine("[SERVER] Broadcasting '" + data + "'");
+                        // Broadcast this to all connections, except sender.
+                        //List<NetConnection> all = server.Connections; // get copy
+                        //all.Remove(message.SenderConnection);
+                        //if (all.Count > 0) {
+                        //    NetOutgoingMessage om = server.CreateMessage();
+                        //    om.Write(NetUtility.ToHexString(message.SenderConnection.RemoteUniqueIdentifier) + " said: " + data);
+                        //    server.SendMessage(om, all, NetDeliveryMethod.ReliableOrdered, 0);
+                        //}
                         break;
 
 #if DEBUG
@@ -145,8 +179,35 @@ namespace SummerProject
                         break;
 
                     case NetIncomingMessageType.Data:
-                        string data = message.ReadString();
-                        Console.WriteLine("[CLIENT] " + data);
+                        ServerMessage msgType = (ServerMessage)message.ReadByte();
+                        if (msgType == ServerMessage.SetPlayerToRemote) {
+                            entityWorld.TagManager.GetEntity("player").GetComponent<PlayerInfo>().LocalPlayer = false;
+                        }
+                        if (msgType == ServerMessage.MoveRemotePlayer) {
+                            int x = message.ReadInt32();
+                            int y = message.ReadInt32();
+                            Entity entity = entityWorld.TagManager.GetEntity("player");
+                            if (!entity.GetComponent<PlayerInfo>().LocalPlayer) {
+                                // Convert destination from pixel coords to block coords.
+                                Entity level = entityWorld.TagManager.GetEntity("level");
+                                Tilemap tilemap = level.GetComponent<Tilemap>();
+                                int blockSize = tilemap.BlockSize;
+                                Vector2 destinationBlock = new Vector2() {
+                                    X = (int)Math.Round((float)x / blockSize),
+                                    Y = (int)Math.Round((float)y / blockSize),
+                                };
+                                // If the player is already moving, stop and go to the new destination instead.
+                                if (entity.HasComponent<PlayerMoveAction>())
+                                    entity.RemoveComponent<PlayerMoveAction>();
+                                // The move action tells the movement system to move the player to the specified destination.
+                                entity.AddComponent(new PlayerMoveAction() {
+                                    Destination = destinationBlock,
+                                    Speed = 4.0f
+                                });
+                            }
+                        }
+                        //string data = message.ReadString();
+                        //Console.WriteLine("[CLIENT] " + data);
                         break;
 
 #if DEBUG
@@ -170,10 +231,20 @@ namespace SummerProject
 
         public void Client_Send(string text)
         {
-            NetOutgoingMessage om = client.CreateMessage(text);
+            NetOutgoingMessage om = client.CreateMessage();
+            om.Write((byte)ClientMessage.IsReady);
             client.SendMessage(om, NetDeliveryMethod.ReliableOrdered);
-            Console.WriteLine("[CLIENT] Sending '" + text + "'");
-            client.FlushSendQueue();
+            //Console.WriteLine("[CLIENT] Sending '" + text + "'");
+            //client.FlushSendQueue();
+        }
+
+        public void Client_SendMoveMessage(int destX, int destY)
+        {
+            NetOutgoingMessage om = client.CreateMessage();
+            om.Write((byte)ClientMessage.PlayerHasMoved);
+            om.Write(destX);
+            om.Write(destY);
+            client.SendMessage(om, NetDeliveryMethod.ReliableOrdered);
         }
     }
 }

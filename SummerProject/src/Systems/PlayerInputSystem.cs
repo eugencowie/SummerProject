@@ -157,6 +157,8 @@ namespace SummerProject
                         Destination = destinationBlock,
                         Speed = 4.0f
                     });
+
+                    NetworkingSystem.Instance.Client_SendMoveMessage((int)destination.X, (int)destination.Y);
                 }
 
                 prevKeyboard = keyboard;
