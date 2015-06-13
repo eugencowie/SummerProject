@@ -23,6 +23,11 @@ namespace SummerProject
             // Set the mouse cursor to be visible.
             IsMouseVisible = true;
 
+#if DEBUG
+            // Allow user to resize the window, for testing purposes.
+            Window.AllowUserResizing = true;
+#endif
+
             // Create the screen factory and add it to the services.
             IScreenFactory screenFactory = new BasicScreenFactory();
             Services.AddService(typeof(IScreenFactory), screenFactory);

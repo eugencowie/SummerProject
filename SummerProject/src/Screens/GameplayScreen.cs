@@ -155,7 +155,9 @@ namespace SummerProject
             else
                 pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
+#if !DEBUG
             if (IsActive)
+#endif
             {
                 // Run the systems.
                 entityManager.Update();
