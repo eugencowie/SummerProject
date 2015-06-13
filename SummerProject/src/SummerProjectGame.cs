@@ -12,27 +12,9 @@ namespace SummerProject
     /// </summary>
     public class SummerProjectGame : Microsoft.Xna.Framework.Game
     {
-        enum GameState {
-            MainMenu,
-            Options,
-            Playing,
-        }
-
-        GameState currentGameState = GameState.MainMenu;
-
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-
-        // GameState.MainMenu:
-        CButton clientButton;
-        CButton serverButton;
-
-        // GameState.Playing:
-        Camera camera;
-        EntityWorld entityManager;
-
-        Texture2D healthBar;
-        Texture2D manaBar;
+        ScreenManager screenManager;
+        IScreenFactory screenFactory;
 
         public SummerProjectGame()
         {
@@ -47,108 +29,18 @@ namespace SummerProject
 
             // Set the mouse cursor to be visible.
             IsMouseVisible = true;
-        }
 
-        protected override void Initialize()
-        {
-            // Create spritebatch and camera.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            camera = new Camera();
+            // Create the screen factory and add it to the services.
+            screenFactory = new BasicScreenFactory();
+            Services.AddService(typeof(IScreenFactory), screenFactory);
 
-            // Store some useful variables to be accessed elsewhere.
-            EntitySystem.BlackBoard.SetEntry("Game", this);
-            EntitySystem.BlackBoard.SetEntry("SpriteBatch", spriteBatch);
-            EntitySystem.BlackBoard.SetEntry("Camera", camera);
+            // Create the screen manager and add it to the game class components.
+            screenManager = new ScreenManager(this);
+            Components.Add(screenManager);
 
-            // Create the entity manager and initialise all systems.  It is important that
-            // the InitializeAll() function is called *after* all required BlackBoard entries
-            // have been set.
-            entityManager = new EntityWorld();
-            entityManager.InitializeAll(true);
-
-            base.Initialize();
-        }
-
-        protected override void LoadContent()
-        {
-            // Create the main menu buttons.
-            clientButton = new CButton(Content.Load<Texture2D>("textures/button_client"), GraphicsDevice);
-            clientButton.SetPosition(new Vector2(350, 300));
-            serverButton = new CButton(Content.Load<Texture2D>("textures/button_server"), GraphicsDevice);
-            serverButton.SetPosition(new Vector2(350, 330));
-
-            // Load the HUD.
-            healthBar = Content.Load<Texture2D>("textures/healthbar");
-            manaBar = Content.Load<Texture2D>("textures/manabar");
-
-            // Create the level entity.
-            Entity level = entityManager.CreateEntity();
-            level.Tag = "level";
-            Tilemap levelTilemap = TilemapLoader.ReadMapFromFile("Content/maps/Map1.tmx", entityManager);
-            level.AddComponent(levelTilemap);
-
-            // Get the player start position from the level tilemap.
-            Point? playerStartBlock = levelTilemap.FirstObjectBlockOfType(ObjectBlock.PlayerStart);
-            if (!playerStartBlock.HasValue) playerStartBlock = new Point(1, 1);
-            Vector2 playerStart = levelTilemap.BlockCoordsToPixels(playerStartBlock.Value);
-
-            // Create the player entity.
-            Entity player = entityManager.CreateEntity();
-            player.Tag = "player";
-            player.AddComponent(new PlayerInfo() { PlayerId = 1, LocalPlayer = true });
-            player.AddComponent(new Transform() { Position = playerStart, Size = new Vector2(40, 40) });
-            player.AddComponent(new Sprite() { Texture = Content.Load<Texture2D>("textures/objects/player"), LayerDepth = 0.0f });
-            player.AddComponent(new Inventory());
-
-            // Get mob spawn positions from the level tilemap.
-            List<Point> mobSpawnBlocks = levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob);
-            foreach (Point mobSpawn in mobSpawnBlocks)
-            {
-                Vector2 position = levelTilemap.BlockCoordsToPixels(mobSpawn);
-                float rotation = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectRotation;
-                Vector2 size = new Vector2(40, 40);
-
-                Texture2D texture = Content.Load<Texture2D>("textures/objects/enemy");
-                SpriteEffects effect = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectEffect;
-
-                // Create an enemy.
-                Entity enemy = entityManager.CreateEntity();
-                enemy.Group = "enemies";
-                enemy.AddComponent(new Transform() { Position = position, Rotation = rotation, Size = new Vector2(40, 40) });
-                enemy.AddComponent(new Sprite() { Texture = texture, Effects = effect, LayerDepth = 0.0f });
-                enemy.AddComponent(new Inventory());
-            }
-
-            // Center the camera on the player at the start.
-            camera.Position = playerStart;
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            switch (currentGameState)
-            {
-                case GameState.MainMenu:
-                    // Update the buttons.
-                    clientButton.Update(Mouse.GetState());
-                    if (clientButton.isClicked) {
-                        NetworkingSystem.IsClient = true;
-                        currentGameState = GameState.Playing;
-                    }
-                    serverButton.Update(Mouse.GetState());
-                    if (serverButton.isClicked) {
-                        NetworkingSystem.IsServer = true;
-                        NetworkingSystem.IsClient = true;
-                        currentGameState = GameState.Playing;
-                    }
-                    break;
-
-                case GameState.Playing:
-                    // Run the systems.
-                    entityManager.Update();
-                    break;
-            }
-
-            base.Update(gameTime);
+            // Activate the initial screens.
+            screenManager.AddScreen(new BackgroundScreen(), null);
+            screenManager.AddScreen(new MainMenuScreen(), null);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -156,40 +48,7 @@ namespace SummerProject
             // Clear the screen.
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            switch (currentGameState)
-            {
-                case GameState.MainMenu:
-                    // Draw the buttons.
-                    spriteBatch.Begin();
-                    clientButton.Draw(spriteBatch);
-                    serverButton.Draw(spriteBatch);
-                    spriteBatch.End();
-                    break;
-
-                case GameState.Playing:
-
-                    // Begin the spritebatch and apply the camera's transformation matrix.
-                    spriteBatch.Begin(
-                        SpriteSortMode.BackToFront,
-                        BlendState.AlphaBlend,
-                        null, null, null, null,
-                        camera.GetTransformationMatrix(GraphicsDevice));
-
-                    // Run the draw systems.
-                    entityManager.Draw();
-
-                    // End the spritebatch.
-                    spriteBatch.End();
-
-                    // Draw the HUD.
-                    PlayerInfo playerInfo = entityManager.TagManager.GetEntity("player").GetComponent<PlayerInfo>();
-                    spriteBatch.Begin();
-                    spriteBatch.Draw(manaBar, new Rectangle(630, 580, (int)(150 * playerInfo.Mana.Percentage), 15), Color.White);
-                    spriteBatch.Draw(healthBar, new Rectangle(630, 560, (int)(150 * playerInfo.Health.Percentage), 15), Color.White);
-                    spriteBatch.End();
-                    break;
-            }
-
+            // The real drawing happens inside the screen manager component.
             base.Draw(gameTime);
         }
     }

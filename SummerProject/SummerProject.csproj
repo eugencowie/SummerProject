@@ -79,11 +79,17 @@
     <Compile Include="src\Components\PlayerInfo.cs" />
     <Compile Include="src\Components\Tilemap.cs" />
     <Compile Include="src\Components\Transform.cs" />
+    <Compile Include="src\Screens\BackgroundScreen.cs" />
     <Compile Include="src\Utilities\CButton.cs" />
     <Compile Include="src\Utilities\Screen\Button.cs" />
+    <Compile Include="src\Screens\GameplayScreen.cs" />
+    <Compile Include="src\Screens\LoadingScreen.cs" />
+    <Compile Include="src\Screens\MainMenuScreen.cs" />
     <Compile Include="src\Utilities\Screen\MenuEntry.cs" />
     <Compile Include="src\Utilities\Screen\MenuScreen.cs" />
     <Compile Include="src\Utilities\Screen\MessageBoxScreen.cs" />
+    <Compile Include="src\Screens\OptionsMenuScreen.cs" />
+    <Compile Include="src\Screens\PauseMenuScreen.cs" />
     <Compile Include="src\Utilities\Screen\PlayerIndexEventArgs.cs" />
     <Compile Include="src\Systems\PickupSystem.cs" />
     <Compile Include="src\Systems\NetworkingSystem.cs" />
