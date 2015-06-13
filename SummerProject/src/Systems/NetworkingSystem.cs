@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 
 namespace SummerProject
 {
@@ -71,17 +70,18 @@ namespace SummerProject
                 }
 
                 // Make sure that the client is connected.
-                if (client.Status == NetPeerStatus.NotRunning) {
+                if (client.Status == NetPeerStatus.NotRunning)
+                {
                     client.Start();
-                    client.DiscoverLocalPeers(14242);
-                    Thread.Sleep(500);
-                }
 
-                if (client.ConnectionStatus == NetConnectionStatus.Disconnected) {
-                    StreamReader f = File.OpenText("debug.txt");
-                    string host = f.ReadLine();
-                    f.Close();
-                    client.DiscoverKnownPeer(host, 14242);
+                    if (File.Exists("host.txt")) {
+                        StreamReader f = File.OpenText("host.txt");
+                        string host = f.ReadLine();
+                        f.Close();
+                        client.DiscoverKnownPeer(host, 14242);
+                    }
+                    else
+                        client.DiscoverLocalPeers(14242);
                 }
             }
         }
