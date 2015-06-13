@@ -1,8 +1,11 @@
+using Artemis;
+using Artemis.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace SummerProject
@@ -18,14 +21,11 @@ namespace SummerProject
         ContentManager content;
         SpriteFont gameFont;
 
-        Vector2 playerPosition = new Vector2(100, 100);
-        Vector2 enemyPosition = new Vector2(100, 100);
-
-        Random random = new Random();
-
-        float pauseAlpha;
+        Camera camera;
+        EntityWorld entityManager;
 
         InputAction pauseAction;
+        float pauseAlpha;
 
 
         #endregion
@@ -59,6 +59,60 @@ namespace SummerProject
                     content = new ContentManager(ScreenManager.Game.Services, "Content");
 
                 gameFont = content.Load<SpriteFont>("fonts/gamefont");
+
+                camera = new Camera();
+
+                // Store some useful variables to be accessed elsewhere.
+                EntitySystem.BlackBoard.SetEntry("Game", ScreenManager.Game);
+                EntitySystem.BlackBoard.SetEntry("SpriteBatch", ScreenManager.SpriteBatch);
+                EntitySystem.BlackBoard.SetEntry("Camera", camera);
+
+                // Create the entity manager and initialise all systems.  It is important that
+                // the InitializeAll() function is called *after* all required BlackBoard entries
+                // have been set.
+                entityManager = new EntityWorld();
+                entityManager.InitializeAll(true);
+
+                // Create the level entity.
+                Entity level = entityManager.CreateEntity();
+                level.Tag = "level";
+                Tilemap levelTilemap = TilemapLoader.ReadMapFromFile("Content/maps/Map1.tmx", entityManager);
+                level.AddComponent(levelTilemap);
+
+                // Get the player start position from the level tilemap.
+                Point? playerStartBlock = levelTilemap.FirstObjectBlockOfType(ObjectBlock.PlayerStart);
+                if (!playerStartBlock.HasValue) playerStartBlock = new Point(1, 1);
+                Vector2 playerStart = levelTilemap.BlockCoordsToPixels(playerStartBlock.Value);
+
+                // Create the player entity.
+                Entity player = entityManager.CreateEntity();
+                player.Tag = "player";
+                player.AddComponent(new PlayerInfo() { PlayerId = 1, LocalPlayer = true });
+                player.AddComponent(new Transform() { Position = playerStart, Size = new Vector2(40, 40) });
+                player.AddComponent(new Sprite() { Texture = content.Load<Texture2D>("textures/objects/player"), LayerDepth = 0.0f });
+                player.AddComponent(new Inventory());
+
+                // Get mob spawn positions from the level tilemap.
+                List<Point> mobSpawnBlocks = levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob);
+                foreach (Point mobSpawn in mobSpawnBlocks)
+                {
+                    Vector2 position = levelTilemap.BlockCoordsToPixels(mobSpawn);
+                    float rotation = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectRotation;
+                    Vector2 size = new Vector2(40, 40);
+
+                    Texture2D texture = content.Load<Texture2D>("textures/objects/enemy");
+                    SpriteEffects effect = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectEffect;
+
+                    // Create an enemy.
+                    Entity enemy = entityManager.CreateEntity();
+                    enemy.Group = "enemies";
+                    enemy.AddComponent(new Transform() { Position = position, Rotation = rotation, Size = size });
+                    enemy.AddComponent(new Sprite() { Texture = texture, Effects = effect, LayerDepth = 0.0f });
+                    enemy.AddComponent(new Inventory());
+                }
+
+                // Center the camera on the player at the start.
+                camera.Position = playerStart;
 
                 // Simulate a longer loading time by delaying for a while, giving us
                 // a chance to admire the beautiful loading screen.
@@ -103,20 +157,8 @@ namespace SummerProject
 
             if (IsActive)
             {
-                // Apply some random jitter to make the enemy move around.
-                const float randomization = 10;
-
-                enemyPosition.X += (float)(random.NextDouble() - 0.5) * randomization;
-                enemyPosition.Y += (float)(random.NextDouble() - 0.5) * randomization;
-
-                // Apply a stabilizing force to stop the enemy moving off the screen.
-                Vector2 targetPosition = new Vector2(
-                    ScreenManager.GraphicsDevice.Viewport.Width / 2f - gameFont.MeasureString("Insert Gameplay Here").X / 2f, 
-                    200);
-
-                enemyPosition = Vector2.Lerp(enemyPosition, targetPosition, 0.05f);
-
-                // TODO: everything
+                // Run the systems.
+                entityManager.Update();
             }
         }
 
@@ -127,7 +169,7 @@ namespace SummerProject
         /// </summary>
         public override void HandleInput(GameTime gameTime, InputState input)
         {
-            if (input == null)
+            /*if (input == null)
                 throw new ArgumentNullException("input");
 
             // Look up inputs for the active player profile.
@@ -173,7 +215,7 @@ namespace SummerProject
                     movement.Normalize();
 
                 playerPosition += movement * 8f;
-            }
+            }*/
         }
 
 
@@ -188,9 +230,17 @@ namespace SummerProject
             // Our player and enemy are both actually just text strings.
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
 
-            spriteBatch.Begin();
-            spriteBatch.DrawString(gameFont, "// TODO", playerPosition, Color.Green);
-            spriteBatch.DrawString(gameFont, "Insert Gameplay Here", enemyPosition, Color.DarkRed);
+            // Begin the spritebatch and apply the camera's transformation matrix.
+            spriteBatch.Begin(
+                SpriteSortMode.BackToFront,
+                BlendState.AlphaBlend,
+                null, null, null, null,
+                camera.GetTransformationMatrix(ScreenManager.GraphicsDevice));
+
+            // Run the draw systems.
+            entityManager.Draw();
+
+            // End the spritebatch.
             spriteBatch.End();
 
             // If the game is transitioning on or off, fade it out to black.

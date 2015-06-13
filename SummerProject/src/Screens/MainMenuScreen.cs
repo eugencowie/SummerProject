@@ -46,6 +46,7 @@ namespace SummerProject
         /// </summary>
         void JoinGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
+            NetworkingSystem.IsClient = true;
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
         }
 
@@ -55,6 +56,8 @@ namespace SummerProject
         /// </summary>
         void HostGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
+            NetworkingSystem.IsServer = true;
+            NetworkingSystem.IsClient = true;
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
         }
 
