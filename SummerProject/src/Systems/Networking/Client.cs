@@ -128,8 +128,6 @@ namespace SummerProject
         /// </summary>
         private void HandleDataMessage(NetIncomingMessage message)
         {
-            NetOutgoingMessage response;
-
             ServerMessage type = (ServerMessage)message.ReadByte();
             switch (type)
             {

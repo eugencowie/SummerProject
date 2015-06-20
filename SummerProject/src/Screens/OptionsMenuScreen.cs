@@ -23,7 +23,7 @@ namespace SummerProject
         static Ungulate currentUngulate = Ungulate.Dromedary;
 
         static string[] languages = { "C#", "French", "Deoxyribonucleic acid" };
-        static int currentLanguage = 0;
+        static int currentLanguage;
 
         static bool frobnicate = true;
 
