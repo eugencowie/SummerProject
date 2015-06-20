@@ -82,23 +82,24 @@ namespace SummerProject
                 // Get the player start position from the level tilemap.
                 Point? playerStartBlock = levelTilemap.FirstObjectBlockOfType(ObjectBlock.PlayerStart);
                 if (!playerStartBlock.HasValue) playerStartBlock = new Point(1, 1);
-                Vector2 playerStart = levelTilemap.BlockCoordsToPixels(playerStartBlock.Value);
+                Vector2 playerStart = Tilemap.BlockCoordsToPixels(playerStartBlock.Value);
 
                 // Create the player entity.
                 Entity player = entityManager.CreateEntity();
                 player.Tag = "player";
-                player.AddComponent(new PlayerInfo() { PlayerId = 1, LocalPlayer = true });
-                player.AddComponent(new Transform() { Position = playerStart, Size = new Vector2(40, 40) });
-                player.AddComponent(new Sprite() { Texture = content.Load<Texture2D>("textures/objects/player"), LayerDepth = 0.0f });
+                player.AddComponent(new PlayerInfo { PlayerId = 1, LocalPlayer = true });
+                player.AddComponent(new Transform { Position = playerStart, Size = new Vector2(40, 40) });
+                player.AddComponent(new Sprite { Texture = content.Load<Texture2D>("textures/objects/player"), LayerDepth = 0f });
                 player.AddComponent(new Inventory());
 
                 // Get mob spawn positions from the level tilemap.
                 List<Point> mobSpawnBlocks = levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob);
                 foreach (Point mobSpawn in mobSpawnBlocks)
                 {
-                    Vector2 position = levelTilemap.BlockCoordsToPixels(mobSpawn);
+                    Vector2 position = Tilemap.BlockCoordsToPixels(mobSpawn);
                     float rotation = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectRotation;
-                    Vector2 size = new Vector2(40, 40);
+
+                    var size = new Vector2(40, 40);
 
                     Texture2D texture = content.Load<Texture2D>("textures/objects/enemy");
                     SpriteEffects effect = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectEffect;
@@ -106,8 +107,8 @@ namespace SummerProject
                     // Create an enemy.
                     Entity enemy = entityManager.CreateEntity();
                     enemy.Group = "enemies";
-                    enemy.AddComponent(new Transform() { Position = position, Rotation = rotation, Size = size });
-                    enemy.AddComponent(new Sprite() { Texture = texture, Effects = effect, LayerDepth = 0.0f });
+                    enemy.AddComponent(new Transform { Position = position, Rotation = rotation, Size = size });
+                    enemy.AddComponent(new Sprite { Texture = texture, Effects = effect, LayerDepth = 0f });
                     enemy.AddComponent(new Inventory());
                 }
 
@@ -116,7 +117,8 @@ namespace SummerProject
 
                 // Simulate a longer loading time by delaying for a while, giving us
                 // a chance to admire the beautiful loading screen.
-                Thread.Sleep(1500);
+                // TODO: remove this in final version
+                //Thread.Sleep(1500);
 
                 // Once the load has finished, we use ResetElapsedTime to tell the game's
                 // timing mechanism that we have just finished a very long frame, and that
@@ -155,6 +157,7 @@ namespace SummerProject
             else
                 pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
+            // TODO: Run the game when the window is not active?
 #if !DEBUG
             if (IsActive)
 #endif

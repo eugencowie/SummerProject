@@ -29,11 +29,11 @@ namespace SummerProject
 #endif
 
             // Create the screen factory and add it to the services.
-            IScreenFactory screenFactory = new BasicScreenFactory();
+            var screenFactory = new BasicScreenFactory();
             Services.AddService(typeof(IScreenFactory), screenFactory);
 
             // Create the screen manager and add it to the game class components.
-            ScreenManager screenManager = new ScreenManager(this);
+            var screenManager = new ScreenManager(this);
             Components.Add(screenManager);
 
             // Activate the initial screens.

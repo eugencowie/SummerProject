@@ -13,10 +13,10 @@ namespace SummerProject
         public static Tilemap ReadMapFromFile(string file, EntityWorld entityManager)
         {
             // Read file.
-            TmxMap map = new TmxMap(file);
+            var map = new TmxMap(file);
 
             // Create tile array.
-            Tile[,] tiles = new Tile[map.Width, map.Height];
+            var tiles = new Tile[map.Width, map.Height];
 
             // Get Tiled map layers.
             TmxLayer baseLayer = map.Layers["Base layer"];
@@ -35,10 +35,10 @@ namespace SummerProject
                 int y = baseTile.Y;
 
                 // Fill the visual blocks with none by default.
-                BaseBlock baseBlock = BaseBlock.None;
+                var baseBlock = BaseBlock.None;
 
                 // Fill the symbolic blocks with none by default.
-                ObjectBlock objectBlock = ObjectBlock.None;
+                var objectBlock = ObjectBlock.None;
 
                 ContentManager content = EntitySystem.BlackBoard.GetEntry<Game>("Game").Content;
 
@@ -60,7 +60,9 @@ namespace SummerProject
 
                 string objectTexture = "";
                 switch (objectTile.Gid - firstObjectGid) {
-                    case 1: /* player start */ objectBlock = ObjectBlock.PlayerStart; break;
+                    case 1: /* player start */
+                        objectBlock = ObjectBlock.PlayerStart;
+                        break;
                     case 2: /* chest */
                         objectBlock = ObjectBlock.Chest;
                         objectTexture = "textures/objects/chest";
@@ -79,8 +81,8 @@ namespace SummerProject
                 }
 
                 // Default rotation is 0.
-                float baseRot = 0.0f;
-                SpriteEffects baseEffect = SpriteEffects.None;
+                float baseRot = 0f;
+                var baseEffect = SpriteEffects.None;
                 if (baseTile.HorizontalFlip)
                     baseEffect ^= SpriteEffects.FlipHorizontally;
                 if (baseTile.VerticalFlip)
@@ -88,31 +90,37 @@ namespace SummerProject
                 if (baseTile.DiagonalFlip)
                 {
                     if (baseTile.HorizontalFlip && baseTile.VerticalFlip) {
-                        baseRot = (float)(Math.PI / 2);
+                        baseRot = (float)(Math.PI / 2f);
                         baseEffect ^= SpriteEffects.FlipVertically;
                     }
                     else if (baseTile.HorizontalFlip) {
-                        baseRot = (float)-(Math.PI / 2);
+                        baseRot = -(float)(Math.PI / 2f);
                         baseEffect ^= SpriteEffects.FlipVertically;
                     }
                     else {
-                        baseRot = (float)(Math.PI / 2);
+                        baseRot = (float)(Math.PI / 2f);
                         baseEffect ^= SpriteEffects.FlipHorizontally;
                     }
                 }
 
                 Entity baseEntity = entityManager.CreateEntity();
-                baseEntity.AddComponent(new Transform() { Position = new Vector2(x * 40, y * 40), Rotation = baseRot });
+
+                baseEntity.AddComponent(new Transform {
+                    Position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize),
+                    Size = new Vector2(Constants.UnitSize),
+                    Rotation = baseRot
+                });
+
                 if (baseTexture != "")
-                    baseEntity.AddComponent(new Sprite() { Texture = content.Load<Texture2D>(baseTexture) });
+                    baseEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(baseTexture) });
                 else {
                     entityManager.DeleteEntity(baseEntity);
                     baseEntity = null;
                 }
 
                 // Default rotation is 0.
-                float objectRot = 0.0f;
-                SpriteEffects objectEffect = SpriteEffects.None;
+                float objectRot = 0f;
+                var objectEffect = SpriteEffects.None;
                 if (objectTile.HorizontalFlip)
                     objectEffect ^= SpriteEffects.FlipHorizontally;
                 if (objectTile.VerticalFlip)
@@ -120,23 +128,29 @@ namespace SummerProject
                 if (objectTile.DiagonalFlip)
                 {
                     if (objectTile.HorizontalFlip && baseTile.VerticalFlip) {
-                        objectRot = (float)(Math.PI / 2);
+                        objectRot = (float)(Math.PI / 2f);
                         objectEffect ^= SpriteEffects.FlipVertically;
                     }
                     else if (objectTile.HorizontalFlip) {
-                        objectRot = (float)-(Math.PI / 2);
+                        objectRot = (float)-(Math.PI / 2f);
                         objectEffect ^= SpriteEffects.FlipVertically;
                     }
                     else {
-                        objectRot = (float)(Math.PI / 2);
+                        objectRot = (float)(Math.PI / 2f);
                         objectEffect ^= SpriteEffects.FlipHorizontally;
                     }
                 }
 
                 Entity objectEntity = entityManager.CreateEntity();
-                objectEntity.AddComponent(new Transform() { Position = new Vector2(x * 40, y * 40), Rotation = objectRot });
+
+                objectEntity.AddComponent(new Transform {
+                    Position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize),
+                    Size = new Vector2(Constants.UnitSize),
+                    Rotation = objectRot
+                });
+
                 if (objectTexture != "")
-                    objectEntity.AddComponent(new Sprite() { Texture = content.Load<Texture2D>(objectTexture), LayerDepth = 0.9f });
+                    objectEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(objectTexture), LayerDepth = 0.9f });
                 else {
                     entityManager.DeleteEntity(objectEntity);
                     objectEntity = null;
@@ -156,12 +170,11 @@ namespace SummerProject
                 tiles[x, y].ObjectEffect = objectEffect;
 
                 // Fill the collision blocks with floor by default.
-                tiles[x, y].Collision = new AStar.TileInfo() { TileType = AStar.TileType.Floor };
+                tiles[x, y].Collision = new AStar.TileInfo { TileType = AStar.TileType.Floor };
             }
 
-            Tilemap tilemap = new Tilemap() {
+            var tilemap = new Tilemap {
                 Tiles = tiles,
-                BlockSize = 40
             };
 
             tilemap.RecalculateCollisionBlocks();

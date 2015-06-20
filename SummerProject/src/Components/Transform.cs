@@ -7,6 +7,6 @@ namespace SummerProject
     {
         public Vector2 Position = Vector2.Zero;
         public Vector2 Size = Vector2.Zero;
-        public float Rotation = 0.0f;
+        public float Rotation = 0f;
     }
 }

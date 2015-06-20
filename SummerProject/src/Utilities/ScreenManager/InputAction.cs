@@ -1,4 +1,6 @@
-﻿#region File Description
+﻿// ReSharper disable All
+
+#region File Description
 //-----------------------------------------------------------------------------
 // InputAction.cs
 //

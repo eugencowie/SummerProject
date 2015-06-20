@@ -84,8 +84,9 @@ namespace SummerProject
         {
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
-            Rectangle fullscreen = new Rectangle(0, 0, viewport.Width, viewport.Height);
-            Color colour = new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha);
+
+            var fullscreen = new Rectangle(0, 0, viewport.Width, viewport.Height);
+            var colour = new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha);
 
             spriteBatch.Begin();
             spriteBatch.Draw(backgroundTexture, fullscreen, colour);

@@ -1,3 +1,5 @@
+// ReSharper disable All
+
 #region File Description
 //-----------------------------------------------------------------------------
 // MessageBoxScreen.cs

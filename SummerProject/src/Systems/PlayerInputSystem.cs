@@ -15,7 +15,7 @@ namespace SummerProject
         KeyboardState prevKeyboard;
         MouseState prevMouse;
 
-        bool lockCameraToPlayer = false;
+        bool lockCameraToPlayer;
 
         public override void LoadContent()
         {
@@ -44,9 +44,9 @@ namespace SummerProject
 
                 #region Debug networking testing
 
-                if (NetworkingSystem.IsClient && IsKeyClicked(keyboard, Keys.F9))
-                    if (NetworkingSystem.Instance != null)
-                        NetworkingSystem.Instance.Client_Send("Some test text.");
+                if (Client.Active && IsKeyClicked(keyboard, Keys.F9))
+                    if (Client.Instance != null)
+                        Client.Instance.SendIsReadyMessage();
 
                 #endregion
 
@@ -78,7 +78,7 @@ namespace SummerProject
                         mouse.Y >= 0 && mouse.Y <= viewport.Height)
                     {
                         // Camera movement mouse controls.
-                        int screenEdgeBuffer = 60;
+                        const int screenEdgeBuffer = 60;
                         if (mouse.Y < screenEdgeBuffer)
                             camera.Position.Y -= 1 * (10 - camera.Zoom);
                         if (mouse.Y > viewport.Height - screenEdgeBuffer)
@@ -123,42 +123,40 @@ namespace SummerProject
                     playerInfo.Health.Current += 1;
 
                 // Normalise the mouse coords so that (0,0) is the center instead of the top left.
-                Vector2 mousePos = new Vector2(
-                    mouse.X - (viewport.Width / 2.0f),
-                    mouse.Y - (viewport.Height / 2.0f));
+                var mousePos = new Vector2(
+                    mouse.X - (viewport.Width / 2f),
+                    mouse.Y - (viewport.Height / 2f));
 
                 // Figure out the destination (in pixels).
-                Vector2 destination = new Vector2(
-                    playerTransform.Position.X + (camera.Position.X - playerTransform.Position.X) + (mousePos.X * (1.0f / camera.Zoom)),
-                    playerTransform.Position.Y + (camera.Position.Y - playerTransform.Position.Y) + (mousePos.Y * (1.0f / camera.Zoom)));
+                var destination = new Vector2(
+                    playerTransform.Position.X + (camera.Position.X - playerTransform.Position.X) + (mousePos.X * (1f / camera.Zoom)),
+                    playerTransform.Position.Y + (camera.Position.Y - playerTransform.Position.Y) + (mousePos.Y * (1f / camera.Zoom)));
 
                 // Make player always face the mouse pointer.
                 Vector2 direction = playerTransform.Position - destination;
-                playerTransform.Rotation = (float)Math.Atan2(direction.Y, direction.X) - ((float)Math.PI / 2.0f);
+                playerTransform.Rotation = (float)Math.Atan2(direction.Y, direction.X) - ((float)Math.PI / 2f);
 
                 // Move the player when the right mouse button is clicked.
                 if (IsRightMouseButtonClicked(mouse))
                 {
                     // Convert destination from pixel coords to block coords.
-                    Entity level = entityWorld.TagManager.GetEntity("level");
-                    Tilemap tilemap = level.GetComponent<Tilemap>();
-                    int blockSize = tilemap.BlockSize;
-                    Vector2 destinationBlock = new Vector2() {
-                        X = (int)Math.Round(destination.X / blockSize),
-                        Y = (int)Math.Round(destination.Y / blockSize),
+                    var destinationBlock = new Vector2 {
+                        X = (int)Math.Round(destination.X / Constants.UnitSize),
+                        Y = (int)Math.Round(destination.Y / Constants.UnitSize),
                     };
 
                     // If the player is already moving, stop and go to the new destination instead.
-                    if (entity.HasComponent<PlayerMoveAction>())
-                        entity.RemoveComponent<PlayerMoveAction>();
+                    if (entity.HasComponent<MoveAction>())
+                        entity.RemoveComponent<MoveAction>();
 
                     // The move action tells the movement system to move the player to the specified destination.
-                    entity.AddComponent(new PlayerMoveAction() {
+                    entity.AddComponent(new MoveAction {
                         Destination = destinationBlock,
-                        Speed = 4.0f
+                        Speed = 4f
                     });
 
-                    NetworkingSystem.Instance.Client_SendMoveMessage((int)destination.X, (int)destination.Y);
+                    if (Client.Instance != null)
+                        Client.Instance.SendMoveMessage((int)destinationBlock.X, (int)destinationBlock.Y);
                 }
 
                 prevKeyboard = keyboard;

@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework;
 
 namespace SummerProject
 {
-    class PlayerMoveAction : IComponent
+    class MoveAction : IComponent
     {
         public Vector2 Destination;
-        public float Speed = 1.0f;
+        public float Speed = 1f;
     }
 }
