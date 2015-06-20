@@ -7,6 +7,6 @@ namespace SummerProject
     {
         public Texture2D Texture = null;
         public SpriteEffects Effects = SpriteEffects.None;
-        public float LayerDepth = 1.0f;
+        public float LayerDepth = 1f;
     }
 }

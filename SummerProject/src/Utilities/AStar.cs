@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿// ReSharper disable All
+
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 

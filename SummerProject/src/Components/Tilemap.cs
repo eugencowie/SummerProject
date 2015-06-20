@@ -18,13 +18,13 @@ namespace SummerProject
         None,
         LockedDoor,
         PlayerStart,
-        General,
-        Boss,
+        //General,
+        //Boss,
         Mob,
         //MobSpawn,
         Chest,
-        Trap,
-        HealthPack,
+        //Trap,
+        //HealthPack,
         //Button,
         Key
     }
@@ -44,18 +44,17 @@ namespace SummerProject
     class Tilemap : IComponent
     {
         public Tile[,] Tiles;
-        public int BlockSize;
 
         /// <summary>
         /// Find the first object block in the tilemap which matches the specified object block type. Can
         /// be useful to find the player start, for example.
         /// </summary>
-        public Point? FirstObjectBlockOfType(ObjectBlock blockType)
+        public Vector2? FirstObjectBlockOfType(ObjectBlock blockType)
         {
             for (int y = 0; y < Tiles.GetLength(1); y++)
                 for (int x = 0; x < Tiles.GetLength(0); x++)
                     if (Tiles[x, y].Object == blockType)
-                        return new Point(x, y);
+                        return new Vector2(x, y);
 
             return null;
         }
@@ -64,14 +63,14 @@ namespace SummerProject
         /// Find all object blocks in the tilemap which match the specified object block type. Can
         /// be useful for finding mob spawns, for example.
         /// </summary>
-        public List<Point> AllObjectBlocksOfType(ObjectBlock blockType)
+        public IEnumerable<Vector2> AllObjectBlocksOfType(ObjectBlock blockType)
         {
-            List<Point> list = new List<Point>();
+            var list = new List<Vector2>();
 
             for (int y = 0; y < Tiles.GetLength(1); y++)
                 for (int x = 0; x < Tiles.GetLength(0); x++)
                     if (Tiles[x, y].Object == blockType)
-                        list.Add(new Point(x, y));
+                        list.Add(new Vector2(x, y));
 
             return list;
         }
@@ -79,22 +78,22 @@ namespace SummerProject
         /// <summary>
         /// Convert block coords to pixels.
         /// </summary>
-        public Vector2 BlockCoordsToPixels(Point blockCoords)
+        public static Vector2 BlockCoordsToPixels(Vector2 blockCoords)
         {
-            return new Vector2() {
-                X = blockCoords.X * BlockSize,
-                Y = blockCoords.Y * BlockSize
+            return new Vector2 {
+                X = blockCoords.X * Constants.UnitSize,
+                Y = blockCoords.Y * Constants.UnitSize
             };
         }
 
         /// <summary>
         /// Convert pixels to block coords.
         /// </summary>
-        public Point PixelsToBlockCoords(Vector2 pixels)
+        public static Vector2 PixelsToBlockCoords(Vector2 pixels)
         {
-            return new Point() {
-                X = (int)Math.Round(pixels.X / (float)BlockSize),
-                Y = (int)Math.Round(pixels.Y / (float)BlockSize),
+            return new Vector2 {
+                X = (float)Math.Round(pixels.X / Constants.UnitSize),
+                Y = (float)Math.Round(pixels.Y / Constants.UnitSize)
             };
         }
 
@@ -134,7 +133,7 @@ namespace SummerProject
         /// </summary>
         public AStar.TileInfo[,] GetCollisionInfo()
         {
-            AStar.TileInfo[,] collision = new AStar.TileInfo[Tiles.GetLength(0), Tiles.GetLength(1)];
+            var collision = new AStar.TileInfo[Tiles.GetLength(0), Tiles.GetLength(1)];
 
             for (int y = 0; y < Tiles.GetLength(1); y++)
                 for (int x = 0; x < Tiles.GetLength(0); x++)

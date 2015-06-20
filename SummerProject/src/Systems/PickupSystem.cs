@@ -1,4 +1,5 @@
-﻿using Artemis;
+﻿using System;
+using Artemis;
 using Artemis.Attributes;
 using Artemis.Manager;
 using Artemis.System;
@@ -14,16 +15,19 @@ namespace SummerProject
             // Get the tilemap and block size.
             Tilemap tilemap = entityWorld.TagManager.GetEntity("level").GetComponent<Tilemap>();
 
-            // Convert player position from pixel coords to block coords.
-            Point position = tilemap.PixelsToBlockCoords(transform.Position);
+            // Convert player position from unit coords (float) to block coords (int).
+            var pos = new Point {
+                X = (int)Math.Round(transform.Position.X),
+                Y = (int)Math.Round(transform.Position.Y)
+            };
 
             // If the player is standing on a key...
-            if (tilemap.Tiles[position.X, position.Y].Object == ObjectBlock.Key)
+            if (tilemap.Tiles[pos.X, pos.Y].Object == ObjectBlock.Key)
             {
                 // Remove the key and add it to the player's inventory.
-                tilemap.Tiles[position.X, position.Y].Object = ObjectBlock.None;
-                entityWorld.DeleteEntity(tilemap.Tiles[position.X, position.Y].ObjectEntity);
-                tilemap.Tiles[position.X, position.Y].ObjectEntity = null;
+                tilemap.Tiles[pos.X, pos.Y].Object = ObjectBlock.None;
+                entityWorld.DeleteEntity(tilemap.Tiles[pos.X, pos.Y].ObjectEntity);
+                tilemap.Tiles[pos.X, pos.Y].ObjectEntity = null;
                 inventory.HasKey = true;
 
                 // Remove all locked doors.
