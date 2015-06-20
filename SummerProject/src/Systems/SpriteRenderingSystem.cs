@@ -29,12 +29,14 @@ namespace SummerProject
 
                 if (transform.Size != Vector2.Zero)
                     size = transform.Size;
+                else
+                    size = new Vector2(1f, 1f);
 
                 Rectangle destinationRect = new Rectangle {
-                    X = (int)transform.Position.X,
-                    Y = (int)transform.Position.Y,
-                    Width = (int)size.X,
-                    Height = (int)size.Y
+                    X = (int)(transform.Position.X * Constants.UnitSize),
+                    Y = (int)(transform.Position.Y * Constants.UnitSize),
+                    Width = (int)(size.X * Constants.UnitSize),
+                    Height = (int)(size.Y * Constants.UnitSize)
                 };
 
                 spriteBatch.Draw(

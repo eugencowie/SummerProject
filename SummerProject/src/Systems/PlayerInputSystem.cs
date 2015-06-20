@@ -59,7 +59,7 @@ namespace SummerProject
                 if (lockCameraToPlayer)
                 {
                     // Lock camera to player.
-                    camera.Position = playerTransform.Position;
+                    camera.Position = Tilemap.BlockCoordsToPixels(playerTransform.Position);
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace SummerProject
                         mouse.Y >= 0 && mouse.Y <= viewport.Height)
                     {
                         // Camera movement mouse controls.
-                        const int screenEdgeBuffer = 60;
+                        int screenEdgeBuffer = 60;
                         if (mouse.Y < screenEdgeBuffer)
                             camera.Position.Y -= 1 * (10 - camera.Zoom);
                         if (mouse.Y > viewport.Height - screenEdgeBuffer)
@@ -123,24 +123,26 @@ namespace SummerProject
                     playerInfo.Health.Current += 1;
 
                 // Normalise the mouse coords so that (0,0) is the center instead of the top left.
-                var mousePos = new Vector2(
+                Vector2 mousePos = new Vector2(
                     mouse.X - (viewport.Width / 2f),
                     mouse.Y - (viewport.Height / 2f));
 
+                Vector2 playerPixels = Tilemap.BlockCoordsToPixels(playerTransform.Position);
+
                 // Figure out the destination (in pixels).
-                var destination = new Vector2(
-                    playerTransform.Position.X + (camera.Position.X - playerTransform.Position.X) + (mousePos.X * (1f / camera.Zoom)),
-                    playerTransform.Position.Y + (camera.Position.Y - playerTransform.Position.Y) + (mousePos.Y * (1f / camera.Zoom)));
+                Vector2 destination = new Vector2(
+                    playerPixels.X + (camera.Position.X - playerPixels.X) + (mousePos.X * (1f / camera.Zoom)),
+                    playerPixels.Y + (camera.Position.Y - playerPixels.Y) + (mousePos.Y * (1f / camera.Zoom)));
 
                 // Make player always face the mouse pointer.
-                Vector2 direction = playerTransform.Position - destination;
+                Vector2 direction = playerPixels - destination;
                 playerTransform.Rotation = (float)Math.Atan2(direction.Y, direction.X) - ((float)Math.PI / 2f);
 
                 // Move the player when the right mouse button is clicked.
                 if (IsRightMouseButtonClicked(mouse))
                 {
                     // Convert destination from pixel coords to block coords.
-                    var destinationBlock = new Vector2 {
+                    Vector2 destinationBlock = new Vector2 {
                         X = (int)Math.Round(destination.X / Constants.UnitSize),
                         Y = (int)Math.Round(destination.Y / Constants.UnitSize),
                     };

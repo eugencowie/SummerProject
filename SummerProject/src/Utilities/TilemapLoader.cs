@@ -106,8 +106,8 @@ namespace SummerProject
                 Entity baseEntity = entityManager.CreateEntity();
 
                 baseEntity.AddComponent(new Transform {
-                    Position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize),
-                    Size = new Vector2(Constants.UnitSize),
+                    Position = new Vector2(x, y),
+                    Size = new Vector2(1f, 1f),
                     Rotation = baseRot
                 });
 
@@ -142,13 +142,11 @@ namespace SummerProject
                 }
 
                 Entity objectEntity = entityManager.CreateEntity();
-
                 objectEntity.AddComponent(new Transform {
-                    Position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize),
-                    Size = new Vector2(Constants.UnitSize),
+                    Position = new Vector2(x, y),
+                    Size = new Vector2(1f, 1f),
                     Rotation = objectRot
                 });
-
                 if (objectTexture != "")
                     objectEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(objectTexture), LayerDepth = 0.9f });
                 else {

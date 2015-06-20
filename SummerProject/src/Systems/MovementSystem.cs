@@ -34,14 +34,10 @@ namespace SummerProject
         {
             Entity level = entityWorld.TagManager.GetEntity("level");
 
-            Vector2 position = transform.Position;
-            var destinationBlock = new Point((int)moveAction.Destination.X, (int)moveAction.Destination.Y);
-            float speed = moveAction.Speed;
+            Point destinationBlock = new Point((int)moveAction.Destination.X, (int)moveAction.Destination.Y);
+            float speed = moveAction.Speed / 60f;
 
             Tilemap tilemap = level.GetComponent<Tilemap>();
-
-            // Convert position and destination from pixel coords to block coords.
-            Point positionBlock = Tilemap.PixelsToBlockCoords(position);
 
 
             #region Render debug texture
@@ -51,8 +47,8 @@ namespace SummerProject
             {
                 foreach (Vector2 node in astar.Path)
                 {
-                    var textureOrigin = new Vector2(debugTexture.Width / 2f, debugTexture.Height / 2f);
-                    var destinationRect = new Rectangle {
+                    Vector2 textureOrigin = new Vector2(debugTexture.Width / 2f, debugTexture.Height / 2f);
+                    Rectangle destinationRect = new Rectangle {
                         X = (int)node.X * Constants.UnitSize,
                         Y = (int)node.Y * Constants.UnitSize,
                         Width = Constants.UnitSize,
@@ -99,7 +95,7 @@ namespace SummerProject
                 // the higher it is the less number of checks it take to determine
                 // a path
                 astar = new AStar.AStar(tileInfo, 1, 100);
-                astar.Start(positionBlock.X, positionBlock.Y, destinationBlock.X, destinationBlock.Y);
+                astar.Start((int)transform.Position.X, (int)transform.Position.Y, destinationBlock.X, destinationBlock.Y);
 
                 // This particular implementation of the A* algorithm does not handle moving to adjacent
                 // blocks consistently and will often not find a path, so if the path is empty and the
@@ -107,10 +103,8 @@ namespace SummerProject
                 // blocks and, if so, create a new path to the destination.
                 if (astar.Path.Count == 0 && tilemap.Tiles[destinationBlock.X, destinationBlock.Y].Collision.TileType == AStar.TileType.Floor)
                 {
-                    var positionVector = new Vector2(positionBlock.X, positionBlock.Y);
-                    var destinationVector = new Vector2(destinationBlock.X, destinationBlock.Y);
-
-                    Vector2 distance = destinationVector - positionVector;
+                    Vector2 destinationVector = new Vector2(destinationBlock.X, destinationBlock.Y);
+                    Vector2 distance = destinationVector - transform.Position;
                     if (distance.Length() < 2f)
                         astar.Path.Add(destinationVector);
                 }
@@ -125,10 +119,8 @@ namespace SummerProject
                 return;
             }
 
-            Vector2 newDestination = (astar.Path[currentIndex] * Constants.UnitSize);
-
-            if (Math.Abs(newDestination.X - position.X) <= speed &&
-                Math.Abs(newDestination.Y - position.Y) <= speed)
+            if (Math.Abs(astar.Path[currentIndex].X - transform.Position.X) <= speed &&
+                Math.Abs(astar.Path[currentIndex].Y - transform.Position.Y) <= speed)
             {
                 if (currentIndex == astar.Path.Count - 1)
                 {
@@ -141,11 +133,11 @@ namespace SummerProject
             }
             else
             {
-                Vector2 direction = newDestination - position;
+                Vector2 direction = astar.Path[currentIndex] - transform.Position;
                 direction.Normalize();
 
-                position += direction * speed;
-                transform.Position = position;
+                transform.Position += direction * speed;
+                transform.Position = transform.Position;
             }
         }
     }
