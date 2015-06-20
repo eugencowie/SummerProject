@@ -18,7 +18,7 @@ namespace SummerProject
         }
 
         public float Percentage {
-            get { return (float)_current / (float)Max; }
+            get { return (float)_current / Max; }
         }
 
         public Trait(int _base, int modifier)

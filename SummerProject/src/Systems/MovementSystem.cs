@@ -11,8 +11,6 @@ namespace SummerProject
     [ArtemisEntitySystem(GameLoopType = GameLoopType.Draw, Layer = 0)]
     class MovementSystem : EntityComponentProcessingSystem<MoveAction, Transform>
     {
-        GraphicsDevice graphics;
-
         AStar.AStar astar;
         int currentIndex;
 
@@ -23,7 +21,6 @@ namespace SummerProject
 
         public override void LoadContent()
         {
-            graphics = BlackBoard.GetEntry<Game>("Game").GraphicsDevice;
             previousDestination = null;
             debugBatch = BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
             debugTexture = BlackBoard.GetEntry<Game>("Game").Content.Load<Texture2D>("textures/selector");
