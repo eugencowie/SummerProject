@@ -13,6 +13,9 @@ namespace SummerProject
         public bool VSync;
     }
 
+    /// <summary>
+    /// This class contains helper functions for reading and writing to an options file.
+    /// </summary>
     static class Options
     {
         public static OptionData Instance = new OptionData {

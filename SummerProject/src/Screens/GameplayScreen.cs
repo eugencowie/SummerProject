@@ -14,9 +14,6 @@ namespace SummerProject
     /// </summary>
     class GameplayScreen : GameScreen
     {
-        #region Fields
-
-
         ContentManager content;
         SpriteFont gameFont;
 
@@ -26,15 +23,6 @@ namespace SummerProject
         InputAction pauseAction;
         float pauseAlpha;
 
-
-        #endregion
-
-        #region Initialisation
-
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
@@ -46,10 +34,6 @@ namespace SummerProject
                 true);
         }
 
-
-        /// <summary>
-        /// Load graphics content for the game.
-        /// </summary>
         public override void Activate(bool instancePreserved)
         {
             if (!instancePreserved)
@@ -125,26 +109,11 @@ namespace SummerProject
             }
         }
 
-
-        /// <summary>
-        /// Unload graphics content used by the game.
-        /// </summary>
         public override void Unload()
         {
             content.Unload();
         }
 
-
-        #endregion
-
-        #region Update and Draw
-
-
-        /// <summary>
-        /// Updates the state of the game. This method checks the GameScreen.IsActive
-        /// property, so the game will stop updating when the pause menu is active,
-        /// or if you tab away to a different application.
-        /// </summary>
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, false);
@@ -165,14 +134,10 @@ namespace SummerProject
             }
         }
 
-
-        /// <summary>
-        /// Lets the game respond to player input. Unlike the Update method,
-        /// this will only be called when the gameplay screen is active.
-        /// </summary>
         public override void HandleInput(GameTime gameTime, InputState input)
         {
-            /*if (input == null)
+            /*
+            if (input == null)
                 throw new ArgumentNullException("input");
 
             // Look up inputs for the active player profile.
@@ -218,13 +183,10 @@ namespace SummerProject
                     movement.Normalize();
 
                 playerPosition += movement * 8f;
-            }*/
+            }
+            */
         }
 
-
-        /// <summary>
-        /// Draws the gameplay screen.
-        /// </summary>
         public override void Draw(GameTime gameTime)
         {
             // This game has a blue background. Why? Because!
@@ -252,8 +214,5 @@ namespace SummerProject
                 ScreenManager.FadeBackBufferToBlack(alpha);
             }
         }
-
-
-        #endregion
     }
 }

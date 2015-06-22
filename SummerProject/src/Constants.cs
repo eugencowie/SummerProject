@@ -1,5 +1,9 @@
 ﻿namespace SummerProject
 {
+    /// <summary>
+    /// This class contains global static constants which are used in various places
+    /// throughout the application.
+    /// </summary>
     static class Constants
     {
         /// <summary>

@@ -5,7 +5,7 @@ namespace SummerProject
     /// <summary>
     /// The main XNA game class.
     /// </summary>
-    public class SummerProjectGame : Microsoft.Xna.Framework.Game
+    class SummerProjectGame : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
 
@@ -19,7 +19,7 @@ namespace SummerProject
                 PreferredBackBufferWidth       = Options.Instance.Width,
                 PreferredBackBufferHeight      = Options.Instance.Height,
                 IsFullScreen                   = Options.Instance.Fullscreen,
-                SynchronizeWithVerticalRetrace = Options.Instance.VSync,
+                SynchronizeWithVerticalRetrace = Options.Instance.VSync
             };
             Content.RootDirectory = "Content";
 

@@ -11,7 +11,7 @@ namespace SummerProject
         None,
         Ground,
         UnpassableGround,
-        Wall,
+        Wall
     }
 
     enum ObjectBlock {
@@ -29,14 +29,18 @@ namespace SummerProject
         Key
     }
 
-    struct Tile {
+    struct Tile
+    {
         public Entity BaseEntity;
         public Entity ObjectEntity;
+
         public BaseBlock Base;
         public ObjectBlock Object;
         public AStar.TileInfo Collision;
+
         public float BaseRotation;
         public float ObjectRotation;
+
         public SpriteEffects BaseEffect;
         public SpriteEffects ObjectEffect;
     }
@@ -46,8 +50,8 @@ namespace SummerProject
         public Tile[,] Tiles;
 
         /// <summary>
-        /// Find the first object block in the tilemap which matches the specified object block type. Can
-        /// be useful to find the player start, for example.
+        /// Find the first object block in the tilemap which matches the specified object
+        /// block type. Can be useful to find the player start, for example.
         /// </summary>
         public Point? FirstObjectBlockOfType(ObjectBlock blockType)
         {
@@ -60,8 +64,8 @@ namespace SummerProject
         }
 
         /// <summary>
-        /// Find all object blocks in the tilemap which match the specified object block type. Can
-        /// be useful for finding mob spawns, for example.
+        /// Find all object blocks in the tilemap which match the specified object block
+        /// type. Can be useful for finding mob spawns, for example.
         /// </summary>
         public List<Point> AllObjectBlocksOfType(ObjectBlock blockType)
         {
@@ -98,8 +102,8 @@ namespace SummerProject
         }
 
         /// <summary>
-        /// Recalculate the collision block information. Usually needed after removing an obstacle
-        /// such as a door, for example.
+        /// Recalculate the collision block information. Usually needed after removing an
+        /// obstacle such as a door, for example.
         /// </summary>
         public void RecalculateCollisionBlocks()
         {
