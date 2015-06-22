@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<OptionData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Width>800</Width>
+  <Height>600</Height>
+  <Fullscreen>false</Fullscreen>
+  <VSync>true</VSync>
+</OptionData>
