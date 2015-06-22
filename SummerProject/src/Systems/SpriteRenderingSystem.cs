@@ -4,6 +4,7 @@ using Artemis.Manager;
 using Artemis.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace SummerProject
 {
@@ -39,6 +40,12 @@ namespace SummerProject
                     Height = (int)(size.Y * Constants.UnitSize)
                 };
 
+                // Calculate the sprite layer depth. Enums elements in C# by default are integers
+                // starting at zero for the first element and increasing by one until the last
+                // element. We calculate the sprite layer depth by dividing the integer value of
+                // the specified LayerDepth with the number of elements in the enum, minus one.
+                float layerDepth = (int)sprite.LayerDepth / (float)(Enum.GetNames(typeof(LayerDepth)).Length - 1);
+
                 spriteBatch.Draw(
                     sprite.Texture,
                     destinationRect,
@@ -47,7 +54,7 @@ namespace SummerProject
                     transform.Rotation,
                     origin,
                     sprite.Effects,
-                    sprite.LayerDepth);
+                    layerDepth);
             }
         }
     }

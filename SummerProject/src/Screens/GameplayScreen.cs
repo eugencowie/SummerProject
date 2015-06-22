@@ -86,7 +86,7 @@ namespace SummerProject
                 player.Tag = "player";
                 player.AddComponent(new PlayerInfo { PlayerId = 1, LocalPlayer = true });
                 player.AddComponent(new Transform { Position = playerStart.Value });
-                player.AddComponent(new Sprite { Texture = content.Load<Texture2D>("textures/objects/player"), LayerDepth = 0f });
+                player.AddComponent(new Sprite { Texture = content.Load<Texture2D>("textures/objects/player"), LayerDepth = LayerDepth.Player });
                 player.AddComponent(new Inventory());
 
                 // Get mob spawn positions from the level tilemap.
@@ -101,7 +101,7 @@ namespace SummerProject
                     Entity enemy = entityManager.CreateEntity();
                     enemy.Group = "enemies";
                     enemy.AddComponent(new Transform { Position = position, Rotation = rotation });
-                    enemy.AddComponent(new Sprite { Texture = texture, Effects = effect, LayerDepth = 0f });
+                    enemy.AddComponent(new Sprite { Texture = texture, Effects = effect, LayerDepth = LayerDepth.Player });
                     enemy.AddComponent(new Inventory());
                 }
 

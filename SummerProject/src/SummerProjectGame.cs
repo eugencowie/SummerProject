@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 namespace SummerProject
 {
     /// <summary>
-    /// The main game class.
+    /// The main XNA game class.
     /// </summary>
     public class SummerProjectGame : Microsoft.Xna.Framework.Game
     {
@@ -11,12 +11,15 @@ namespace SummerProject
 
         public SummerProjectGame()
         {
+            // Read options file.
+            Options.LoadOptionData(Constants.OptionsFile);
+
             // Set up XNA.
             graphics = new GraphicsDeviceManager(this) {
-                SynchronizeWithVerticalRetrace = true,
-                PreferredBackBufferWidth = 800,
-                PreferredBackBufferHeight = 600,
-                IsFullScreen = false
+                PreferredBackBufferWidth       = Options.Instance.Width,
+                PreferredBackBufferHeight      = Options.Instance.Height,
+                IsFullScreen                   = Options.Instance.Fullscreen,
+                SynchronizeWithVerticalRetrace = Options.Instance.VSync,
             };
             Content.RootDirectory = "Content";
 
