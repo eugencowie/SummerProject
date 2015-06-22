@@ -112,7 +112,7 @@ namespace SummerProject
                 });
 
                 if (baseTexture != "")
-                    baseEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(baseTexture) });
+                    baseEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(baseTexture), LayerDepth = LayerDepth.Background });
                 else {
                     entityManager.DeleteEntity(baseEntity);
                     baseEntity = null;
@@ -150,7 +150,7 @@ namespace SummerProject
                 });
 
                 if (objectTexture != "")
-                    objectEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(objectTexture), LayerDepth = 0.9f });
+                    objectEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(objectTexture), LayerDepth = LayerDepth.Object });
                 else {
                     entityManager.DeleteEntity(objectEntity);
                     objectEntity = null;
