@@ -84,12 +84,11 @@ namespace SummerProject
                 Vector2 playerStart = Tilemap.BlockCoordsToPixels(playerStartBlock.Value);
 
                 // Create the player entity.
-                Entity player = entityManager.CreateEntity();
-                player.Tag = "player";
-                player.AddComponent(new PlayerInfo { PlayerId = 1, LocalPlayer = true });
-                player.AddComponent(new Transform { Position = playerStart, Size = new Vector2(40, 40) });
-                player.AddComponent(new Sprite { Texture = content.Load<Texture2D>("textures/objects/player"), LayerDepth = LayerDepth.Player });
-                player.AddComponent(new Inventory());
+                Entities.CreatePlayer(entityManager, content,
+                    group: "players",
+                    tag: "player",
+                    position: playerStart.Value,
+                    localPlayer: true);
 
                 // Get mob spawn positions from the level tilemap.
                 List<Point> mobSpawnBlocks = levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob);
