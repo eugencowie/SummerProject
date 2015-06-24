@@ -103,19 +103,12 @@ namespace SummerProject
                     }
                 }
 
-                Entity baseEntity = entityManager.CreateEntity();
-
-                baseEntity.AddComponent(new Transform {
-                    Position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize),
-                    Size = new Vector2(Constants.UnitSize),
-                    Rotation = baseRot
-                });
-
-                if (baseTexture != "")
-                    baseEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(baseTexture), LayerDepth = LayerDepth.Background });
-                else {
-                    entityManager.DeleteEntity(baseEntity);
-                    baseEntity = null;
+                Entity baseEntity = null;
+                if (!string.IsNullOrEmpty(baseTexture))
+                {
+                    var position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize);
+                    baseEntity = entityManager.CreateEntity("background")
+                        .AddBackgroundTileComponents(content, position, baseRot, baseTexture, baseEffect);
                 }
 
                 // Default rotation is 0.
@@ -141,19 +134,12 @@ namespace SummerProject
                     }
                 }
 
-                Entity objectEntity = entityManager.CreateEntity();
-
-                objectEntity.AddComponent(new Transform {
-                    Position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize),
-                    Size = new Vector2(Constants.UnitSize),
-                    Rotation = objectRot
-                });
-
-                if (objectTexture != "")
-                    objectEntity.AddComponent(new Sprite { Texture = content.Load<Texture2D>(objectTexture), LayerDepth = LayerDepth.Object });
-                else {
-                    entityManager.DeleteEntity(objectEntity);
-                    objectEntity = null;
+                Entity objectEntity = null;
+                if (!string.IsNullOrEmpty(objectTexture))
+                {
+                    var position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize);
+                    objectEntity = entityManager.CreateEntity("objects")
+                        .AddObjectTileComponents(content, position, objectRot, objectTexture, objectEffect);
                 }
 
                 if (baseEntity != null)

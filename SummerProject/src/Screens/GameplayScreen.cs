@@ -57,8 +57,7 @@ namespace SummerProject
                 entityManager.InitializeAll(true);
 
                 // Create the level entity.
-                Entity level = entityManager.CreateEntity();
-                level.Tag = "level";
+                Entity level = entityManager.CreateEntity(tag: "level");
                 Tilemap levelTilemap = TilemapLoader.ReadMapFromFile("Content/maps/Map1.tmx", entityManager);
                 level.AddComponent(levelTilemap);
 
@@ -68,11 +67,8 @@ namespace SummerProject
                 Vector2 playerStart = Tilemap.BlockCoordsToPixels(playerStartBlock.Value);
 
                 // Create the player entity.
-                Entities.CreatePlayer(entityManager, content,
-                    group: "players",
-                    tag: "player",
-                    position: playerStart.Value,
-                    localPlayer: true);
+                entityManager.CreateEntity("players", "player1")
+                    .AddPlayerComponents(content, playerStart, true);
 
                 // Get mob spawn positions from the level tilemap.
                 List<Point> mobSpawnBlocks = levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob);
@@ -80,18 +76,11 @@ namespace SummerProject
                 {
                     Vector2 position = Tilemap.BlockCoordsToPixels(mobSpawn);
                     float rotation = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectRotation;
-
-                    var size = new Vector2(40, 40);
-
-                    Texture2D texture = content.Load<Texture2D>("textures/objects/enemy");
-                    SpriteEffects effect = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectEffect;
+                    SpriteEffects effects = levelTilemap.Tiles[mobSpawn.X, mobSpawn.Y].ObjectEffect;
 
                     // Create an enemy.
-                    Entity enemy = entityManager.CreateEntity();
-                    enemy.Group = "enemies";
-                    enemy.AddComponent(new Transform { Position = position, Rotation = rotation, Size = size });
-                    enemy.AddComponent(new Sprite { Texture = texture, Effects = effect, LayerDepth = LayerDepth.Player });
-                    enemy.AddComponent(new Inventory());
+                    entityManager.CreateEntity("enemies")
+                        .AddEnemyComponents(content, position, rotation, effects);
                 }
 
                 // Center the camera on the player at the start.
