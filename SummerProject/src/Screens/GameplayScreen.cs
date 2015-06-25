@@ -22,6 +22,10 @@ namespace SummerProject
         InputAction pauseAction;
         float pauseAlpha;
 
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
@@ -33,6 +37,10 @@ namespace SummerProject
                 true);
         }
 
+
+        /// <summary>
+        /// Load graphics content for the game.
+        /// </summary>
         public override void Activate(bool instancePreserved)
         {
             if (!instancePreserved)
@@ -62,7 +70,7 @@ namespace SummerProject
 
                 // Get the player start position from the level tilemap.
                 Vector2? playerStart = levelTilemap.FirstObjectBlockOfType(ObjectBlock.PlayerStart);
-                if (!playerStart.HasValue) playerStart = new Vector2(1f, 1f);
+                if (!playerStart.HasValue) playerStart = Vector2.One;
 
                 // Create the player entity.
                 entityManager.CreateEntity("players", "player1")
@@ -71,8 +79,10 @@ namespace SummerProject
                 // Get mob spawn positions from the level tilemap.
                 foreach (Vector2 position in levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob))
                 {
-                    float rotation = levelTilemap.Tiles[(int)Math.Round(position.X), (int)Math.Round(position.Y)].ObjectRotation;
-                    SpriteEffects effects = levelTilemap.Tiles[(int)Math.Round(position.X), (int)Math.Round(position.Y)].ObjectEffect;
+                    Point block = position.Round();
+
+                    float rotation = levelTilemap.Tiles[block.X, block.Y].ObjectRotation;
+                    SpriteEffects effects = levelTilemap.Tiles[block.X, block.Y].ObjectEffect;
 
                     // Create an enemy.
                     entityManager.CreateEntity("enemies")
@@ -80,7 +90,7 @@ namespace SummerProject
                 }
 
                 // Center the camera on the player at the start.
-                camera.Position = Tilemap.BlockCoordsToPixels(playerStart.Value);
+                camera.Position = playerStart.Value * Constants.UnitSize;
 
                 // Simulate a longer loading time by delaying for a while, giving us
                 // a chance to admire the beautiful loading screen.
@@ -94,11 +104,19 @@ namespace SummerProject
             }
         }
 
+
+        /// <summary>
+        /// Unload graphics content used by the game.
+        /// </summary>
         public override void Unload()
         {
             content.Unload();
         }
 
+
+        /// <summary>
+        /// Updates the state of the game.
+        /// </summary>
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, false);
@@ -119,59 +137,10 @@ namespace SummerProject
             }
         }
 
-        public override void HandleInput(GameTime gameTime, InputState input)
-        {
-            /*
-            if (input == null)
-                throw new ArgumentNullException("input");
 
-            // Look up inputs for the active player profile.
-            int playerIndex = (int)ControllingPlayer.Value;
-
-            KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
-            GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
-
-            // The game pauses either if the user presses the pause button, or if
-            // they unplug the active gamepad. This requires us to keep track of
-            // whether a gamepad was ever plugged in, because we don't want to pause
-            // on PC if they are playing with a keyboard and have no gamepad at all!
-            bool gamePadDisconnected = (!gamePadState.IsConnected && input.GamePadWasConnected[playerIndex]);
-
-            PlayerIndex player;
-            if (pauseAction.Evaluate(input, ControllingPlayer, out player) || gamePadDisconnected)
-            {
-                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
-            }
-            else
-            {
-                // Otherwise move the player position.
-                Vector2 movement = Vector2.Zero;
-
-                if (keyboardState.IsKeyDown(Keys.Left))
-                    movement.X--;
-
-                if (keyboardState.IsKeyDown(Keys.Right))
-                    movement.X++;
-
-                if (keyboardState.IsKeyDown(Keys.Up))
-                    movement.Y--;
-
-                if (keyboardState.IsKeyDown(Keys.Down))
-                    movement.Y++;
-
-                Vector2 thumbstick = gamePadState.ThumbSticks.Left;
-
-                movement.X += thumbstick.X;
-                movement.Y -= thumbstick.Y;
-
-                if (movement.Length() > 1)
-                    movement.Normalize();
-
-                playerPosition += movement * 8f;
-            }
-            */
-        }
-
+        /// <summary>
+        /// Draws the gameplay screen.
+        /// </summary>
         public override void Draw(GameTime gameTime)
         {
             // This game has a blue background. Why? Because!
@@ -197,6 +166,40 @@ namespace SummerProject
             if (TransitionPosition > 0 || pauseAlpha > 0) {
                 float alpha = MathHelper.Lerp(1f - TransitionAlpha, 1f, pauseAlpha / 2f);
                 ScreenManager.FadeBackBufferToBlack(alpha);
+            }
+        }
+
+
+        /// <summary>
+        /// Lets the game respond to player input. Unlike the Update method,
+        /// this will only be called when the gameplay screen is active.
+        /// </summary>
+        public override void HandleInput(GameTime gameTime, InputState input)
+        {
+            if (input == null)
+                throw new ArgumentNullException("input");
+
+            // Look up inputs for the active player profile.
+            if (!ControllingPlayer.HasValue) return;
+            int playerIndex = (int)ControllingPlayer.Value;
+
+            KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
+            GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
+
+            // The game pauses either if the user presses the pause button, or if
+            // they unplug the active gamepad. This requires us to keep track of
+            // whether a gamepad was ever plugged in, because we don't want to pause
+            // on PC if they are playing with a keyboard and have no gamepad at all.
+            bool gamePadDisconnected = (!gamePadState.IsConnected && input.GamePadWasConnected[playerIndex]);
+
+            PlayerIndex player;
+            if (pauseAction.Evaluate(input, ControllingPlayer, out player) || gamePadDisconnected)
+            {
+                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+            }
+            else
+            {
+                // TODO?
             }
         }
     }

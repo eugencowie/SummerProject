@@ -59,7 +59,7 @@ namespace SummerProject
                 if (lockCameraToPlayer)
                 {
                     // Lock camera to player.
-                    camera.Position = Tilemap.BlockCoordsToPixels(playerTransform.Position);
+                    camera.Position = playerTransform.Position * Constants.UnitSize;
                 }
                 else
                 {
@@ -113,8 +113,8 @@ namespace SummerProject
                 #endregion
 
                 // Exit the game when the escape key is pressed (TODO: rebindable keys?).
-                if (IsKeyClicked(keyboard, Keys.Escape))
-                    BlackBoard.GetEntry<Game>("Game").Exit();
+                //if (IsKeyClicked(keyboard, Keys.Escape))
+                //    BlackBoard.GetEntry<Game>("Game").Exit();
 
                 // TODO: remove this from final version.
                 if (keyboard.IsKeyDown(Keys.F5))
@@ -127,7 +127,7 @@ namespace SummerProject
                     mouse.X - (viewport.Width / 2f),
                     mouse.Y - (viewport.Height / 2f));
 
-                Vector2 playerPixels = Tilemap.BlockCoordsToPixels(playerTransform.Position);
+                Vector2 playerPixels = playerTransform.Position * Constants.UnitSize;
 
                 // Figure out the destination (in pixels).
                 Vector2 destination = new Vector2(

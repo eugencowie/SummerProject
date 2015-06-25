@@ -6,10 +6,13 @@ namespace SummerProject
     /// </summary>
     class PauseMenuScreen : MenuScreen
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public PauseMenuScreen()
             : base("Paused")
         {
-            // Create our menu entries.
+            // Create menu entries.
             var resumeGameMenuEntry = new MenuEntry("Resume Game");
             var quitGameMenuEntry = new MenuEntry("Quit Game");
 
@@ -22,6 +25,10 @@ namespace SummerProject
             MenuEntries.Add(quitGameMenuEntry);
         }
 
+
+        /// <summary>
+        /// Event handler for when the Quit Game menu entry is selected.
+        /// </summary>
         private void QuitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             const string message = "Are you sure you want to quit this game?";
@@ -32,6 +39,12 @@ namespace SummerProject
             ScreenManager.AddScreen(confirmQuitMessageBox, ControllingPlayer);
         }
 
+
+        /// <summary>
+        /// Event handler for when the user selects ok on the "are you sure you want
+        /// to quit" message box. This uses the loading screen to transition from the
+        /// game back to the main menu screen.
+        /// </summary>
         private void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
             LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());

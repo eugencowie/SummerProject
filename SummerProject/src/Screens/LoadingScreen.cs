@@ -25,17 +25,23 @@ namespace SummerProject
 
         GameScreen[] screensToLoad;
 
+
+        /// <summary>
+        /// The constructor is private: loading screens should be activated via the
+        /// static Load method instead.
+        /// </summary>
         private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow, GameScreen[] screensToLoad)
         {
-            // The constructor is private: loading screens should be activated via the
-            // static Load method instead.
-
             this.loadingIsSlow = loadingIsSlow;
             this.screensToLoad = screensToLoad;
 
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
         }
 
+
+        /// <summary>
+        /// Activates the loading screen.
+        /// </summary>
         public static void Load(
             ScreenManager screenManager,
             bool loadingIsSlow,
@@ -52,6 +58,10 @@ namespace SummerProject
             screenManager.AddScreen(loadingScreen, controllingPlayer);
         }
 
+
+        /// <summary>
+        /// Updates the loading screen.
+        /// </summary>
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
@@ -72,6 +82,10 @@ namespace SummerProject
             }
         }
 
+
+        /// <summary>
+        /// Draws the loading screen.
+        /// </summary>
         public override void Draw(GameTime gameTime)
         {
             // If we are the only active screen, that means all the previous screens

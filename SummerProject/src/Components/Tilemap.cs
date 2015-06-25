@@ -80,28 +80,6 @@ namespace SummerProject
         }
 
         /// <summary>
-        /// Convert block coords to pixels.
-        /// </summary>
-        public static Vector2 BlockCoordsToPixels(Vector2 blockCoords)
-        {
-            return new Vector2 {
-                X = blockCoords.X * Constants.UnitSize,
-                Y = blockCoords.Y * Constants.UnitSize
-            };
-        }
-
-        /// <summary>
-        /// Convert pixels to block coords.
-        /// </summary>
-        public static Vector2 PixelsToBlockCoords(Vector2 pixels)
-        {
-            return new Vector2 {
-                X = (float)Math.Round(pixels.X / Constants.UnitSize),
-                Y = (float)Math.Round(pixels.Y / Constants.UnitSize)
-            };
-        }
-
-        /// <summary>
         /// Recalculate the collision block information. Usually needed after removing an
         /// obstacle such as a door, for example.
         /// </summary>

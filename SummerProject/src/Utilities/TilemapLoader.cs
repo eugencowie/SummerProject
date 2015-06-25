@@ -10,6 +10,9 @@ namespace SummerProject
 {
     static class TilemapLoader
     {
+        /// <summary>
+        /// Helper function to create a Tilemap component from a Tiled TMX map file.
+        /// </summary>
         public static Tilemap ReadMapFromFile(string file, EntityWorld entityManager)
         {
             // Read file.

@@ -9,6 +9,10 @@ namespace SummerProject
     {
         GraphicsDeviceManager graphics;
 
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public SummerProjectGame()
         {
             // Read options file.
@@ -44,10 +48,14 @@ namespace SummerProject
             screenManager.AddScreen(new MainMenuScreen(), null);
         }
 
+
+        /// <summary>
+        /// This method is called when it is time to render the frame.
+        /// </summary>
         protected override void Draw(GameTime gameTime)
         {
             // Clear the screen.
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // The real drawing happens inside the screen manager component.
             base.Draw(gameTime);

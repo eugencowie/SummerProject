@@ -134,7 +134,6 @@ namespace SummerProject
                 direction.Normalize();
 
                 transform.Position += direction * speed;
-                transform.Position = transform.Position;
             }
         }
     }

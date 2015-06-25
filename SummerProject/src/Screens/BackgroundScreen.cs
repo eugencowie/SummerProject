@@ -15,12 +15,20 @@ namespace SummerProject
         ContentManager content;
         Texture2D backgroundTexture;
 
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public BackgroundScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
         }
 
+
+        /// <summary>
+        /// Loads graphics content for this screen.
+        /// </summary>
         public override void Activate(bool instancePreserved)
         {
             if (!instancePreserved)
@@ -36,20 +44,31 @@ namespace SummerProject
             }
         }
 
+
+        /// <summary>
+        /// Unloads graphics content for this screen.
+        /// </summary>
         public override void Unload()
         {
             content.Unload();
         }
 
+
+        /// <summary>
+        /// Updates the background screen.
+        /// </summary>
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
-            // Updates the background screen. Unlike most screens, this should not transition
-            // off even if it has been covered by another screen. This overload forces the
-            // coveredByOtherScreen parameter to false in order to stop the base Update method
-            // wanting to transition off.
+            // Unlike most screens, this should not transition off even if it has been
+            // covered by another screen. This overload forces the coveredByOtherScreen
+            // parameter to false in order to stop the base Update method wanting to
+            // transition off.
             base.Update(gameTime, otherScreenHasFocus, false);
         }
 
+        /// <summary>
+        /// Draws the background screen.
+        /// </summary>
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
