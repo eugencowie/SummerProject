@@ -6,6 +6,8 @@ namespace SummerProject
     /// </summary>
     class OptionsMenuScreen : MenuScreen
     {
+        #region Fields
+
         MenuEntry ungulateMenuEntry;
         MenuEntry languageMenuEntry;
         MenuEntry frobnicateMenuEntry;
@@ -26,10 +28,16 @@ namespace SummerProject
 
         static int elf = 23;
 
+        #endregion
+
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public OptionsMenuScreen()
             : base("Options")
         {
-            // Create our menu entries.
+            // Create menu entries.
             ungulateMenuEntry = new MenuEntry(string.Empty);
             languageMenuEntry = new MenuEntry(string.Empty);
             frobnicateMenuEntry = new MenuEntry(string.Empty);
@@ -54,6 +62,10 @@ namespace SummerProject
             MenuEntries.Add(back);
         }
 
+
+        /// <summary>
+        /// Fills in the latest values for the options screen menu text.
+        /// </summary>
         private void SetMenuEntryText()
         {
             ungulateMenuEntry.Text = "Preferred ungulate: " + currentUngulate;
@@ -62,6 +74,10 @@ namespace SummerProject
             elfMenuEntry.Text = "elf: " + elf;
         }
 
+
+        /// <summary>
+        /// Event handler for when the Ungulate menu entry is selected.
+        /// </summary>
         private void UngulateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             currentUngulate++;
@@ -72,6 +88,10 @@ namespace SummerProject
             SetMenuEntryText();
         }
 
+
+        /// <summary>
+        /// Event handler for when the Language menu entry is selected.
+        /// </summary>
         private void LanguageMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             currentLanguage = (currentLanguage + 1) % languages.Length;
@@ -79,6 +99,10 @@ namespace SummerProject
             SetMenuEntryText();
         }
 
+
+        /// <summary>
+        /// Event handler for when the Frobnicate menu entry is selected.
+        /// </summary>
         private void FrobnicateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             frobnicate = !frobnicate;
@@ -86,6 +110,10 @@ namespace SummerProject
             SetMenuEntryText();
         }
 
+
+        /// <summary>
+        /// Event handler for when the Elf menu entry is selected.
+        /// </summary>
         private void ElfMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             elf++;

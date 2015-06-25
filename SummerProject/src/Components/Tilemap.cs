@@ -2,7 +2,6 @@
 using Artemis.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 
 namespace SummerProject
@@ -67,7 +66,7 @@ namespace SummerProject
         /// Find all object blocks in the tilemap which match the specified object block
         /// type. Can be useful for finding mob spawns, for example.
         /// </summary>
-        public List<Point> AllObjectBlocksOfType(ObjectBlock blockType)
+        public IEnumerable<Point> AllObjectBlocksOfType(ObjectBlock blockType)
         {
             var list = new List<Point>();
 
@@ -77,28 +76,6 @@ namespace SummerProject
                         list.Add(new Point(x, y));
 
             return list;
-        }
-
-        /// <summary>
-        /// Convert block coords to pixels.
-        /// </summary>
-        public static Vector2 BlockCoordsToPixels(Point blockCoords)
-        {
-            return new Vector2 {
-                X = blockCoords.X * Constants.UnitSize,
-                Y = blockCoords.Y * Constants.UnitSize
-            };
-        }
-
-        /// <summary>
-        /// Convert pixels to block coords.
-        /// </summary>
-        public static Point PixelsToBlockCoords(Vector2 pixels)
-        {
-            return new Point {
-                X = (int)Math.Round(pixels.X / Constants.UnitSize),
-                Y = (int)Math.Round(pixels.Y / Constants.UnitSize)
-            };
         }
 
         /// <summary>

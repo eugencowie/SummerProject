@@ -10,6 +10,9 @@ namespace SummerProject
 {
     static class TilemapLoader
     {
+        /// <summary>
+        /// Helper function to create a Tilemap component from a Tiled TMX map file.
+        /// </summary>
         public static Tilemap ReadMapFromFile(string file, EntityWorld entityManager)
         {
             // Read file.
@@ -40,7 +43,7 @@ namespace SummerProject
                 // Fill the symbolic blocks with none by default.
                 var objectBlock = ObjectBlock.None;
 
-                ContentManager content = EntitySystem.BlackBoard.GetEntry<Game>("Game").Content;
+                ContentManager content = EntitySystem.BlackBoard.GetEntry<ContentManager>("Content");
 
                 string baseTexture = "";
                 switch (baseTile.Gid - firstBaseGid) {
@@ -106,7 +109,7 @@ namespace SummerProject
                 Entity baseEntity = null;
                 if (!string.IsNullOrEmpty(baseTexture))
                 {
-                    var position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize);
+                    var position = new Vector2(x, y);
                     baseEntity = entityManager.CreateEntity("background")
                         .AddBackgroundTileComponents(content, position, baseRot, baseTexture, baseEffect);
                 }
@@ -137,7 +140,7 @@ namespace SummerProject
                 Entity objectEntity = null;
                 if (!string.IsNullOrEmpty(objectTexture))
                 {
-                    var position = new Vector2(x * Constants.UnitSize, y * Constants.UnitSize);
+                    var position = new Vector2(x, y);
                     objectEntity = entityManager.CreateEntity("objects")
                         .AddObjectTileComponents(content, position, objectRot, objectTexture, objectEffect);
                 }

@@ -10,11 +10,16 @@ namespace SummerProject
     /// </summary>
     static class Entities
     {
-        private static int playerCounter;
+        /// <summary>
+        /// Used to keep track of the number of players in order to assign unique
+        /// player IDs.
+        /// </summary>
+        private static int playerCount;
 
 
         /// <summary>
-        /// Extension method for creating an entity with optional group and tag parameters.
+        /// Extension method for creating an entity with optional group and tag
+        /// parameters.
         /// </summary>
         public static Entity CreateEntity(
             this EntityWorld entityWorld,
@@ -44,7 +49,7 @@ namespace SummerProject
         {
             entity.AddComponent(new Transform {
                 Position = position,
-                Size = new Vector2(40),
+                Size = Vector2.One,
                 Rotation = 0f
             });
 
@@ -55,7 +60,7 @@ namespace SummerProject
             });
 
             entity.AddComponent(new PlayerInfo {
-                PlayerId = playerCounter++,
+                PlayerId = playerCount++,
                 LocalPlayer = localPlayer,
                 Level = 1,
                 Experience = 0,
@@ -83,7 +88,7 @@ namespace SummerProject
         {
             entity.AddComponent(new Transform {
                 Position = position,
-                Size = new Vector2(40),
+                Size = Vector2.One,
                 Rotation = rotation
             });
 
@@ -112,7 +117,7 @@ namespace SummerProject
         {
             entity.AddComponent(new Transform {
                 Position = position,
-                Size = new Vector2(40),
+                Size = Vector2.One,
                 Rotation = rotation
             });
 
@@ -139,7 +144,7 @@ namespace SummerProject
         {
             entity.AddComponent(new Transform {
                 Position = position,
-                Size = new Vector2(40),
+                Size = Vector2.One,
                 Rotation = rotation
             });
 
