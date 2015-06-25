@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using System.Xml.Serialization;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace SummerProject
 {
@@ -12,6 +12,7 @@ namespace SummerProject
         public bool Fullscreen;
         public bool VSync;
     }
+
 
     /// <summary>
     /// This class contains helper functions for reading and writing to an options file.
@@ -24,6 +25,7 @@ namespace SummerProject
             Fullscreen = false,
             VSync = true
         };
+
 
         public static void LoadOptionData(string path)
         {
@@ -41,6 +43,7 @@ namespace SummerProject
                 Instance = (OptionData)xml.Deserialize(f);
             }
         }
+
 
         public static void WriteOptionData(string path)
         {

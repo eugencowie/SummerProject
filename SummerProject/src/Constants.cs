@@ -11,6 +11,7 @@
         /// </summary>
         public const int UnitSize = 40;
 
+
         /// <summary>
         /// The file path of the options file.
         /// </summary>
