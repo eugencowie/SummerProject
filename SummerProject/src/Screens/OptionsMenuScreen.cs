@@ -1,14 +1,11 @@
 namespace SummerProject
 {
     /// <summary>
-    /// The options screen is brought up over the top of the main menu
-    /// screen, and gives the user a chance to configure the game.
+    /// The options screen is brought up over the top of the main menu screen, and gives
+    /// the user a chance to configure the game.
     /// </summary>
     class OptionsMenuScreen : MenuScreen
     {
-        #region Fields
-
-
         MenuEntry ungulateMenuEntry;
         MenuEntry languageMenuEntry;
         MenuEntry frobnicateMenuEntry;
@@ -17,7 +14,7 @@ namespace SummerProject
         enum Ungulate {
             BactrianCamel,
             Dromedary,
-            Llama,
+            Llama
         }
 
         static Ungulate currentUngulate = Ungulate.Dromedary;
@@ -29,15 +26,6 @@ namespace SummerProject
 
         static int elf = 23;
 
-
-        #endregion
-
-        #region Initialisation
-
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
         public OptionsMenuScreen()
             : base("Options")
         {
@@ -49,7 +37,7 @@ namespace SummerProject
 
             SetMenuEntryText();
 
-            MenuEntry back = new MenuEntry("Back");
+            var back = new MenuEntry("Back");
 
             // Hook up menu event handlers.
             ungulateMenuEntry.Selected += UngulateMenuEntrySelected;
@@ -57,7 +45,7 @@ namespace SummerProject
             frobnicateMenuEntry.Selected += FrobnicateMenuEntrySelected;
             elfMenuEntry.Selected += ElfMenuEntrySelected;
             back.Selected += OnCancel;
-            
+
             // Add entries to the menu.
             MenuEntries.Add(ungulateMenuEntry);
             MenuEntries.Add(languageMenuEntry);
@@ -66,11 +54,7 @@ namespace SummerProject
             MenuEntries.Add(back);
         }
 
-
-        /// <summary>
-        /// Fills in the latest values for the options screen menu text.
-        /// </summary>
-        void SetMenuEntryText()
+        private void SetMenuEntryText()
         {
             ungulateMenuEntry.Text = "Preferred ungulate: " + currentUngulate;
             languageMenuEntry.Text = "Language: " + languages[currentLanguage];
@@ -78,16 +62,7 @@ namespace SummerProject
             elfMenuEntry.Text = "elf: " + elf;
         }
 
-
-        #endregion
-
-        #region Handle Input
-
-
-        /// <summary>
-        /// Event handler for when the Ungulate menu entry is selected.
-        /// </summary>
-        void UngulateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void UngulateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             currentUngulate++;
 
@@ -97,40 +72,25 @@ namespace SummerProject
             SetMenuEntryText();
         }
 
-
-        /// <summary>
-        /// Event handler for when the Language menu entry is selected.
-        /// </summary>
-        void LanguageMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void LanguageMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             currentLanguage = (currentLanguage + 1) % languages.Length;
 
             SetMenuEntryText();
         }
 
-
-        /// <summary>
-        /// Event handler for when the Frobnicate menu entry is selected.
-        /// </summary>
-        void FrobnicateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void FrobnicateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             frobnicate = !frobnicate;
 
             SetMenuEntryText();
         }
 
-
-        /// <summary>
-        /// Event handler for when the Elf menu entry is selected.
-        /// </summary>
-        void ElfMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void ElfMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             elf++;
 
             SetMenuEntryText();
         }
-
-
-        #endregion
     }
 }

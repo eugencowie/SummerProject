@@ -13,9 +13,6 @@ namespace SummerProject
     /// </summary>
     class GameplayScreen : GameScreen
     {
-        #region Fields
-
-
         ContentManager content;
         SpriteFont gameFont;
 
@@ -25,15 +22,6 @@ namespace SummerProject
         InputAction pauseAction;
         float pauseAlpha;
 
-
-        #endregion
-
-        #region Initialisation
-
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
@@ -45,10 +33,6 @@ namespace SummerProject
                 true);
         }
 
-
-        /// <summary>
-        /// Load graphics content for the game.
-        /// </summary>
         public override void Activate(bool instancePreserved)
         {
             if (!instancePreserved)
@@ -72,8 +56,7 @@ namespace SummerProject
                 entityManager.InitializeAll(true);
 
                 // Create the level entity.
-                Entity level = entityManager.CreateEntity();
-                level.Tag = "level";
+                Entity level = entityManager.CreateEntity(tag: "level");
                 Tilemap levelTilemap = TilemapLoader.ReadMapFromFile("Content/maps/Map1.tmx", entityManager);
                 level.AddComponent(levelTilemap);
 
@@ -82,27 +65,18 @@ namespace SummerProject
                 if (!playerStart.HasValue) playerStart = new Vector2(1f, 1f);
 
                 // Create the player entity.
-                Entity player = entityManager.CreateEntity();
-                player.Tag = "player";
-                player.AddComponent(new PlayerInfo { PlayerId = 1, LocalPlayer = true });
-                player.AddComponent(new Transform { Position = playerStart.Value });
-                player.AddComponent(new Sprite { Texture = content.Load<Texture2D>("textures/objects/player"), LayerDepth = LayerDepth.Player });
-                player.AddComponent(new Inventory());
+                entityManager.CreateEntity("players", "player1")
+                    .AddPlayerComponents(content, playerStart.Value, true);
 
                 // Get mob spawn positions from the level tilemap.
                 foreach (Vector2 position in levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob))
                 {
-                    float rotation = levelTilemap.Tiles[(int)position.X, (int)position.Y].ObjectRotation;
-
-                    Texture2D texture = content.Load<Texture2D>("textures/objects/enemy");
-                    SpriteEffects effect = levelTilemap.Tiles[(int)position.X, (int)position.Y].ObjectEffect;
+                    float rotation = levelTilemap.Tiles[(int)Math.Round(position.X), (int)Math.Round(position.Y)].ObjectRotation;
+                    SpriteEffects effects = levelTilemap.Tiles[(int)Math.Round(position.X), (int)Math.Round(position.Y)].ObjectEffect;
 
                     // Create an enemy.
-                    Entity enemy = entityManager.CreateEntity();
-                    enemy.Group = "enemies";
-                    enemy.AddComponent(new Transform { Position = position, Rotation = rotation });
-                    enemy.AddComponent(new Sprite { Texture = texture, Effects = effect, LayerDepth = LayerDepth.Player });
-                    enemy.AddComponent(new Inventory());
+                    entityManager.CreateEntity("enemies")
+                        .AddEnemyComponents(content, position, rotation, effects);
                 }
 
                 // Center the camera on the player at the start.
@@ -120,26 +94,11 @@ namespace SummerProject
             }
         }
 
-
-        /// <summary>
-        /// Unload graphics content used by the game.
-        /// </summary>
         public override void Unload()
         {
             content.Unload();
         }
 
-
-        #endregion
-
-        #region Update and Draw
-
-
-        /// <summary>
-        /// Updates the state of the game. This method checks the GameScreen.IsActive
-        /// property, so the game will stop updating when the pause menu is active,
-        /// or if you tab away to a different application.
-        /// </summary>
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, false);
@@ -160,14 +119,10 @@ namespace SummerProject
             }
         }
 
-
-        /// <summary>
-        /// Lets the game respond to player input. Unlike the Update method,
-        /// this will only be called when the gameplay screen is active.
-        /// </summary>
         public override void HandleInput(GameTime gameTime, InputState input)
         {
-            /*if (input == null)
+            /*
+            if (input == null)
                 throw new ArgumentNullException("input");
 
             // Look up inputs for the active player profile.
@@ -213,13 +168,10 @@ namespace SummerProject
                     movement.Normalize();
 
                 playerPosition += movement * 8f;
-            }*/
+            }
+            */
         }
 
-
-        /// <summary>
-        /// Draws the gameplay screen.
-        /// </summary>
         public override void Draw(GameTime gameTime)
         {
             // This game has a blue background. Why? Because!
@@ -247,8 +199,5 @@ namespace SummerProject
                 ScreenManager.FadeBackBufferToBlack(alpha);
             }
         }
-
-
-        #endregion
     }
 }

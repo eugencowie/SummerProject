@@ -4,10 +4,13 @@ namespace SummerProject
 {
     class Trait
     {
+        #region Fields
+
         public int Base;
         public int Modifier;
 
         private int _current;
+
         public int Current {
             get { return _current; }
             set { if (value >= 0 && value <= Max) _current = value; }
@@ -20,6 +23,8 @@ namespace SummerProject
         public float Percentage {
             get { return (float)_current / Max; }
         }
+
+        #endregion
 
         public Trait(int _base, int modifier)
         {
