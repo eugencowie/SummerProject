@@ -32,6 +32,8 @@ namespace SummerProject
         InputAction menuUp;
         InputAction menuDown;
         InputAction menuSelect;
+        InputAction menuIncrease;
+        InputAction menuDecrease;
         InputAction menuCancel;
 
         #endregion
@@ -74,6 +76,14 @@ namespace SummerProject
             menuSelect = new InputAction(
                 new[] { Buttons.A, Buttons.Start },
                 new[] { Keys.Enter, Keys.Space },
+                true);
+            menuIncrease = new InputAction(
+                new[] { Buttons.DPadRight, Buttons.LeftThumbstickRight },
+                new[] { Keys.Right },
+                true);
+            menuDecrease = new InputAction(
+                new[] { Buttons.DPadLeft, Buttons.LeftThumbstickLeft },
+                new[] { Keys.Left },
                 true);
             menuCancel = new InputAction(
                 new[] { Buttons.B, Buttons.Back },
@@ -120,6 +130,10 @@ namespace SummerProject
 
             if (menuSelect.Evaluate(input, ControllingPlayer, out playerIndex))
                 OnSelectEntry(selectedEntry, playerIndex);
+            else if (menuIncrease.Evaluate(input, ControllingPlayer, out playerIndex))
+                OnIncreaseEntry(selectedEntry, playerIndex);
+            else if (menuDecrease.Evaluate(input, ControllingPlayer, out playerIndex))
+                OnDecreaseEntry(selectedEntry, playerIndex);
             else if (menuCancel.Evaluate(input, ControllingPlayer, out playerIndex))
                 OnCancel(playerIndex);
         }
@@ -131,6 +145,24 @@ namespace SummerProject
         protected virtual void OnSelectEntry(int entryIndex, PlayerIndex playerIndex)
         {
             menuEntries[entryIndex].OnSelectEntry(playerIndex);
+        }
+
+
+        /// <summary>
+        /// Handler for when the user has increased a menu entry.
+        /// </summary>
+        protected virtual void OnIncreaseEntry(int entryIndex, PlayerIndex playerIndex)
+        {
+            menuEntries[entryIndex].OnIncreaseEntry(playerIndex);
+        }
+
+
+        /// <summary>
+        /// Handler for when the user has decreased a menu entry.
+        /// </summary>
+        protected virtual void OnDecreaseEntry(int entryIndex, PlayerIndex playerIndex)
+        {
+            menuEntries[entryIndex].OnDecreaseEntry(playerIndex);
         }
 
 

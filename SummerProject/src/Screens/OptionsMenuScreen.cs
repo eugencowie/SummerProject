@@ -1,3 +1,8 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace SummerProject
 {
     /// <summary>
@@ -8,25 +13,29 @@ namespace SummerProject
     {
         #region Fields
 
-        MenuEntry ungulateMenuEntry;
-        MenuEntry languageMenuEntry;
-        MenuEntry frobnicateMenuEntry;
-        MenuEntry elfMenuEntry;
+        MenuEntry resolutionMenuEntry;
+        MenuEntry fullscreenMenuEntry;
+        MenuEntry vsyncMenuEntry;
 
-        enum Ungulate {
-            BactrianCamel,
-            Dromedary,
-            Llama
-        }
+        static List<Point> resolutions = new List<Point> {
+            new Point(800, 600),
+            new Point(1024, 768),
+            new Point(1280, 720),
+            new Point(1280, 800),
+            new Point(1280, 1024),
+            new Point(1360, 768),
+            new Point(1366, 768),
+            new Point(1440, 900),
+            new Point(1600, 900),
+            new Point(1680, 1050),
+            new Point(1920, 1080),
+            new Point(2560, 1440),
+            new Point(3840, 2160),
+        };
+        int currentResolution;
 
-        static Ungulate currentUngulate = Ungulate.Dromedary;
-
-        static string[] languages = { "C#", "French", "Deoxyribonucleic acid" };
-        static int currentLanguage;
-
-        static bool frobnicate = true;
-
-        static int elf = 23;
+        bool fullscreen;
+        bool vsync;
 
         #endregion
 
@@ -37,28 +46,42 @@ namespace SummerProject
         public OptionsMenuScreen()
             : base("Options")
         {
+            // Add current resolution to list of resolutions if it does not exist.
+            var current = new Point(Options.Instance.Width, Options.Instance.Height);
+            if (!resolutions.Contains(current))
+                resolutions.Add(current);
+            resolutions = resolutions.OrderBy(p => p.X).ThenBy(p => p.Y).ToList();
+
+            // Set current options.
+            currentResolution = resolutions.IndexOf(current);
+            fullscreen = Options.Instance.Fullscreen;
+            vsync = Options.Instance.VSync;
+
             // Create menu entries.
-            ungulateMenuEntry = new MenuEntry(string.Empty);
-            languageMenuEntry = new MenuEntry(string.Empty);
-            frobnicateMenuEntry = new MenuEntry(string.Empty);
-            elfMenuEntry = new MenuEntry(string.Empty);
+            resolutionMenuEntry = new MenuEntry(string.Empty);
+            fullscreenMenuEntry = new MenuEntry(string.Empty);
+            vsyncMenuEntry = new MenuEntry(string.Empty);
 
             SetMenuEntryText();
 
             var back = new MenuEntry("Back");
 
             // Hook up menu event handlers.
-            ungulateMenuEntry.Selected += UngulateMenuEntrySelected;
-            languageMenuEntry.Selected += LanguageMenuEntrySelected;
-            frobnicateMenuEntry.Selected += FrobnicateMenuEntrySelected;
-            elfMenuEntry.Selected += ElfMenuEntrySelected;
+            resolutionMenuEntry.Selected += ResolutionMenuEntryIncreased;
+            resolutionMenuEntry.Increased += ResolutionMenuEntryIncreased;
+            resolutionMenuEntry.Decreased += ResolutionMenuEntryDecreased;
+            fullscreenMenuEntry.Selected += FullscreenMenuEntrySelected;
+            fullscreenMenuEntry.Increased += FullscreenMenuEntrySelected;
+            fullscreenMenuEntry.Decreased += FullscreenMenuEntrySelected;
+            vsyncMenuEntry.Selected += VsyncMenuEntrySelected;
+            vsyncMenuEntry.Increased += VsyncMenuEntrySelected;
+            vsyncMenuEntry.Decreased += VsyncMenuEntrySelected;
             back.Selected += OnCancel;
 
             // Add entries to the menu.
-            MenuEntries.Add(ungulateMenuEntry);
-            MenuEntries.Add(languageMenuEntry);
-            MenuEntries.Add(frobnicateMenuEntry);
-            MenuEntries.Add(elfMenuEntry);
+            MenuEntries.Add(resolutionMenuEntry);
+            MenuEntries.Add(fullscreenMenuEntry);
+            MenuEntries.Add(vsyncMenuEntry);
             MenuEntries.Add(back);
         }
 
@@ -68,55 +91,85 @@ namespace SummerProject
         /// </summary>
         private void SetMenuEntryText()
         {
-            ungulateMenuEntry.Text = "Preferred ungulate: " + currentUngulate;
-            languageMenuEntry.Text = "Language: " + languages[currentLanguage];
-            frobnicateMenuEntry.Text = "Frobnicate: " + (frobnicate ? "on" : "off");
-            elfMenuEntry.Text = "elf: " + elf;
+            resolutionMenuEntry.Text = "Resolution: " + resolutions[currentResolution].X + "x" + resolutions[currentResolution].Y;
+            fullscreenMenuEntry.Text = "Fullscreen: " + (fullscreen ? "on" : "off");
+            vsyncMenuEntry.Text = "VSync: " + (vsync ? "on" : "off");
         }
 
 
         /// <summary>
-        /// Event handler for when the Ungulate menu entry is selected.
+        /// Event handler for when the user has cancelled the menu.
         /// </summary>
-        private void UngulateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        protected override void OnCancel(PlayerIndex playerIndex)
         {
-            currentUngulate++;
+            // Apply new options.
+            var graphicsService = (IGraphicsDeviceService)ScreenManager.Game.Services.GetService(typeof(IGraphicsDeviceService));
+            if (graphicsService is GraphicsDeviceManager)
+            {
+                var graphics = (graphicsService as GraphicsDeviceManager);
 
-            if (currentUngulate > Ungulate.Llama)
-                currentUngulate = 0;
+                graphics.PreferredBackBufferWidth = resolutions[currentResolution].X;
+                graphics.PreferredBackBufferHeight = resolutions[currentResolution].Y;
+                graphics.IsFullScreen = fullscreen;
+                graphics.SynchronizeWithVerticalRetrace = vsync;
+                graphics.ApplyChanges();
+            }
+
+            // Set new options.
+            Options.Instance.Width = resolutions[currentResolution].X;
+            Options.Instance.Height = resolutions[currentResolution].Y;
+            Options.Instance.Fullscreen = fullscreen;
+            Options.Instance.VSync = vsync;
+
+            // Write options to file.
+            Options.WriteOptionData(Constants.OptionsFile);
+
+            base.OnCancel(playerIndex);
+        }
+
+
+        /// <summary>
+        /// Event handler for when the Resolution menu entry is increased.
+        /// </summary>
+        private void ResolutionMenuEntryIncreased(object sender, PlayerIndexEventArgs e)
+        {
+            currentResolution = (currentResolution + 1) % resolutions.Count;
 
             SetMenuEntryText();
         }
 
 
         /// <summary>
-        /// Event handler for when the Language menu entry is selected.
+        /// Event handler for when the Resolution menu entry is decreased.
         /// </summary>
-        private void LanguageMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void ResolutionMenuEntryDecreased(object sender, PlayerIndexEventArgs e)
         {
-            currentLanguage = (currentLanguage + 1) % languages.Length;
+            currentResolution = currentResolution - 1;
+
+            if (currentResolution == -1)
+                currentResolution = resolutions.Count - 1;
 
             SetMenuEntryText();
         }
 
 
         /// <summary>
-        /// Event handler for when the Frobnicate menu entry is selected.
+        /// Event handler for when the Fullscreen menu entry is selected.
         /// </summary>
-        private void FrobnicateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void FullscreenMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            frobnicate = !frobnicate;
+            fullscreen = !fullscreen;
 
             SetMenuEntryText();
         }
 
 
         /// <summary>
-        /// Event handler for when the Elf menu entry is selected.
+        /// Event handler for when the VSync menu entry is selected.
         /// </summary>
-        private void ElfMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void VsyncMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            elf++;
+            vsync = !vsync;
 
             SetMenuEntryText();
         }

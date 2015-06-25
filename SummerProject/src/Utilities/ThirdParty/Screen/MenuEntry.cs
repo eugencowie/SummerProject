@@ -74,6 +74,38 @@ namespace SummerProject
         }
 
 
+        /// <summary>
+        /// Event raised when the menu entry is increased.
+        /// </summary>
+        public event EventHandler<PlayerIndexEventArgs> Increased;
+
+
+        /// <summary>
+        /// Method for raising the Increased event.
+        /// </summary>
+        protected internal virtual void OnIncreaseEntry(PlayerIndex playerIndex)
+        {
+            if (Increased != null)
+                Increased(this, new PlayerIndexEventArgs(playerIndex));
+        }
+
+
+        /// <summary>
+        /// Event raised when the menu entry is decreased.
+        /// </summary>
+        public event EventHandler<PlayerIndexEventArgs> Decreased;
+
+
+        /// <summary>
+        /// Method for raising the Decreased event.
+        /// </summary>
+        protected internal virtual void OnDecreaseEntry(PlayerIndex playerIndex)
+        {
+            if (Decreased != null)
+                Decreased(this, new PlayerIndexEventArgs(playerIndex));
+        }
+
+
         #endregion
 
         #region Initialisation
