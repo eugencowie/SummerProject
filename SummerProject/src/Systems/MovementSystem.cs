@@ -3,6 +3,7 @@ using Artemis.Attributes;
 using Artemis.Manager;
 using Artemis.System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -23,7 +24,7 @@ namespace SummerProject
         {
             previousDestination = null;
             debugBatch = BlackBoard.GetEntry<SpriteBatch>("SpriteBatch");
-            debugTexture = BlackBoard.GetEntry<Game>("Game").Content.Load<Texture2D>("textures/selector");
+            debugTexture = BlackBoard.GetEntry<ContentManager>("Content").Load<Texture2D>("textures/selector");
             astar = null;
         }
 

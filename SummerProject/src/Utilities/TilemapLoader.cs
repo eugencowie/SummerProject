@@ -43,7 +43,7 @@ namespace SummerProject
                 // Fill the symbolic blocks with none by default.
                 var objectBlock = ObjectBlock.None;
 
-                ContentManager content = EntitySystem.BlackBoard.GetEntry<Game>("Game").Content;
+                ContentManager content = EntitySystem.BlackBoard.GetEntry<ContentManager>("Content");
 
                 string baseTexture = "";
                 switch (baseTile.Gid - firstBaseGid) {

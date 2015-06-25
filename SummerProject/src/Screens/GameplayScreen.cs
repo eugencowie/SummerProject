@@ -14,7 +14,6 @@ namespace SummerProject
     class GameplayScreen : GameScreen
     {
         ContentManager content;
-        SpriteFont gameFont;
 
         Camera camera;
         EntityWorld entityManager;
@@ -48,13 +47,12 @@ namespace SummerProject
                 if (content == null)
                     content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-                gameFont = content.Load<SpriteFont>("fonts/gamefont");
-
                 camera = new Camera();
 
                 // Store some useful variables to be accessed elsewhere.
                 EntitySystem.BlackBoard.SetEntry("Game", ScreenManager.Game);
                 EntitySystem.BlackBoard.SetEntry("SpriteBatch", ScreenManager.SpriteBatch);
+                EntitySystem.BlackBoard.SetEntry("Content", content);
                 EntitySystem.BlackBoard.SetEntry("Camera", camera);
 
                 // Create the entity manager and initialise all systems.  It is important that
@@ -69,28 +67,26 @@ namespace SummerProject
                 level.AddComponent(levelTilemap);
 
                 // Get the player start position from the level tilemap.
-                Vector2? playerStart = levelTilemap.FirstObjectBlockOfType(ObjectBlock.PlayerStart);
-                if (!playerStart.HasValue) playerStart = Vector2.One;
+                Point? playerStart = levelTilemap.FirstObjectBlockOfType(ObjectBlock.PlayerStart);
+                if (!playerStart.HasValue) playerStart = new Point(1, 1);
 
                 // Create the player entity.
                 entityManager.CreateEntity("players", "player1")
-                    .AddPlayerComponents(content, playerStart.Value, true);
+                    .AddPlayerComponents(content, playerStart.Value.ToVector2(), true);
 
                 // Get mob spawn positions from the level tilemap.
-                foreach (Vector2 position in levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob))
+                foreach (Point position in levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob))
                 {
-                    Point block = position.Round();
-
-                    float rotation = levelTilemap.Tiles[block.X, block.Y].ObjectRotation;
-                    SpriteEffects effects = levelTilemap.Tiles[block.X, block.Y].ObjectEffect;
+                    float rotation = levelTilemap.Tiles[position.X, position.Y].ObjectRotation;
+                    SpriteEffects effects = levelTilemap.Tiles[position.X, position.Y].ObjectEffect;
 
                     // Create an enemy.
                     entityManager.CreateEntity("enemies")
-                        .AddEnemyComponents(content, position, rotation, effects);
+                        .AddEnemyComponents(content, position.ToVector2(), rotation, effects);
                 }
 
                 // Center the camera on the player at the start.
-                camera.Position = playerStart.Value * Constants.UnitSize;
+                camera.Position = playerStart.Value.ToVector2() * Constants.UnitSize;
 
                 // Simulate a longer loading time by delaying for a while, giving us
                 // a chance to admire the beautiful loading screen.

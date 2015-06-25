@@ -2,7 +2,6 @@
 using Artemis.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 
 namespace SummerProject
@@ -53,12 +52,12 @@ namespace SummerProject
         /// Find the first object block in the tilemap which matches the specified object
         /// block type. Can be useful to find the player start, for example.
         /// </summary>
-        public Vector2? FirstObjectBlockOfType(ObjectBlock blockType)
+        public Point? FirstObjectBlockOfType(ObjectBlock blockType)
         {
             for (int y = 0; y < Tiles.GetLength(1); y++)
                 for (int x = 0; x < Tiles.GetLength(0); x++)
                     if (Tiles[x, y].Object == blockType)
-                        return new Vector2(x, y);
+                        return new Point(x, y);
 
             return null;
         }
@@ -67,14 +66,14 @@ namespace SummerProject
         /// Find all object blocks in the tilemap which match the specified object block
         /// type. Can be useful for finding mob spawns, for example.
         /// </summary>
-        public IEnumerable<Vector2> AllObjectBlocksOfType(ObjectBlock blockType)
+        public IEnumerable<Point> AllObjectBlocksOfType(ObjectBlock blockType)
         {
-            var list = new List<Vector2>();
+            var list = new List<Point>();
 
             for (int y = 0; y < Tiles.GetLength(1); y++)
                 for (int x = 0; x < Tiles.GetLength(0); x++)
                     if (Tiles[x, y].Object == blockType)
-                        list.Add(new Vector2(x, y));
+                        list.Add(new Point(x, y));
 
             return list;
         }
