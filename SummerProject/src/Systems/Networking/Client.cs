@@ -133,14 +133,14 @@ namespace SummerProject
             {
                 // TODO
                 case ServerMessage.CreateRemotePlayer:
-                    entityWorld.TagManager.GetEntity("player").GetComponent<PlayerInfo>().LocalPlayer = false;
+                    entityWorld.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().LocalPlayer = false;
                     break;
 
                 // TODO
                 case ServerMessage.MoveRemotePlayer:
                     int x = message.ReadInt32();
                     int y = message.ReadInt32();
-                    Entity entity = entityWorld.TagManager.GetEntity("player");
+                    Entity entity = entityWorld.TagManager.GetEntity("player1");
                     if (!entity.GetComponent<PlayerInfo>().LocalPlayer) {
                         // If the player is already moving, stop and go to the new destination instead.
                         if (entity.HasComponent<MoveAction>())
