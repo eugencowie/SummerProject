@@ -148,14 +148,8 @@ namespace SummerProject
                     };
 
                     // If the player is already moving, stop and go to the new destination instead.
-                    if (entity.HasComponent<MoveAction>())
-                        entity.RemoveComponent<MoveAction>();
-
-                    // The move action tells the movement system to move the player to the specified destination.
-                    entity.AddComponent(new MoveAction {
-                        Destination = destinationBlock,
-                        Speed = 4f
-                    });
+                    entity.GetComponent<Pathfinder>().Destination = destinationBlock;
+                    entity.GetComponent<Pathfinder>().Speed = 4f;
 
                     if (Client.Instance != null)
                         Client.Instance.SendMoveMessage((int)destinationBlock.X, (int)destinationBlock.Y);

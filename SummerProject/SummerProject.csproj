@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Components\Actions\MoveAction.cs" />
+    <Compile Include="src\Components\Pathfinder.cs" />
     <Compile Include="src\Components\Sprite.cs" />
     <Compile Include="src\Components\Inventory.cs" />
     <Compile Include="src\Components\PlayerInfo.cs" />
@@ -114,7 +114,7 @@
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Systems\PlayerInputSystem.cs" />
     <Compile Include="src\SummerProjectGame.cs" />
-    <Compile Include="src\Systems\MovementSystem.cs" />
+    <Compile Include="src\Systems\PathfindingSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="res\Game.ico" />

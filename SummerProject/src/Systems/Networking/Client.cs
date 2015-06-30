@@ -143,13 +143,9 @@ namespace SummerProject
                     Entity entity = entityWorld.TagManager.GetEntity("player1");
                     if (!entity.GetComponent<PlayerInfo>().LocalPlayer) {
                         // If the player is already moving, stop and go to the new destination instead.
-                        if (entity.HasComponent<MoveAction>())
-                            entity.RemoveComponent<MoveAction>();
-                        // The move action tells the movement system to move the player to the specified destination.
-                        entity.AddComponent(new MoveAction {
-                            Destination = new Vector2(x, y),
-                            Speed = 5.75f // make player slightly faster to compensate for lag - TODO: implement something more robust if necessary
-                        });
+                        entity.GetComponent<Pathfinder>().Destination = new Vector2(x, y);
+                        // Make player slightly faster to compensate for lag - TODO: implement something more robust if necessary
+                        entity.GetComponent<Pathfinder>().Speed = 5.75f;
                     }
                     break;
             }

@@ -72,6 +72,11 @@ namespace SummerProject
                 HasKey = false
             });
 
+            entity.AddComponent(new Pathfinder {
+                Destination = position,
+                Speed = 4f
+            });
+
             return entity;
         }
 
