@@ -136,6 +136,33 @@ namespace SummerProject
                 OnDecreaseEntry(selectedEntry, playerIndex);
             else if (menuCancel.Evaluate(input, ControllingPlayer, out playerIndex))
                 OnCancel(playerIndex);
+
+            UpdateMenuEntryLocations();
+            for (int i = 0; i < menuEntries.Count; i++)
+            {
+                Rectangle bounds = new Rectangle {
+                    X = (int)menuEntries[i].Position.X,
+                    Y = (int)menuEntries[i].Position.Y - (menuEntries[i].GetHeight(this) / 2),
+                    Width = (int)menuEntries[i].GetWidth(this),
+                    Height = (int)menuEntries[i].GetHeight(this)
+                };
+
+                Point mousePos = new Point(input.CurrentMouseState.X, input.CurrentMouseState.Y);
+
+                if (bounds.Contains(mousePos))
+                {
+                    selectedEntry = i;
+
+                    if (input.IsLeftMouseButtonClicked())
+                        OnSelectEntry(selectedEntry, playerIndex);
+
+                    if (input.CurrentMouseState.ScrollWheelValue < input.LastMouseState.ScrollWheelValue)
+                        OnIncreaseEntry(selectedEntry, playerIndex);
+
+                    if (input.CurrentMouseState.ScrollWheelValue > input.LastMouseState.ScrollWheelValue)
+                        OnDecreaseEntry(selectedEntry, playerIndex);
+                }
+            }
         }
 
 

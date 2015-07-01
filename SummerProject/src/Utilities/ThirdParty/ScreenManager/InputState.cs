@@ -26,9 +26,11 @@ namespace SummerProject
 
         public readonly KeyboardState[] CurrentKeyboardStates;
         public readonly GamePadState[] CurrentGamePadStates;
+        public MouseState CurrentMouseState;
 
         public readonly KeyboardState[] LastKeyboardStates;
         public readonly GamePadState[] LastGamePadStates;
+        public MouseState LastMouseState;
 
         public readonly bool[] GamePadWasConnected;
         
@@ -40,9 +42,11 @@ namespace SummerProject
         {
             CurrentKeyboardStates = new KeyboardState[MaxInputs];
             CurrentGamePadStates = new GamePadState[MaxInputs];
+            CurrentMouseState = new MouseState();
 
             LastKeyboardStates = new KeyboardState[MaxInputs];
             LastGamePadStates = new GamePadState[MaxInputs];
+            LastMouseState = new MouseState();
 
             GamePadWasConnected = new bool[MaxInputs];
         }
@@ -66,6 +70,9 @@ namespace SummerProject
                 if (CurrentGamePadStates[i].IsConnected)
                     GamePadWasConnected[i] = true;
             }
+
+            LastMouseState = CurrentMouseState;
+            CurrentMouseState = Mouse.GetState();
         }
 
 
@@ -180,6 +187,20 @@ namespace SummerProject
                         IsNewButtonPress(button, PlayerIndex.Three, out playerIndex) ||
                         IsNewButtonPress(button, PlayerIndex.Four,  out playerIndex));
             }
+        }
+
+
+        public bool IsLeftMouseButtonClicked()
+        {
+            return (CurrentMouseState.LeftButton == ButtonState.Pressed &&
+                    LastMouseState.LeftButton == ButtonState.Released);
+        }
+
+
+        public bool IsRightMouseButtonClicked()
+        {
+            return (CurrentMouseState.RightButton == ButtonState.Pressed &&
+                    LastMouseState.RightButton == ButtonState.Released);
         }
     }
 }

@@ -107,7 +107,7 @@ namespace SummerProject
             // controlling player, the InputState helper returns to us which player
             // actually provided the input. We pass that through to our Accepted and
             // Cancelled events, so they can tell which player triggered them.
-            if (menuSelect.Evaluate(input, ControllingPlayer, out playerIndex))
+            if (menuSelect.Evaluate(input, ControllingPlayer, out playerIndex) || input.IsLeftMouseButtonClicked())
             {
                 // Raise the accepted event, then exit the message box.
                 if (Accepted != null)
@@ -115,7 +115,7 @@ namespace SummerProject
 
                 ExitScreen();
             }
-            else if (menuCancel.Evaluate(input, ControllingPlayer, out playerIndex))
+            else if (menuCancel.Evaluate(input, ControllingPlayer, out playerIndex) || input.IsRightMouseButtonClicked())
             {
                 // Raise the cancelled event, then exit the message box.
                 if (Cancelled != null)
