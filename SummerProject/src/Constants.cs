@@ -16,5 +16,11 @@
         /// The file path of the options file.
         /// </summary>
         public const string OptionsFile = "options.xml";
+
+
+        /// <summary>
+        /// The network port that the client/server should use.
+        /// </summary>
+        public const int NetworkPort = 14242;
     }
 }

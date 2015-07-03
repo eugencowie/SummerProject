@@ -44,9 +44,9 @@ namespace SummerProject
 
                 #region Debug networking testing
 
-                if (Client.Active && IsKeyClicked(keyboard, Keys.F9))
-                    if (Client.Instance != null)
-                        Client.Instance.SendIsReadyMessage();
+                //if (ClientNetworkingSystem.Active && IsKeyClicked(keyboard, Keys.F9))
+                //    if (ClientNetworkingSystem.Instance != null)
+                //        ClientNetworkingSystem.Instance.SendIsReadyMessage();
 
                 #endregion
 
@@ -151,8 +151,8 @@ namespace SummerProject
                     entity.GetComponent<Pathfinder>().Destination = destinationBlock;
                     entity.GetComponent<Pathfinder>().Speed = 4f;
 
-                    if (Client.Instance != null)
-                        Client.Instance.SendMoveMessage((int)destinationBlock.X, (int)destinationBlock.Y);
+                    //if (ClientNetworkingSystem.Instance != null)
+                    //    ClientNetworkingSystem.Instance.SendMoveMessage((int)destinationBlock.X, (int)destinationBlock.Y);
                 }
 
                 prevKeyboard = keyboard;

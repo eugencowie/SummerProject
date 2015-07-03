@@ -53,6 +53,12 @@ namespace SummerProject
         public Vector2 Position { get; set; }
 
 
+        /// <summary>
+        /// Can be used to store some information as part of the menu entry.
+        /// </summary>
+        public object UserData { get; set; }
+
+
         #endregion
 
         #region Events

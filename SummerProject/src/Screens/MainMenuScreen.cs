@@ -38,8 +38,7 @@ namespace SummerProject
         /// </summary>
         private void JoinGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            Client.Active = true;
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
+            ScreenManager.AddScreen(new JoinGameMenuScreen(), e.PlayerIndex);
         }
 
 
@@ -48,9 +47,7 @@ namespace SummerProject
         /// </summary>
         private void HostGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            Server.Active = true;
-            Client.Active = true;
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
+            ScreenManager.AddScreen(new HostGameMenuScreen(), e.PlayerIndex);
         }
 
 
