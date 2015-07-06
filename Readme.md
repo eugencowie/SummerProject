@@ -8,4 +8,4 @@
 
 * [Issue tracker](https://bitbucket.org/eugencowie/summer-project/issues)
 
-* [Wiki](https://bitbucket.org/eugencowie/summer-project/wiki/Home)
+* [Wiki](https://bitbucket.org/eugencowie/summer-project/wiki/browse/)
