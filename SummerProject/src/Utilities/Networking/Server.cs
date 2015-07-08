@@ -9,9 +9,9 @@ namespace SummerProject
 
 
         /// <summary>
-        /// Constructor.
+        /// Binds to socket and spawns the networking thread.
         /// </summary>
-        public Server()
+        public void Start()
         {
             var config = new NetPeerConfiguration("SummerProject");
             config.Port = Constants.NetworkPort;
@@ -72,14 +72,6 @@ namespace SummerProject
             }
 
             server.Recycle(message);
-        }
-
-
-        public void CheckIsRunning()
-        {
-            // Make sure that the server is running.
-            if (server.Status == NetPeerStatus.NotRunning)
-                server.Start();
         }
     }
 }

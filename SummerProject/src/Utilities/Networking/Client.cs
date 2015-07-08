@@ -29,9 +29,9 @@ namespace SummerProject
 
 
         /// <summary>
-        /// Constructor.
+        /// Binds to socket and spawns the networking thread.
         /// </summary>
-        public Client()
+        public void Start()
         {
             var config = new NetPeerConfiguration("SummerProject");
             config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);

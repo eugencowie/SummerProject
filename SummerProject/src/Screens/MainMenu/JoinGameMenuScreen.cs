@@ -12,6 +12,7 @@
             NetworkingSystem.Client.DiscoveryResponse += HostDiscovered;
             NetworkingSystem.Client.ConnectedToHost += ConnectedToHost;
 
+            NetworkingSystem.Client.Start();
             NetworkingSystem.Client.DiscoverLocalPeers(Constants.NetworkPort);
         }
 
@@ -39,12 +40,14 @@
             if (host == null)
                 return;
 
+            NetworkingSystem.Client.DiscoveryResponse -= HostDiscovered;
             NetworkingSystem.Client.Connect(host.HostEndPoint.Address.ToString(), host.HostEndPoint.Port);
         }
 
 
         private void ConnectedToHost(object sender, ConnectedToHostEventArgs e)
         {
+            NetworkingSystem.Client.ConnectedToHost -= ConnectedToHost;
             LoadingScreen.Load(ScreenManager, true, null, new GameplayScreen());
         }
     }
