@@ -90,6 +90,7 @@
     <Compile Include="src\Options.cs" />
     <Compile Include="src\Constants.cs" />
     <Compile Include="src\Screens\BackgroundScreen.cs" />
+    <Compile Include="src\Utilities\Networking\Messages.cs" />
     <Compile Include="src\Utilities\Networking\Server.cs" />
     <Compile Include="src\Utilities\Networking\Client.cs" />
     <Compile Include="src\Utilities\ThirdParty\Screen\Button.cs" />

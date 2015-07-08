@@ -1,4 +1,8 @@
-﻿using Lidgren.Network;
+﻿using Artemis;
+using Artemis.System;
+using Artemis.Utils;
+using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace SummerProject
@@ -56,6 +60,10 @@ namespace SummerProject
                         Console.WriteLine("[SERVER] Remote hail: " + message.SenderConnection.RemoteHailMessage.ReadString());
                     break;
 
+                case NetIncomingMessageType.Data:
+                    HandleDataMessage(message);
+                    break;
+
 #if DEBUG
                 case NetIncomingMessageType.ErrorMessage:
                 case NetIncomingMessageType.WarningMessage:
@@ -72,6 +80,36 @@ namespace SummerProject
             }
 
             server.Recycle(message);
+        }
+
+
+        /// <summary>
+        /// Called when the client receives a data message from the server.
+        /// </summary>
+        private void HandleDataMessage(NetIncomingMessage message)
+        {
+            NetOutgoingMessage response;
+
+            var type = (ClientMessage)message.ReadByte();
+            switch (type)
+            {
+                case ClientMessage.RequestWorldState:
+                    response = server.CreateMessage();
+                    response.Write((byte)ServerMessage.RequestWorldStateResponse);
+                    EntityWorld entityWorld = EntitySystem.BlackBoard.GetEntry<EntityWorld>("EntityWorld");
+                    Bag<Entity> players = entityWorld.GroupManager.GetEntities("players");
+                    int numberOfEntries = players.Count;
+                    response.Write(numberOfEntries);
+                    while ((--numberOfEntries) >= 0) {
+                        int id = players[numberOfEntries].GetComponent<PlayerInfo>().PlayerId;
+                        response.Write(id);
+                        Point position = players[numberOfEntries].GetComponent<Transform>().Position.Round();
+                        response.Write(position.X);
+                        response.Write(position.Y);
+                    }
+                    server.SendMessage(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered);
+                    break;
+            }
         }
     }
 }

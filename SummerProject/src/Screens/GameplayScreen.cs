@@ -48,17 +48,17 @@ namespace SummerProject
                     content = new ContentManager(ScreenManager.Game.Services, "Content");
 
                 camera = new Camera();
+                entityManager = new EntityWorld();
 
                 // Store some useful variables to be accessed elsewhere.
+                EntitySystem.BlackBoard.SetEntry("EntityWorld", entityManager);
                 EntitySystem.BlackBoard.SetEntry("Game", ScreenManager.Game);
                 EntitySystem.BlackBoard.SetEntry("SpriteBatch", ScreenManager.SpriteBatch);
                 EntitySystem.BlackBoard.SetEntry("Content", content);
                 EntitySystem.BlackBoard.SetEntry("Camera", camera);
 
-                // Create the entity manager and initialise all systems.  It is important that
-                // the InitializeAll() function is called *after* all required BlackBoard entries
-                // have been set.
-                entityManager = new EntityWorld();
+                // Initialise all systems. It is important that the InitializeAll function
+                // is called *after* all of the required BlackBoard entries have been set.
                 entityManager.InitializeAll(true);
 
                 // Create the level entity.
@@ -73,6 +73,14 @@ namespace SummerProject
                 // Create the player entity.
                 entityManager.CreateEntity("players", "player1")
                     .AddPlayerComponents(content, playerStart.Value.ToVector2(), true);
+
+                // Create any existing remote players.
+                NetworkingSystem.Client.RequestWorldState((id, position) => {
+                    if (id != entityManager.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId) {
+                        entityManager.CreateEntity(group: "players")
+                            .AddPlayerComponents(content, position, false, id);
+                    }
+                });
 
                 // Get mob spawn positions from the level tilemap.
                 foreach (Point position in levelTilemap.AllObjectBlocksOfType(ObjectBlock.Mob))

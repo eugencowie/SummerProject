@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Net;
 
@@ -11,6 +12,9 @@ namespace SummerProject
 
         public delegate void ConnectedToHostDelegate();
         private ConnectedToHostDelegate connectedToHost;
+
+        public delegate void RequestWorldStateDelegate(int id, Vector2 position);
+        private RequestWorldStateDelegate requestWorldState;
         
         NetClient client;
 
@@ -63,6 +67,10 @@ namespace SummerProject
                     }
                     break;
 
+                case NetIncomingMessageType.Data:
+                    HandleDataMessage(message);
+                    break;
+
 #if DEBUG
                 case NetIncomingMessageType.DebugMessage:
                 case NetIncomingMessageType.ErrorMessage:
@@ -79,6 +87,33 @@ namespace SummerProject
             }
 
             client.Recycle(message);
+        }
+
+
+        /// <summary>
+        /// Called when the client receives a data message from the server.
+        /// </summary>
+        private void HandleDataMessage(NetIncomingMessage message)
+        {
+            NetOutgoingMessage response;
+
+            var type = (ServerMessage)message.ReadByte();
+            switch (type)
+            {
+                case ServerMessage.RequestWorldStateResponse:
+                    int numberOfEntries = message.ReadInt32();
+                    while ((--numberOfEntries) >= 0)
+                    {
+                        int id = message.ReadInt32();
+                        var position = new Vector2 {
+                            X = message.ReadInt32(),
+                            Y = message.ReadInt32()
+                        };
+                        requestWorldState(id, position);
+                    }
+                    requestWorldState = null;
+                    break;
+            }
         }
 
 
@@ -100,6 +135,16 @@ namespace SummerProject
         {
             connectedToHost = d;
             client.Connect(host, port);
+        }
+
+
+        public void RequestWorldState(RequestWorldStateDelegate d)
+        {
+            requestWorldState = d;
+
+            NetOutgoingMessage message = client.CreateMessage();
+            message.Write((byte)ClientMessage.RequestWorldState);
+            client.SendMessage(message, NetDeliveryMethod.ReliableOrdered);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace SummerProject
 {
@@ -11,10 +12,9 @@ namespace SummerProject
     static class Entities
     {
         /// <summary>
-        /// Used to keep track of the number of players in order to assign unique
-        /// player IDs.
+        /// Used to assign random player IDs (not guaranteed to be unique). TODO: make unique - see below.
         /// </summary>
-        private static int playerCount;
+        private static Random random = new Random();
 
 
         /// <summary>
@@ -45,7 +45,8 @@ namespace SummerProject
             this Entity entity,
             ContentManager content,
             Vector2 position = default(Vector2),
-            bool localPlayer = default(bool))
+            bool localPlayer = default(bool),
+            int playerId = -1)
         {
             entity.AddComponent(new Transform {
                 Position = position,
@@ -60,7 +61,7 @@ namespace SummerProject
             });
 
             entity.AddComponent(new PlayerInfo {
-                PlayerId = playerCount++,
+                PlayerId = random.Next(), // TODO: request unique player id from server
                 LocalPlayer = localPlayer,
                 Level = 1,
                 Experience = 0,
