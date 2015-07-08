@@ -4,26 +4,13 @@ using System.Net;
 
 namespace SummerProject
 {
-    class DiscoveryResponseEventArgs : EventArgs
-    {
-        public string HostName { get; private set; }
-        public IPEndPoint HostEndPoint { get; private set; }
-
-        public DiscoveryResponseEventArgs(string hostName, IPEndPoint hostEndPoint)
-        {
-            HostName = hostName;
-            HostEndPoint = hostEndPoint;
-        }
-    }
-
-    class ConnectedToHostEventArgs : EventArgs
-    {
-    }
-
     class Client
     {
-        public event EventHandler<DiscoveryResponseEventArgs> DiscoveryResponse;
-        public event EventHandler<ConnectedToHostEventArgs> ConnectedToHost;
+        public delegate void DiscoveryResponseDelegate(string name, IPEndPoint endpoint);
+        private DiscoveryResponseDelegate discoveryResponse;
+
+        public delegate void ConnectedToHostDelegate();
+        private ConnectedToHostDelegate connectedToHost;
         
         NetClient client;
 
@@ -59,8 +46,8 @@ namespace SummerProject
                 // is running and able to be connected to.
                 case NetIncomingMessageType.DiscoveryResponse:
                     string serverName = message.ReadString();
-                    if (DiscoveryResponse != null)
-                        DiscoveryResponse(this, new DiscoveryResponseEventArgs(serverName, message.SenderEndPoint));
+                    if (discoveryResponse != null)
+                        discoveryResponse(serverName, message.SenderEndPoint);
                     break;
 
                 // A StatusChanged message to sent to the client when the status of the connection
@@ -69,9 +56,11 @@ namespace SummerProject
                     var status = (NetConnectionStatus)message.ReadByte();
                     string reason = message.ReadString();
                     Console.WriteLine("[CLIENT] " + status + ": " + reason);
-                    if (status == NetConnectionStatus.Connected)
-                        if (ConnectedToHost != null)
-                            ConnectedToHost(this, new ConnectedToHostEventArgs());
+                    if (status == NetConnectionStatus.Connected && connectedToHost != null) {
+                        discoveryResponse = null;
+                        connectedToHost();
+                        connectedToHost = null;
+                    }
                     break;
 
 #if DEBUG
@@ -93,20 +82,23 @@ namespace SummerProject
         }
 
 
-        public void DiscoverLocalPeers(int port)
+        public void DiscoverLocalPeers(int port, DiscoveryResponseDelegate d)
         {
+            discoveryResponse = d;
             client.DiscoverLocalPeers(port);
         }
 
 
-        public void DiscoverRemotePeers(string host, int port)
+        public void DiscoverRemotePeers(string host, int port, DiscoveryResponseDelegate d)
         {
+            discoveryResponse = d;
             client.DiscoverKnownPeer(host, port);
         }
 
 
-        public void Connect(string host, int port)
+        public void Connect(string host, int port, ConnectedToHostDelegate d)
         {
+            connectedToHost = d;
             client.Connect(host, port);
         }
     }
