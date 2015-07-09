@@ -1,5 +1,8 @@
-﻿using Lidgren.Network;
+﻿using Artemis;
+using Artemis.System;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using System;
 using System.Net;
 
@@ -12,6 +15,9 @@ namespace SummerProject
 
         public delegate void ConnectedToHostDelegate();
         private ConnectedToHostDelegate connectedToHost;
+
+        public delegate void RequestUniquePlayerIdDelegate(int id);
+        private RequestUniquePlayerIdDelegate requestUniquePlayerId;
 
         public delegate void RequestWorldStateDelegate(int id, Vector2 position);
         private RequestWorldStateDelegate requestWorldState;
@@ -100,6 +106,12 @@ namespace SummerProject
             var type = (ServerMessage)message.ReadByte();
             switch (type)
             {
+                case ServerMessage.RequestUniquePlayerIdResponse:
+                    int uniqueId = message.ReadInt32();
+                    requestUniquePlayerId(uniqueId);
+                    requestUniquePlayerId = null;
+                    break;
+
                 case ServerMessage.RequestWorldStateResponse:
                     int numberOfEntries = message.ReadInt32();
                     while ((--numberOfEntries) >= 0)
@@ -112,6 +124,20 @@ namespace SummerProject
                         requestWorldState(id, position);
                     }
                     requestWorldState = null;
+                    break;
+
+                case ServerMessage.PlayerCreated:
+                    int playerId = message.ReadInt32();
+                    var playerPos = new Vector2 {
+                        X = message.ReadInt32(),
+                        Y = message.ReadInt32()
+                    };
+                    EntityWorld entityWorld = EntitySystem.BlackBoard.GetEntry<EntityWorld>("EntityWorld");
+                    ContentManager content = EntitySystem.BlackBoard.GetEntry<ContentManager>("Content");
+                    if (playerId != entityWorld.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId) {
+                        entityWorld.CreateEntity(group: "players")
+                            .AddPlayerComponents(content, playerId, playerPos, false);
+                    }
                     break;
             }
         }
@@ -138,12 +164,35 @@ namespace SummerProject
         }
 
 
+        public void RequestUniquePlayerId(RequestUniquePlayerIdDelegate d)
+        {
+            requestUniquePlayerId = d;
+
+            NetOutgoingMessage message = client.CreateMessage();
+            message.Write((byte)ClientMessage.RequestUniquePlayerId);
+            client.SendMessage(message, NetDeliveryMethod.ReliableOrdered);
+        }
+
+
         public void RequestWorldState(RequestWorldStateDelegate d)
         {
             requestWorldState = d;
 
             NetOutgoingMessage message = client.CreateMessage();
             message.Write((byte)ClientMessage.RequestWorldState);
+            client.SendMessage(message, NetDeliveryMethod.ReliableOrdered);
+        }
+
+
+        public void PlayerCreated(int uniqueId, Vector2 position)
+        {
+            Point pos = position.Round();
+
+            NetOutgoingMessage message = client.CreateMessage();
+            message.Write((byte)ClientMessage.PlayerCreated);
+            message.Write(uniqueId);
+            message.Write(pos.X);
+            message.Write(pos.Y);
             client.SendMessage(message, NetDeliveryMethod.ReliableOrdered);
         }
     }

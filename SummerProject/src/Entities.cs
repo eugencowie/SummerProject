@@ -12,12 +12,6 @@ namespace SummerProject
     static class Entities
     {
         /// <summary>
-        /// Used to assign random player IDs (not guaranteed to be unique). TODO: make unique - see below.
-        /// </summary>
-        private static Random random = new Random();
-
-
-        /// <summary>
         /// Extension method for creating an entity with optional group and tag
         /// parameters.
         /// </summary>
@@ -44,9 +38,9 @@ namespace SummerProject
         public static Entity AddPlayerComponents(
             this Entity entity,
             ContentManager content,
+            int playerId,
             Vector2 position = default(Vector2),
-            bool localPlayer = default(bool),
-            int playerId = -1)
+            bool localPlayer = default(bool))
         {
             entity.AddComponent(new Transform {
                 Position = position,
@@ -61,7 +55,7 @@ namespace SummerProject
             });
 
             entity.AddComponent(new PlayerInfo {
-                PlayerId = random.Next(), // TODO: request unique player id from server
+                PlayerId = playerId,
                 LocalPlayer = localPlayer,
                 Level = 1,
                 Experience = 0,

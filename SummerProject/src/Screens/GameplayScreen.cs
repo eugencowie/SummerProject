@@ -71,14 +71,17 @@ namespace SummerProject
                 if (!playerStart.HasValue) playerStart = new Point(1, 1);
 
                 // Create the player entity.
-                entityManager.CreateEntity("players", "player1")
-                    .AddPlayerComponents(content, playerStart.Value.ToVector2(), true);
+                NetworkingSystem.Client.RequestUniquePlayerId(id => {
+                    entityManager.CreateEntity("players", "player1")
+                        .AddPlayerComponents(content, id, playerStart.Value.ToVector2(), true);
+                    NetworkingSystem.Client.PlayerCreated(id, playerStart.Value.ToVector2());
+                });
 
                 // Create any existing remote players.
                 NetworkingSystem.Client.RequestWorldState((id, position) => {
                     if (id != entityManager.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId) {
                         entityManager.CreateEntity(group: "players")
-                            .AddPlayerComponents(content, position, false, id);
+                            .AddPlayerComponents(content, id, position, false);
                     }
                 });
 

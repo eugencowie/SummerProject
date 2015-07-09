@@ -10,6 +10,7 @@ namespace SummerProject
     class Server
     {
         NetServer server;
+        int playerCount = 0;
 
 
         /// <summary>
@@ -93,6 +94,13 @@ namespace SummerProject
             var type = (ClientMessage)message.ReadByte();
             switch (type)
             {
+                case ClientMessage.RequestUniquePlayerId:
+                    response = server.CreateMessage();
+                    response.Write((byte)ServerMessage.RequestUniquePlayerIdResponse);
+                    response.Write(playerCount++);
+                    server.SendMessage(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered);
+                    break;
+
                 case ClientMessage.RequestWorldState:
                     response = server.CreateMessage();
                     response.Write((byte)ServerMessage.RequestWorldStateResponse);
@@ -108,6 +116,20 @@ namespace SummerProject
                         response.Write(position.Y);
                     }
                     server.SendMessage(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered);
+                    break;
+
+                case ClientMessage.PlayerCreated:
+                    response = server.CreateMessage();
+                    response.Write((byte)ServerMessage.PlayerCreated);
+                    int uniqueId = message.ReadInt32();
+                    response.Write(uniqueId);
+                    var playerPos = new Point {
+                        X = message.ReadInt32(),
+                        Y = message.ReadInt32()
+                    };
+                    response.Write(playerPos.X);
+                    response.Write(playerPos.Y);
+                    server.SendToAll(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);
                     break;
             }
         }
