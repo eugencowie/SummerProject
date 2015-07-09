@@ -4,6 +4,8 @@ using Artemis.Utils;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Channels;
 
 namespace SummerProject
 {
@@ -11,6 +13,8 @@ namespace SummerProject
     {
         NetServer server;
         int playerCount = 0;
+
+        Dictionary<NetConnection, int> entities = new Dictionary<NetConnection, int>();
 
 
         /// <summary>
@@ -39,6 +43,7 @@ namespace SummerProject
             if (message == null) 
                 return;
 
+            NetOutgoingMessage response;
             switch (message.MessageType)
             {
                 // A DiscoveryRequest is sent to a server when a client is attempting to detect
@@ -46,7 +51,7 @@ namespace SummerProject
                 // we inform the client of our server's existance.
                 case NetIncomingMessageType.DiscoveryRequest:
                     string serverName = Environment.UserDomainName + "\\" + Environment.UserName;
-                    NetOutgoingMessage response = server.CreateMessage();
+                    response = server.CreateMessage();
                     response.Write(serverName);
                     server.SendDiscoveryResponse(response, message.SenderEndPoint);
                     break;
@@ -59,6 +64,13 @@ namespace SummerProject
                     Console.WriteLine("[SERVER] " + NetUtility.ToHexString(message.SenderConnection.RemoteUniqueIdentifier) + " " + status + ": " + reason);
                     if (status == NetConnectionStatus.Connected && message.SenderConnection.RemoteHailMessage != null)
                         Console.WriteLine("[SERVER] Remote hail: " + message.SenderConnection.RemoteHailMessage.ReadString());
+                    if (status == NetConnectionStatus.Disconnected && entities.ContainsKey(message.SenderConnection)) {
+                        response = server.CreateMessage();
+                        response.Write((byte)ServerMessage.PlayerRemoved);
+                        response.Write(entities[message.SenderConnection]);
+                        server.SendToAll(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);
+                        entities.Remove(message.SenderConnection);
+                    }
                     break;
 
                 case NetIncomingMessageType.Data:
@@ -130,6 +142,7 @@ namespace SummerProject
                     response.Write(playerPos.X);
                     response.Write(playerPos.Y);
                     server.SendToAll(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);
+                    entities.Add(message.SenderConnection, uniqueId);
                     break;
             }
         }

@@ -4,6 +4,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System;
+using System.Linq;
 using System.Net;
 
 namespace SummerProject
@@ -36,6 +37,15 @@ namespace SummerProject
             client = new NetClient(config);
             client.RegisterReceivedCallback(OnMessageReceived);
             client.Start();
+        }
+
+
+        /// <summary>
+        /// Disconnect from the server.
+        /// </summary>
+        public void Stop()
+        {
+            client.Disconnect("user disconnect");
         }
 
 
@@ -137,6 +147,17 @@ namespace SummerProject
                     if (playerId != entityWorld.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId) {
                         entityWorld.CreateEntity(group: "players")
                             .AddPlayerComponents(content, playerId, playerPos, false);
+                    }
+                    break;
+
+                case ServerMessage.PlayerRemoved:
+                    int pid = message.ReadInt32();
+                    EntityWorld world = EntitySystem.BlackBoard.GetEntry<EntityWorld>("EntityWorld");
+                    foreach (Entity entity in world.GroupManager.GetEntities("players")
+                        .Where(entity => entity.HasComponent<PlayerInfo>())
+                            .Where(entity => entity.GetComponent<PlayerInfo>().PlayerId == pid))
+                    {
+                        world.EntityManager.Remove(entity);
                     }
                     break;
             }

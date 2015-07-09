@@ -25,7 +25,13 @@
         ///   int32 - the player's position on the x axis
         ///   int32 - the player's position on the y axis
         /// </summary>
-        PlayerCreated
+        PlayerCreated,
+
+        /// <summary>
+        /// The structure of this message is:
+        ///   int32 - the unique player id
+        /// </summary>
+        PlayerRemoved
     }
 
     enum ClientMessage:byte

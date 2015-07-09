@@ -117,6 +117,7 @@ namespace SummerProject
         /// </summary>
         public override void Unload()
         {
+            NetworkingSystem.Client.Stop();
             content.Unload();
         }
 
