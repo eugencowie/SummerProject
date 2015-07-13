@@ -5,16 +5,15 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Channels;
 
 namespace SummerProject
 {
     class Server
     {
         NetServer server;
-        int playerCount = 0;
+        int playerCount;
 
-        Dictionary<NetConnection, int> entities = new Dictionary<NetConnection, int>();
+        Dictionary<NetConnection, int> playerIds = new Dictionary<NetConnection, int>();
 
 
         /// <summary>
@@ -64,12 +63,12 @@ namespace SummerProject
                     Console.WriteLine("[SERVER] " + NetUtility.ToHexString(message.SenderConnection.RemoteUniqueIdentifier) + " " + status + ": " + reason);
                     if (status == NetConnectionStatus.Connected && message.SenderConnection.RemoteHailMessage != null)
                         Console.WriteLine("[SERVER] Remote hail: " + message.SenderConnection.RemoteHailMessage.ReadString());
-                    if (status == NetConnectionStatus.Disconnected && entities.ContainsKey(message.SenderConnection)) {
+                    if (status == NetConnectionStatus.Disconnected && playerIds.ContainsKey(message.SenderConnection)) {
                         response = server.CreateMessage();
                         response.Write((byte)ServerMessage.PlayerRemoved);
-                        response.Write(entities[message.SenderConnection]);
+                        response.Write(playerIds[message.SenderConnection]);
                         server.SendToAll(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);
-                        entities.Remove(message.SenderConnection);
+                        playerIds.Remove(message.SenderConnection);
                     }
                     break;
 
@@ -142,7 +141,7 @@ namespace SummerProject
                     response.Write(playerPos.X);
                     response.Write(playerPos.Y);
                     server.SendToAll(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);
-                    entities.Add(message.SenderConnection, uniqueId);
+                    playerIds.Add(message.SenderConnection, uniqueId);
                     break;
             }
         }

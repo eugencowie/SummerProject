@@ -45,7 +45,8 @@ namespace SummerProject
         /// </summary>
         public void Stop()
         {
-            client.Disconnect("user disconnect");
+            if (client != null)
+                client.Disconnect("user disconnect");
         }
 
 
@@ -166,6 +167,8 @@ namespace SummerProject
 
         public void DiscoverLocalPeers(int port, DiscoveryResponseDelegate d)
         {
+            if (client == null) throw new InvalidOperationException();
+
             discoveryResponse = d;
             client.DiscoverLocalPeers(port);
         }
@@ -173,6 +176,8 @@ namespace SummerProject
 
         public void DiscoverRemotePeers(string host, int port, DiscoveryResponseDelegate d)
         {
+            if (client == null) throw new InvalidOperationException();
+
             discoveryResponse = d;
             client.DiscoverKnownPeer(host, port);
         }
@@ -180,6 +185,8 @@ namespace SummerProject
 
         public void Connect(string host, int port, ConnectedToHostDelegate d)
         {
+            if (client == null) throw new InvalidOperationException();
+
             connectedToHost = d;
             client.Connect(host, port);
         }
@@ -187,6 +194,8 @@ namespace SummerProject
 
         public void RequestUniquePlayerId(RequestUniquePlayerIdDelegate d)
         {
+            if (client == null) throw new InvalidOperationException();
+
             requestUniquePlayerId = d;
 
             NetOutgoingMessage message = client.CreateMessage();
@@ -197,6 +206,8 @@ namespace SummerProject
 
         public void RequestWorldState(RequestWorldStateDelegate d)
         {
+            if (client == null) throw new InvalidOperationException();
+
             requestWorldState = d;
 
             NetOutgoingMessage message = client.CreateMessage();
@@ -207,6 +218,8 @@ namespace SummerProject
 
         public void PlayerCreated(int uniqueId, Vector2 position)
         {
+            if (client == null) throw new InvalidOperationException();
+
             Point pos = position.Round();
 
             NetOutgoingMessage message = client.CreateMessage();

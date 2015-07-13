@@ -32,7 +32,7 @@ namespace SummerProject
                 return;
 
             NetworkingSystem.Client.Connect(endpoint.Address.ToString(), endpoint.Port, () => {
-                LoadingScreen.Load(ScreenManager, true, null, new GameplayScreen());
+                LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen());
             });
         }
     }

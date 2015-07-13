@@ -9,7 +9,7 @@
 
             NetworkingSystem.Client.Start();
             NetworkingSystem.Client.Connect("127.0.0.1", Constants.NetworkPort, () => {
-                LoadingScreen.Load(ScreenManager, true, null, new GameplayScreen());
+                LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen());
             });
         }
     }

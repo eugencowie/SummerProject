@@ -44,8 +44,8 @@ namespace SummerProject
             Components.Add(screenManager);
 
             // Activate the initial screens.
-            screenManager.AddScreen(new BackgroundScreen(), null);
-            screenManager.AddScreen(new MainMenuScreen(), null);
+            screenManager.AddScreen(new BackgroundScreen(), PlayerIndex.One);
+            screenManager.AddScreen(new MainMenuScreen(), PlayerIndex.One);
         }
 
 
