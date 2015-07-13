@@ -151,8 +151,7 @@ namespace SummerProject
                     entity.GetComponent<Pathfinder>().Destination = destinationBlock;
                     entity.GetComponent<Pathfinder>().Speed = 4f;
 
-                    //if (ClientNetworkingSystem.Instance != null)
-                    //    ClientNetworkingSystem.Instance.SendMoveMessage((int)destinationBlock.X, (int)destinationBlock.Y);
+                    NetworkingSystem.Client.PlayerMoved(entity.GetComponent<PlayerInfo>().PlayerId, destinationBlock);
                 }
 
                 prevKeyboard = keyboard;

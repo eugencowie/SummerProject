@@ -156,6 +156,21 @@ namespace SummerProject
                     playerIds.Add(message.SenderConnection, uniqueId);
                     break;
                 }
+
+                case ClientMessage.PlayerMoved: {
+                    int uniqueId = message.ReadInt32();
+                    var dest = new Point {
+                        X = message.ReadInt32(),
+                        Y = message.ReadInt32()
+                    };
+                    response = server.CreateMessage();
+                    response.Write((byte)ServerMessage.PlayerMoved);
+                    response.Write(uniqueId);
+                    response.Write(dest.X);
+                    response.Write(dest.Y);
+                    server.SendToAll(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);
+                    break;
+                }
             }
         }
     }

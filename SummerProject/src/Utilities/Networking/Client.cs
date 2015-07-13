@@ -171,6 +171,25 @@ namespace SummerProject
                     }
                     break;
                 }
+
+                case ServerMessage.PlayerMoved: {
+                    int playerId = message.ReadInt32();
+                    var playerPos = new Vector2 {
+                        X = message.ReadInt32(),
+                        Y = message.ReadInt32()
+                    };
+                    EntityWorld entityWorld = EntitySystem.BlackBoard.GetEntry<EntityWorld>("EntityWorld");
+                    if (playerId != entityWorld.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId)
+                    {
+                        foreach (Entity entity in entityWorld.GroupManager.GetEntities("players")
+                            .Where(entity => entity.GetComponent<PlayerInfo>().PlayerId == playerId))
+                        {
+                            entity.GetComponent<Pathfinder>().Destination = playerPos;
+                            entity.GetComponent<Pathfinder>().Speed = 5.75f;
+                        }
+                    }
+                    break;
+                }
             }
         }
 
@@ -245,6 +264,21 @@ namespace SummerProject
             message.Write(uniqueId);
             message.Write(pos.X);
             message.Write(pos.Y);
+            client.SendMessage(message, NetDeliveryMethod.ReliableOrdered);
+        }
+
+
+        public void PlayerMoved(int uniqueId, Vector2 destination)
+        {
+            if (client == null) throw new InvalidOperationException();
+
+            Point dest = destination.Round();
+
+            NetOutgoingMessage message = client.CreateMessage();
+            message.Write((byte)ClientMessage.PlayerMoved);
+            message.Write(uniqueId);
+            message.Write(dest.X);
+            message.Write(dest.Y);
             client.SendMessage(message, NetDeliveryMethod.ReliableOrdered);
         }
     }

@@ -31,7 +31,15 @@
         /// The structure of this message is:
         ///   int32 - the unique player id
         /// </summary>
-        PlayerRemoved
+        PlayerRemoved,
+
+        /// <summary>
+        /// The structure of this message is:
+        ///   int32 - the unique player id
+        ///   int32 - the destination on the x axis
+        ///   int32 - the destination on the y axis
+        /// </summary>
+        PlayerMoved
     }
 
     enum ClientMessage:byte
@@ -52,6 +60,14 @@
         ///   int32 - the player's position on the x axis
         ///   int32 - the player's position on the y axis
         /// </summary>
-        PlayerCreated
+        PlayerCreated,
+
+        /// <summary>
+        /// The structure of this message is:
+        ///   int32 - the unique player id
+        ///   int32 - the destination on the x axis
+        ///   int32 - the destination on the y axis
+        /// </summary>
+        PlayerMoved
     }
 }
