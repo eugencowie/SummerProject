@@ -124,13 +124,14 @@ namespace SummerProject
             var type = (ServerMessage)message.ReadByte();
             switch (type)
             {
-                case ServerMessage.RequestUniquePlayerIdResponse:
+                case ServerMessage.RequestUniquePlayerIdResponse: {
                     int uniqueId = message.ReadInt32();
                     requestUniquePlayerId(uniqueId);
                     requestUniquePlayerId = null;
                     break;
+                }
 
-                case ServerMessage.RequestWorldStateResponse:
+                case ServerMessage.RequestWorldStateResponse: {
                     int numberOfEntries = message.ReadInt32();
                     while ((--numberOfEntries) >= 0)
                     {
@@ -143,8 +144,9 @@ namespace SummerProject
                     }
                     requestWorldState = null;
                     break;
+                }
 
-                case ServerMessage.PlayerCreated:
+                case ServerMessage.PlayerCreated: {
                     int playerId = message.ReadInt32();
                     var playerPos = new Vector2 {
                         X = message.ReadInt32(),
@@ -157,17 +159,18 @@ namespace SummerProject
                             .AddPlayerComponents(content, playerId, playerPos, false);
                     }
                     break;
+                }
 
-                case ServerMessage.PlayerRemoved:
+                case ServerMessage.PlayerRemoved: {
                     int pid = message.ReadInt32();
                     EntityWorld world = EntitySystem.BlackBoard.GetEntry<EntityWorld>("EntityWorld");
                     foreach (Entity entity in world.GroupManager.GetEntities("players")
-                        .Where(entity => entity.HasComponent<PlayerInfo>())
-                            .Where(entity => entity.GetComponent<PlayerInfo>().PlayerId == pid))
+                        .Where(entity => entity.GetComponent<PlayerInfo>().PlayerId == pid))
                     {
                         world.EntityManager.Remove(entity);
                     }
                     break;
+                }
             }
         }
 

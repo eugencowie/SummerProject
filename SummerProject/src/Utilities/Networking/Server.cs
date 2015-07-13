@@ -115,14 +115,15 @@ namespace SummerProject
             var type = (ClientMessage)message.ReadByte();
             switch (type)
             {
-                case ClientMessage.RequestUniquePlayerId:
+                case ClientMessage.RequestUniquePlayerId: {
                     response = server.CreateMessage();
                     response.Write((byte)ServerMessage.RequestUniquePlayerIdResponse);
                     response.Write(playerCount++);
                     server.SendMessage(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered);
                     break;
+                }
 
-                case ClientMessage.RequestWorldState:
+                case ClientMessage.RequestWorldState: {
                     response = server.CreateMessage();
                     response.Write((byte)ServerMessage.RequestWorldStateResponse);
                     EntityWorld entityWorld = EntitySystem.BlackBoard.GetEntry<EntityWorld>("EntityWorld");
@@ -138,21 +139,23 @@ namespace SummerProject
                     }
                     server.SendMessage(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered);
                     break;
+                }
 
-                case ClientMessage.PlayerCreated:
-                    response = server.CreateMessage();
-                    response.Write((byte)ServerMessage.PlayerCreated);
+                case ClientMessage.PlayerCreated: {
                     int uniqueId = message.ReadInt32();
-                    response.Write(uniqueId);
                     var playerPos = new Point {
                         X = message.ReadInt32(),
                         Y = message.ReadInt32()
                     };
+                    response = server.CreateMessage();
+                    response.Write((byte)ServerMessage.PlayerCreated);
+                    response.Write(uniqueId);
                     response.Write(playerPos.X);
                     response.Write(playerPos.Y);
                     server.SendToAll(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);
                     playerIds.Add(message.SenderConnection, uniqueId);
                     break;
+                }
             }
         }
     }
