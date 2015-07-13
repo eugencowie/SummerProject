@@ -11,6 +11,9 @@ namespace SummerProject
 {
     class Client
     {
+        public delegate void LostConnectionToServerDelegate();
+        private LostConnectionToServerDelegate lostConnectionToServer;
+
         public delegate void DiscoveryResponseDelegate(string name, IPEndPoint endpoint);
         private DiscoveryResponseDelegate discoveryResponse;
 
@@ -81,6 +84,10 @@ namespace SummerProject
                         discoveryResponse = null;
                         connectedToHost();
                         connectedToHost = null;
+                    }
+                    if (status == NetConnectionStatus.Disconnected && client.ServerConnection == null) {
+                        if (lostConnectionToServer != null)
+                            lostConnectionToServer();
                     }
                     break;
 
@@ -162,6 +169,14 @@ namespace SummerProject
                     }
                     break;
             }
+        }
+
+
+        public void OnLostConnectionToServer(LostConnectionToServerDelegate d)
+        {
+            if (client == null) throw new InvalidOperationException();
+
+            lostConnectionToServer = d;
         }
 
 

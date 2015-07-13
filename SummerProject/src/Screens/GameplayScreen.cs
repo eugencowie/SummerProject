@@ -50,6 +50,14 @@ namespace SummerProject
                 camera = new Camera();
                 entityManager = new EntityWorld();
 
+                // Tell the networking system what to do if we lose connection to the server.
+                NetworkingSystem.Client.OnLostConnectionToServer(() => {
+                    LoadingScreen.Load(ScreenManager, false, ControllingPlayer,
+                        new BackgroundScreen(),
+                        new MainMenuScreen(),
+                        new JoinGameMenuScreen());
+                });
+
                 // Store some useful variables to be accessed elsewhere.
                 EntitySystem.BlackBoard.SetEntry("EntityWorld", entityManager);
                 EntitySystem.BlackBoard.SetEntry("Game", ScreenManager.Game);
@@ -117,7 +125,9 @@ namespace SummerProject
         /// </summary>
         public override void Unload()
         {
+            NetworkingSystem.Client.OnLostConnectionToServer(null);
             NetworkingSystem.Client.Stop();
+            NetworkingSystem.Server.Stop();
             content.Unload();
         }
 

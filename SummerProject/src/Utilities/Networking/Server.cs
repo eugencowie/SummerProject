@@ -33,6 +33,16 @@ namespace SummerProject
 
 
         /// <summary>
+        /// Disconnects all active connections and closes the socket.
+        /// </summary>
+        public void Stop()
+        {
+            if (server != null)
+                server.Shutdown("user disconnect");
+        }
+
+
+        /// <summary>
         /// Called when a message is received.
         /// </summary>
         private void OnMessageReceived(object peer)
