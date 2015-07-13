@@ -5,6 +5,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SummerProject
 {
@@ -127,13 +128,14 @@ namespace SummerProject
                     response = server.CreateMessage();
                     response.Write((byte)ServerMessage.RequestWorldStateResponse);
                     EntityWorld entityWorld = EntitySystem.BlackBoard.GetEntry<EntityWorld>("EntityWorld");
-                    Bag<Entity> players = entityWorld.GroupManager.GetEntities("players");
-                    int numberOfEntries = players.Count;
+                    IEnumerable<Entity> enumerable = entityWorld.GroupManager.GetEntities("players").Where(entity => entity.IsActive);
+                    IEnumerable<Entity> players = enumerable as Entity[] ?? enumerable.ToArray();
+                    int numberOfEntries = players.Count();
                     response.Write(numberOfEntries);
                     while ((--numberOfEntries) >= 0) {
-                        int id = players[numberOfEntries].GetComponent<PlayerInfo>().PlayerId;
+                        int id = players.ElementAt(numberOfEntries).GetComponent<PlayerInfo>().PlayerId;
+                        Point position = players.ElementAt(numberOfEntries).GetComponent<Transform>().Position.Round();
                         response.Write(id);
-                        Point position = players[numberOfEntries].GetComponent<Transform>().Position.Round();
                         response.Write(position.X);
                         response.Write(position.Y);
                     }
