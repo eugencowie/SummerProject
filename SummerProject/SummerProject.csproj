@@ -115,7 +115,6 @@
     <Compile Include="src\Utilities\ThirdParty\ScreenManager\ScreenManager.cs" />
     <Compile Include="src\Utilities\TilemapLoader.cs" />
     <Compile Include="src\Program.cs" />
-    <Compile Include="src\Systems\PlayerInputSystem.cs" />
     <Compile Include="src\SummerProjectGame.cs" />
     <Compile Include="src\Systems\PathfindingSystem.cs" />
   </ItemGroup>

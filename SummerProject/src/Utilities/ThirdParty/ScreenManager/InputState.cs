@@ -82,7 +82,7 @@ namespace SummerProject
         /// If this is null, it will accept input from any player. When a keypress
         /// is detected, the output playerIndex reports which player pressed it.
         /// </summary>
-        public bool IsKeyPressed(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        public bool IsKeyDown(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
             if (controllingPlayer.HasValue)
             {
@@ -96,10 +96,10 @@ namespace SummerProject
             else
             {
                 // Accept input from any player.
-                return (IsKeyPressed(key, PlayerIndex.One,   out playerIndex) ||
-                        IsKeyPressed(key, PlayerIndex.Two,   out playerIndex) ||
-                        IsKeyPressed(key, PlayerIndex.Three, out playerIndex) ||
-                        IsKeyPressed(key, PlayerIndex.Four,  out playerIndex));
+                return (IsKeyDown(key, PlayerIndex.One,   out playerIndex) ||
+                        IsKeyDown(key, PlayerIndex.Two,   out playerIndex) ||
+                        IsKeyDown(key, PlayerIndex.Three, out playerIndex) ||
+                        IsKeyDown(key, PlayerIndex.Four,  out playerIndex));
             }
         }
 
@@ -110,7 +110,7 @@ namespace SummerProject
         /// If this is null, it will accept input from any player. When a button press
         /// is detected, the output playerIndex reports which player pressed it.
         /// </summary>
-        public bool IsButtonPressed(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        public bool IsButtonDown(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
             if (controllingPlayer.HasValue)
             {
@@ -124,10 +124,10 @@ namespace SummerProject
             else
             {
                 // Accept input from any player.
-                return (IsButtonPressed(button, PlayerIndex.One,   out playerIndex) ||
-                        IsButtonPressed(button, PlayerIndex.Two,   out playerIndex) ||
-                        IsButtonPressed(button, PlayerIndex.Three, out playerIndex) ||
-                        IsButtonPressed(button, PlayerIndex.Four,  out playerIndex));
+                return (IsButtonDown(button, PlayerIndex.One,   out playerIndex) ||
+                        IsButtonDown(button, PlayerIndex.Two,   out playerIndex) ||
+                        IsButtonDown(button, PlayerIndex.Three, out playerIndex) ||
+                        IsButtonDown(button, PlayerIndex.Four,  out playerIndex));
             }
         }
 
@@ -138,7 +138,7 @@ namespace SummerProject
         /// If this is null, it will accept input from any player. When a keypress
         /// is detected, the output playerIndex reports which player pressed it.
         /// </summary>
-        public bool IsNewKeyPress(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        public bool IsKeyClicked(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
             if (controllingPlayer.HasValue)
             {
@@ -153,10 +153,10 @@ namespace SummerProject
             else
             {
                 // Accept input from any player.
-                return (IsNewKeyPress(key, PlayerIndex.One,   out playerIndex) ||
-                        IsNewKeyPress(key, PlayerIndex.Two,   out playerIndex) ||
-                        IsNewKeyPress(key, PlayerIndex.Three, out playerIndex) ||
-                        IsNewKeyPress(key, PlayerIndex.Four,  out playerIndex));
+                return (IsKeyClicked(key, PlayerIndex.One,   out playerIndex) ||
+                        IsKeyClicked(key, PlayerIndex.Two,   out playerIndex) ||
+                        IsKeyClicked(key, PlayerIndex.Three, out playerIndex) ||
+                        IsKeyClicked(key, PlayerIndex.Four,  out playerIndex));
             }
         }
 
@@ -167,7 +167,7 @@ namespace SummerProject
         /// If this is null, it will accept input from any player. When a button press
         /// is detected, the output playerIndex reports which player pressed it.
         /// </summary>
-        public bool IsNewButtonPress(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        public bool IsButtonClicked(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
             if (controllingPlayer.HasValue)
             {
@@ -182,10 +182,10 @@ namespace SummerProject
             else
             {
                 // Accept input from any player.
-                return (IsNewButtonPress(button, PlayerIndex.One,   out playerIndex) ||
-                        IsNewButtonPress(button, PlayerIndex.Two,   out playerIndex) ||
-                        IsNewButtonPress(button, PlayerIndex.Three, out playerIndex) ||
-                        IsNewButtonPress(button, PlayerIndex.Four,  out playerIndex));
+                return (IsButtonClicked(button, PlayerIndex.One,   out playerIndex) ||
+                        IsButtonClicked(button, PlayerIndex.Two,   out playerIndex) ||
+                        IsButtonClicked(button, PlayerIndex.Three, out playerIndex) ||
+                        IsButtonClicked(button, PlayerIndex.Four,  out playerIndex));
             }
         }
 
@@ -197,10 +197,29 @@ namespace SummerProject
         }
 
 
+        public bool IsMiddleMouseButtonClicked()
+        {
+            return (CurrentMouseState.MiddleButton == ButtonState.Pressed &&
+                    LastMouseState.MiddleButton == ButtonState.Released);
+        }
+
+
         public bool IsRightMouseButtonClicked()
         {
             return (CurrentMouseState.RightButton == ButtonState.Pressed &&
                     LastMouseState.RightButton == ButtonState.Released);
+        }
+
+
+        public bool IsMouseWheelScolledUp()
+        {
+            return (CurrentMouseState.ScrollWheelValue > LastMouseState.ScrollWheelValue);
+        }
+
+
+        public bool IsMouseWheelScrolledDown()
+        {
+            return (CurrentMouseState.ScrollWheelValue < LastMouseState.ScrollWheelValue);
         }
     }
 }

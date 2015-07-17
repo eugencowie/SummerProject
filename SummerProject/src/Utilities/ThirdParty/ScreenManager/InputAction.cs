@@ -68,13 +68,13 @@ namespace SummerProject
             KeyPress keyTest;
             if (newPressOnly)
             {
-                buttonTest = state.IsNewButtonPress;
-                keyTest = state.IsNewKeyPress;
+                buttonTest = state.IsButtonClicked;
+                keyTest = state.IsKeyClicked;
             }
             else
             {
-                buttonTest = state.IsButtonPressed;
-                keyTest = state.IsKeyPressed;
+                buttonTest = state.IsButtonDown;
+                keyTest = state.IsKeyDown;
             }
 
             // Now we simply need to invoke the appropriate methods for each button and key in our collections

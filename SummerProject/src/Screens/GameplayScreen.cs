@@ -18,6 +18,8 @@ namespace SummerProject
         Camera camera;
         EntityWorld entityManager;
 
+        bool freeCamera;
+
         InputAction pauseAction;
         float pauseAlpha;
 
@@ -145,14 +147,8 @@ namespace SummerProject
             else
                 pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
-            // TODO: Run the game when the window is not active?
-#if !DEBUG
-            if (IsActive)
-#endif
-            {
-                // Run the systems.
-                entityManager.Update();
-            }
+            // Run the systems.
+            entityManager.Update();
         }
 
 
@@ -217,7 +213,110 @@ namespace SummerProject
             }
             else
             {
-                // TODO: rest of input code here?
+                // Get the player info.
+                Entity entity = entityManager.TagManager.GetEntity("player1");
+                PlayerInfo playerInfo = entity.GetComponent<PlayerInfo>();
+
+                // Get the screen viewport.
+                Viewport viewport = EntitySystem.BlackBoard.GetEntry<Game>("Game").GraphicsDevice.Viewport;
+
+                // Get the camera and player transform.
+                Transform playerTransform = entity.GetComponent<Transform>();
+                Camera camera = EntitySystem.BlackBoard.GetEntry<Camera>("Camera");
+
+                #region Camera movement
+
+                MouseState mouse = input.CurrentMouseState;
+
+                // Switch between free camera and locked to player.
+                if (input.IsKeyClicked(Keys.Space, ControllingPlayer, out player))
+                    freeCamera = !freeCamera;
+
+                if (!freeCamera)
+                {
+                    // Lock camera to player.
+                    camera.Position = playerTransform.Position * Constants.UnitSize;
+                }
+                else
+                {
+                    // Camera movement keyboard controls.
+                    if (input.IsKeyDown(Keys.W, ControllingPlayer, out player))
+                        camera.Position.Y -= 1 * (10 - camera.Zoom);
+                    if (input.IsKeyDown(Keys.S, ControllingPlayer, out player))
+                        camera.Position.Y += 1 * (10 - camera.Zoom);
+                    if (input.IsKeyDown(Keys.A, ControllingPlayer, out player))
+                        camera.Position.X -= 1 * (10 - camera.Zoom);
+                    if (input.IsKeyDown(Keys.D, ControllingPlayer, out player))
+                        camera.Position.X += 1 * (10 - camera.Zoom);
+
+                    // Check the mouse in within the bounds of the window...
+                    if (mouse.X >= 0 && mouse.X <= viewport.Width &&
+                        mouse.Y >= 0 && mouse.Y <= viewport.Height)
+                    {
+                        // Camera movement mouse controls.
+                        int screenEdgeBuffer = 60;
+                        if (mouse.Y < screenEdgeBuffer)
+                            camera.Position.Y -= 1 * (10 - camera.Zoom);
+                        if (mouse.Y > viewport.Height - screenEdgeBuffer)
+                            camera.Position.Y += 1 * (10 - camera.Zoom);
+                        if (mouse.X < screenEdgeBuffer)
+                            camera.Position.X -= 1 * (10 - camera.Zoom);
+                        if (mouse.X > viewport.Width - screenEdgeBuffer)
+                            camera.Position.X += 1 * (10 - camera.Zoom);
+                        if (input.IsMouseWheelScolledUp())
+                            camera.Zoom += 0.1f;
+                        if (input.IsMouseWheelScrolledDown())
+                            camera.Zoom -= 0.1f;
+                    }
+
+                    // Camera zoom.
+                    if (input.IsKeyDown(Keys.LeftShift, ControllingPlayer, out player))
+                        camera.Zoom += 0.01f;
+                    if (input.IsKeyDown(Keys.LeftControl, ControllingPlayer, out player))
+                        camera.Zoom -= 0.01f;
+                }
+
+                #endregion
+
+                // TODO: remove this from final version.
+                if (input.IsKeyDown(Keys.F5, ControllingPlayer, out player))
+                    playerInfo.Health.Current -= 1;
+                if (input.IsKeyDown(Keys.F6, ControllingPlayer, out player))
+                    playerInfo.Health.Current += 1;
+
+                // Normalise the mouse coords so that (0,0) is the center instead of the top left.
+                var mousePos = new Vector2 {
+                    X = mouse.X - (viewport.Width / 2f),
+                    Y = mouse.Y - (viewport.Height / 2f)
+                };
+
+                Vector2 playerPixels = playerTransform.Position * Constants.UnitSize;
+
+                // Figure out the destination (in pixels).
+                var destination = new Vector2 {
+                    X = playerPixels.X + (camera.Position.X - playerPixels.X) + (mousePos.X * (1f / camera.Zoom)),
+                    Y = playerPixels.Y + (camera.Position.Y - playerPixels.Y) + (mousePos.Y * (1f / camera.Zoom))
+                };
+
+                // Make player always face the mouse pointer.
+                Vector2 direction = playerPixels - destination;
+                playerTransform.Rotation = (float)Math.Atan2(direction.Y, direction.X) - ((float)Math.PI / 2f);
+
+                // Move the player when the right mouse button is clicked.
+                if (input.IsRightMouseButtonClicked())
+                {
+                    // Convert destination from pixel coords to block coords.
+                    var destinationBlock = new Vector2 {
+                        X = (int)Math.Round(destination.X / Constants.UnitSize),
+                        Y = (int)Math.Round(destination.Y / Constants.UnitSize),
+                    };
+
+                    // If the player is already moving, stop and go to the new destination instead.
+                    entity.GetComponent<Pathfinder>().Destination = destinationBlock;
+                    entity.GetComponent<Pathfinder>().Speed = 4f;
+
+                    NetworkingSystem.Client.PlayerMoved(entity.GetComponent<PlayerInfo>().PlayerId, destinationBlock);
+                }
             }
         }
     }
