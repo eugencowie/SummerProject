@@ -215,14 +215,13 @@ namespace SummerProject
             {
                 // Get the player info.
                 Entity entity = entityManager.TagManager.GetEntity("player1");
+                if (entity == null) return;
+
                 PlayerInfo playerInfo = entity.GetComponent<PlayerInfo>();
+                Transform playerTransform = entity.GetComponent<Transform>();
 
                 // Get the screen viewport.
                 Viewport viewport = EntitySystem.BlackBoard.GetEntry<Game>("Game").GraphicsDevice.Viewport;
-
-                // Get the camera and player transform.
-                Transform playerTransform = entity.GetComponent<Transform>();
-                Camera camera = EntitySystem.BlackBoard.GetEntry<Camera>("Camera");
 
                 #region Camera movement
 
