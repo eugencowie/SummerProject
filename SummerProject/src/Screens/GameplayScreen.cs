@@ -147,6 +147,16 @@ namespace SummerProject
             else
                 pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
+            if (!freeCamera)
+            {
+                // Lock camera to player, even when the pause menu is showing.
+                Entity entity = entityManager.TagManager.GetEntity("player1");
+                if (entity != null) {
+                    Transform playerTransform = entity.GetComponent<Transform>();
+                    camera.Position = playerTransform.Position * Constants.UnitSize;
+                }
+            }
+
             // Run the systems.
             entityManager.Update();
         }
@@ -231,12 +241,7 @@ namespace SummerProject
                 if (input.IsKeyClicked(Keys.Space, ControllingPlayer, out player))
                     freeCamera = !freeCamera;
 
-                if (!freeCamera)
-                {
-                    // Lock camera to player.
-                    camera.Position = playerTransform.Position * Constants.UnitSize;
-                }
-                else
+                if (freeCamera)
                 {
                     // Camera movement keyboard controls.
                     if (input.IsKeyDown(Keys.W, ControllingPlayer, out player))
