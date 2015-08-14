@@ -4,6 +4,7 @@
 		<FontName>Noto Sans Bold</FontName>
 		<Size>32</Size>
 		<Spacing>2</Spacing>
+		<UseKerning>true</UseKerning>
 		<Style>Bold</Style>
 		<CharacterRegions>
 			<CharacterRegion>

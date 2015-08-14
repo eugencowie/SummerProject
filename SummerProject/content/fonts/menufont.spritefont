@@ -4,6 +4,7 @@
 		<FontName>Droid Sans Mono</FontName>
 		<Size>20</Size>
 		<Spacing>2</Spacing>
+		<UseKerning>true</UseKerning>
 		<Style>Regular</Style>
 		<CharacterRegions>
 			<CharacterRegion>
