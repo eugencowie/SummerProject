@@ -16,7 +16,7 @@ namespace SummerProject
         public SummerProjectGame()
         {
             // Read options file.
-            Options.LoadOptionData(Constants.OptionsFile);
+            Options.LoadOptionsFromFile(Constants.OptionsFile);
 
             // Set up XNA.
             graphics = new GraphicsDeviceManager(this) {

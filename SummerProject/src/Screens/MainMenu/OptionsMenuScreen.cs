@@ -11,33 +11,15 @@ namespace SummerProject
     /// </summary>
     class OptionsMenuScreen : MenuScreen
     {
-        #region Fields
-
         MenuEntry resolutionMenuEntry;
         MenuEntry fullscreenMenuEntry;
         MenuEntry vsyncMenuEntry;
 
-        static List<Point> resolutions = new List<Point> {
-            new Point(800, 600),
-            new Point(1024, 768),
-            new Point(1280, 720),
-            new Point(1280, 800),
-            new Point(1280, 1024),
-            new Point(1360, 768),
-            new Point(1366, 768),
-            new Point(1440, 900),
-            new Point(1600, 900),
-            new Point(1680, 1050),
-            new Point(1920, 1080),
-            new Point(2560, 1440),
-            new Point(3840, 2160),
-        };
+        List<Point> resolutions;
         int currentResolution;
 
         bool fullscreen;
         bool vsync;
-
-        #endregion
 
 
         /// <summary>
@@ -46,11 +28,22 @@ namespace SummerProject
         public OptionsMenuScreen()
             : base("Options")
         {
+            // Get list of supported resolutions.
+            resolutions = new List<Point>();
+            foreach (DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
+            {
+                var resolution = new Point(mode.Width, mode.Height);
+                if (!resolutions.Contains(resolution))
+                    resolutions.Add(resolution);
+            }
+
             // Add current resolution to list of resolutions if it does not exist.
             var current = new Point(Options.Instance.Width, Options.Instance.Height);
             if (!resolutions.Contains(current))
                 resolutions.Add(current);
-            resolutions = resolutions.OrderBy(p => p.X).ThenBy(p => p.Y).ToList();
+
+            // Order the list of resolutions from smallest to largest total pixel count.
+            resolutions = resolutions.OrderBy(p => p.X * p.Y).ToList();
 
             // Set current options.
             currentResolution = resolutions.IndexOf(current);
@@ -61,7 +54,6 @@ namespace SummerProject
             resolutionMenuEntry = new MenuEntry(string.Empty);
             fullscreenMenuEntry = new MenuEntry(string.Empty);
             vsyncMenuEntry = new MenuEntry(string.Empty);
-
             SetMenuEntryText();
 
             var back = new MenuEntry("Back");
@@ -70,12 +62,15 @@ namespace SummerProject
             resolutionMenuEntry.Selected += ResolutionMenuEntryIncreased;
             resolutionMenuEntry.Increased += ResolutionMenuEntryIncreased;
             resolutionMenuEntry.Decreased += ResolutionMenuEntryDecreased;
+
             fullscreenMenuEntry.Selected += FullscreenMenuEntrySelected;
             fullscreenMenuEntry.Increased += FullscreenMenuEntrySelected;
             fullscreenMenuEntry.Decreased += FullscreenMenuEntrySelected;
+
             vsyncMenuEntry.Selected += VsyncMenuEntrySelected;
             vsyncMenuEntry.Increased += VsyncMenuEntrySelected;
             vsyncMenuEntry.Decreased += VsyncMenuEntrySelected;
+
             back.Selected += OnCancel;
 
             // Add entries to the menu.
@@ -87,11 +82,13 @@ namespace SummerProject
 
 
         /// <summary>
-        /// Fills in the latest values for the options screen menu text.
+        /// Fills in the latest values for the menu entries.
         /// </summary>
         private void SetMenuEntryText()
         {
-            resolutionMenuEntry.Text = "Resolution: " + resolutions[currentResolution].X + "x" + resolutions[currentResolution].Y;
+            Point res = resolutions[currentResolution];
+            resolutionMenuEntry.Text = string.Format("Resolution: {0}x{1}", res.X, res.Y);
+
             fullscreenMenuEntry.Text = "Fullscreen: " + (fullscreen ? "on" : "off");
             vsyncMenuEntry.Text = "VSync: " + (vsync ? "on" : "off");
         }
@@ -103,11 +100,9 @@ namespace SummerProject
         protected override void OnCancel(PlayerIndex playerIndex)
         {
             // Apply new options.
-            var graphicsService = (IGraphicsDeviceService)ScreenManager.Game.Services.GetService(typeof(IGraphicsDeviceService));
-            if (graphicsService is GraphicsDeviceManager)
+            var graphics = ScreenManager.Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
+            if (graphics != null)
             {
-                var graphics = (graphicsService as GraphicsDeviceManager);
-
                 graphics.PreferredBackBufferWidth = resolutions[currentResolution].X;
                 graphics.PreferredBackBufferHeight = resolutions[currentResolution].Y;
                 graphics.IsFullScreen = fullscreen;
@@ -122,7 +117,7 @@ namespace SummerProject
             Options.Instance.VSync = vsync;
 
             // Write options to file.
-            Options.WriteOptionData(Constants.OptionsFile);
+            Options.WriteOptionsToFile(Constants.OptionsFile);
 
             base.OnCancel(playerIndex);
         }
