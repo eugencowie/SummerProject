@@ -19,8 +19,14 @@
 
 
         /// <summary>
-        /// The network port that the client/server should use.
+        /// The start of the network port range that the client/server should use.
         /// </summary>
-        public const int NetworkPort = 14242;
+        public const int NetworkPortStart = 14242;
+
+
+        /// <summary>
+        /// The end of the network port range that the client/server should use.
+        /// </summary>
+        public const int NetworkPortEnd = 14247;
     }
 }

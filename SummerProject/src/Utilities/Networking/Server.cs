@@ -1,11 +1,11 @@
 ﻿using Artemis;
 using Artemis.System;
-using Artemis.Utils;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 
 namespace SummerProject
 {
@@ -20,19 +20,34 @@ namespace SummerProject
         /// <summary>
         /// Binds to socket and spawns the networking thread.
         /// </summary>
-        public void Start()
+        public int Start()
         {
-            var config = new NetPeerConfiguration("SummerProject") {
-                Port = Contants.NetworkPort,
-                MaximumConnections = 10,
-                PingInterval = 1f,
-                ConnectionTimeout = 3f
-            };
-            config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
+            int port = Constants.NetworkPortStart;
+            while (port < Constants.NetworkPortEnd)
+            {
+                try
+                {
+                    var config = new NetPeerConfiguration("SummerProject") {
+                        Port = port,
+                        MaximumConnections = 10,
+                        PingInterval = 1f,
+                        ConnectionTimeout = 3f
+                    };
+                    config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
 
-            server = new NetServer(config);
-            server.RegisterReceivedCallback(OnMessageReceived);
-            server.Start();
+                    server = new NetServer(config);
+                    server.RegisterReceivedCallback(OnMessageReceived);
+                    server.Start();
+
+                    return port;
+                }
+                catch (SocketException)
+                {
+                    port++;
+                }
+            }
+
+            return -1;
         }
 
 

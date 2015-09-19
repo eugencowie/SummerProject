@@ -16,12 +16,18 @@ namespace SummerProject
         public override void Activate(bool instancePreserved)
         {
             NetworkingSystem.Client.Start();
-            NetworkingSystem.Client.DiscoverLocalPeers(Constants.NetworkPort, (name, endpoint) => {
-                var menuEntry = new MenuEntry(string.Format("{0} ({1}:{2})", name, endpoint.Address, endpoint.Port));
-                menuEntry.Selected += ServerMenuEntrySelected;
-                menuEntry.UserData = endpoint;                         // quick and dirty way of storing the host's details
-                MenuEntries.Insert(MenuEntries.Count - 1, menuEntry);  // insert just before the 'back' menu entry
-            });
+
+            int port = Constants.NetworkPortStart;
+            while (port < Constants.NetworkPortEnd)
+            {
+                NetworkingSystem.Client.DiscoverLocalPeers(port, (name, endpoint) => {
+                    var menuEntry = new MenuEntry(string.Format("{0} ({1}:{2})", name, endpoint.Address, endpoint.Port));
+                    menuEntry.Selected += ServerMenuEntrySelected;
+                    menuEntry.UserData = endpoint;                         // quick and dirty way of storing the host's details
+                    MenuEntries.Insert(MenuEntries.Count - 1, menuEntry);  // insert just before the 'back' menu entry
+                });
+                port++;
+            }
         }
 
 
