@@ -143,8 +143,8 @@ namespace SummerProject
                 Rectangle bounds = new Rectangle {
                     X = (int)menuEntries[i].Position.X,
                     Y = (int)menuEntries[i].Position.Y - (menuEntries[i].GetHeight(this) / 2),
-                    Width = (int)menuEntries[i].GetWidth(this),
-                    Height = (int)menuEntries[i].GetHeight(this)
+                    Width  = menuEntries[i].GetWidth(this),
+                    Height = menuEntries[i].GetHeight(this)
                 };
 
                 Point mousePos = new Point(input.CurrentMouseState.X, input.CurrentMouseState.Y);

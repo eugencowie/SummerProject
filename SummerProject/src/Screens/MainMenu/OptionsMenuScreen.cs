@@ -28,34 +28,10 @@ namespace SummerProject
         public OptionsMenuScreen()
             : base("Options")
         {
-            // Get list of supported resolutions.
-            resolutions = new List<Point>();
-            foreach (DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
-            {
-                var resolution = new Point(mode.Width, mode.Height);
-                if (!resolutions.Contains(resolution))
-                    resolutions.Add(resolution);
-            }
-
-            // Add current resolution to list of resolutions if it does not exist.
-            var current = new Point(Options.Instance.Width, Options.Instance.Height);
-            if (!resolutions.Contains(current))
-                resolutions.Add(current);
-
-            // Order the list of resolutions from smallest to largest total pixel count.
-            resolutions = resolutions.OrderBy(p => p.X * p.Y).ToList();
-
-            // Set current options.
-            currentResolution = resolutions.IndexOf(current);
-            fullscreen = Options.Instance.Fullscreen;
-            vsync = Options.Instance.VSync;
-
             // Create menu entries.
             resolutionMenuEntry = new MenuEntry(string.Empty);
             fullscreenMenuEntry = new MenuEntry(string.Empty);
             vsyncMenuEntry = new MenuEntry(string.Empty);
-            SetMenuEntryText();
-
             var back = new MenuEntry("Back");
 
             // Hook up menu event handlers.
@@ -78,6 +54,44 @@ namespace SummerProject
             MenuEntries.Add(fullscreenMenuEntry);
             MenuEntries.Add(vsyncMenuEntry);
             MenuEntries.Add(back);
+        }
+
+
+        /// <summary>
+        /// Called when the screen is added to the screen manager or if the game resumes
+        /// from being paused.
+        /// </summary>
+        public override void Activate(bool instancePreserved)
+        {
+            // Get list of supported resolutions.
+            resolutions = new List<Point>();
+            foreach (DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
+            {
+                var resolution = new Point(mode.Width, mode.Height);
+                if (!resolutions.Contains(resolution))
+                    resolutions.Add(resolution);
+            }
+
+            // Add current resolution to list of resolutions if it does not exist.
+            var graphics = ScreenManager.Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
+            Point? current = null;
+            if (graphics != null)
+            {
+                current = new Point(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
+                if (!resolutions.Contains(current.Value))
+                    resolutions.Add(current.Value);
+            }
+
+            // Order the list of resolutions from smallest to largest total pixel count.
+            resolutions = resolutions.OrderBy(p => p.X * p.Y).ToList();
+
+            // Set current options.
+            currentResolution = (current.HasValue ? resolutions.IndexOf(current.Value) : 0);
+            fullscreen = (graphics != null ? graphics.IsFullScreen : Options.Instance.Fullscreen);
+            vsync = (graphics != null ? graphics.SynchronizeWithVerticalRetrace : Options.Instance.VSync);
+
+            // Set menu entry text.
+            SetMenuEntryText();
         }
 
 

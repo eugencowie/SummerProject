@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System;
 
 namespace SummerProject
 {
@@ -33,6 +34,7 @@ namespace SummerProject
 #if DEBUG
             // Allow user to resize the window, for testing purposes.
             Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
 #endif
 
             // Create the screen factory and add it to the services.
@@ -59,6 +61,24 @@ namespace SummerProject
 
             // The real drawing happens inside the screen manager component.
             base.Draw(gameTime);
+        }
+
+
+        /// <summary>
+        /// Event handler for when the window is resized. Makes sure that XNA updates the
+        /// resolution to match the new window size.
+        /// </summary>
+        void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            // Remove this event handler, so we don't call it when we change the window size in here
+            Window.ClientSizeChanged -= new EventHandler<EventArgs>(Window_ClientSizeChanged);
+
+            graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+            graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+            graphics.ApplyChanges();
+
+            // Add this event handler back.
+            Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
         }
     }
 }
