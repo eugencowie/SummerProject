@@ -34,7 +34,10 @@ namespace SummerProject
         /// </summary>
         public void Start()
         {
-            var config = new NetPeerConfiguration("SummerProject");
+            var config = new NetPeerConfiguration("SummerProject") {
+                PingInterval = 1f,
+                ConnectionTimeout = 3f
+            };
             config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
 
             client = new NetClient(config);
@@ -85,7 +88,7 @@ namespace SummerProject
                         connectedToHost();
                         connectedToHost = null;
                     }
-                    if (status == NetConnectionStatus.Disconnected && client.ServerConnection == null) {
+                    if (status == NetConnectionStatus.Disconnected) {
                         if (lostConnectionToServer != null)
                             lostConnectionToServer();
                     }

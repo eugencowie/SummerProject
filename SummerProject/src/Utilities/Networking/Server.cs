@@ -22,9 +22,12 @@ namespace SummerProject
         /// </summary>
         public void Start()
         {
-            var config = new NetPeerConfiguration("SummerProject");
-            config.Port = Constants.NetworkPort;
-            config.MaximumConnections = 10;
+            var config = new NetPeerConfiguration("SummerProject") {
+                Port = Contants.NetworkPort,
+                MaximumConnections = 10,
+                PingInterval = 1f,
+                ConnectionTimeout = 3f
+            };
             config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
 
             server = new NetServer(config);

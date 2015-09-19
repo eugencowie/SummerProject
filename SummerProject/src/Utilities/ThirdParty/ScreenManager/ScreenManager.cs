@@ -197,8 +197,9 @@ namespace SummerProject
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            foreach (GameScreen screen in screens.Where(screen => screen.ScreenState != ScreenState.Hidden))
-                screen.Draw(gameTime);
+            var activeScreens = screens.Where(screen => screen.ScreenState != ScreenState.Hidden).Reverse();
+            for (int i = activeScreens.Count() - 1; i >= 0; i--)
+                activeScreens.ElementAt(i).Draw(gameTime);
         }
 
 
