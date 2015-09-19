@@ -10,7 +10,11 @@ namespace SummerProject
             var back = new MenuEntry("Back");
             back.Selected += OnCancel;
             MenuEntries.Add(back);
+        }
 
+
+        public override void Activate(bool instancePreserved)
+        {
             NetworkingSystem.Client.Start();
             NetworkingSystem.Client.DiscoverLocalPeers(Constants.NetworkPort, (name, endpoint) => {
                 var menuEntry = new MenuEntry(string.Format("{0} ({1}:{2})", name, endpoint.Address, endpoint.Port));

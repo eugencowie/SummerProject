@@ -5,7 +5,11 @@
         public HostGameMenuScreen()
             : base("Host Game")
         {
-            NetworkingSystem.Server.Start();
+        }
+
+        public override void Activate(bool instancePreserved)
+        {
+            int port = NetworkingSystem.Server.Start();
 
             NetworkingSystem.Client.Start();
             NetworkingSystem.Client.Connect("127.0.0.1", Constants.NetworkPort, () => {
