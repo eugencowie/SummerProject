@@ -5,6 +5,9 @@ using System.Xml.Serialization;
 
 namespace SummerProject
 {
+    /// <summary>
+    /// This class manages reading from and writing to the options file.
+    /// </summary>
     public class Options
     {
         public static Options Instance = new Options();
@@ -22,8 +25,7 @@ namespace SummerProject
         {
             // Get the maximum supported display resolution.
             DisplayMode maxMode = GraphicsAdapter.DefaultAdapter.SupportedDisplayModes
-                .OrderByDescending(m => m.Width)
-                .ThenByDescending(m => m.Height)
+                .OrderByDescending(m => m.Width * m.Height)
                 .First();
 
             // Set options to their default values.
