@@ -81,18 +81,19 @@ namespace SummerProject
                 if (!playerStart.HasValue) playerStart = new Point(1, 1);
 
                 // Create the player entity.
-                NetworkingSystem.Client.RequestUniquePlayerId(id => {
+                NetworkingSystem.Client.RequestUniquePlayerId(id =>
+                {
                     entityManager.CreateEntity("players", "player1")
                         .AddPlayerComponents(content, id, playerStart.Value.ToVector2(), true);
                     NetworkingSystem.Client.PlayerCreated(id, playerStart.Value.ToVector2());
-                });
 
-                // Create any existing remote players.
-                NetworkingSystem.Client.RequestWorldState((id, position) => {
-                    if (id != entityManager.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId) {
-                        entityManager.CreateEntity(group: "players")
-                            .AddPlayerComponents(content, id, position, false);
-                    }
+                    // Next, create any existing remote players.
+                    NetworkingSystem.Client.RequestWorldState((id2, position) => {
+                        if (id2 != entityManager.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId) {
+                            entityManager.CreateEntity(group: "players")
+                                .AddPlayerComponents(content, id2, position, false);
+                        }
+                    });
                 });
 
                 // Get mob spawn positions from the level tilemap.
