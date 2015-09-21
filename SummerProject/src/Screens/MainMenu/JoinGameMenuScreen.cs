@@ -17,8 +17,8 @@ namespace SummerProject
         {
             NetworkingSystem.Client.Start();
 
-            int port = Constants.NetworkPortStart;
-            while (port < Constants.NetworkPortEnd)
+            int maxPort = Constants.NetworkPort + Constants.NetworkMaximumAttempts;
+            for (int port = Constants.NetworkPort; port < maxPort; port++)
             {
                 NetworkingSystem.Client.DiscoverLocalPeers(port, (name, endpoint) => {
                     var menuEntry = new MenuEntry(string.Format("{0} ({1}:{2})", name, endpoint.Address, endpoint.Port));
@@ -26,7 +26,6 @@ namespace SummerProject
                     menuEntry.UserData = endpoint;                         // quick and dirty way of storing the host's details
                     MenuEntries.Insert(MenuEntries.Count - 1, menuEntry);  // insert just before the 'back' menu entry
                 });
-                port++;
             }
         }
 

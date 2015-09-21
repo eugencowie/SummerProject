@@ -20,34 +20,43 @@ namespace SummerProject
         /// <summary>
         /// Binds to socket and spawns the networking thread.
         /// </summary>
-        public int Start()
+        /// <param name="maximumAttempts">
+        /// If set to a value greater than one, will attempt to use alternative ports if
+        /// the specified port is already in use. If set to one, will only attempt to use
+        /// the specified port.
+        /// </param>
+        /// <returns>The port that was successfully used to start the server.</returns>
+        public int Start(int port, int maximumAttempts=1)
         {
-            int port = Constants.NetworkPortStart;
-            while (port < Constants.NetworkPortEnd)
+            int maxPort = port + maximumAttempts;
+            while (port < maxPort)
             {
+                var config = new NetPeerConfiguration("SummerProject") {
+                    Port = port,
+                    MaximumConnections = 10,
+                    PingInterval = 1f,
+                    ConnectionTimeout = 3f
+                };
+                config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
+
+                server = new NetServer(config);
+                server.RegisterReceivedCallback(OnMessageReceived);
+
                 try
                 {
-                    var config = new NetPeerConfiguration("SummerProject") {
-                        Port = port,
-                        MaximumConnections = 10,
-                        PingInterval = 1f,
-                        ConnectionTimeout = 3f
-                    };
-                    config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
-
-                    server = new NetServer(config);
-                    server.RegisterReceivedCallback(OnMessageReceived);
                     server.Start();
-
-                    return port;
+                    break;
                 }
-                catch (SocketException)
+                catch (SocketException e)
                 {
-                    port++;
+                    if (port >= maxPort)
+                        throw e;
+                    else
+                        port++;
                 }
             }
 
-            return -1;
+            return port;
         }
 
 

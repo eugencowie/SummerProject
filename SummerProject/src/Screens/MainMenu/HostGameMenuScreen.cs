@@ -9,7 +9,7 @@
 
         public override void Activate(bool instancePreserved)
         {
-            int port = NetworkingSystem.Server.Start();
+            int port = NetworkingSystem.Server.Start(Constants.NetworkPort, Constants.NetworkMaximumAttempts);
 
             NetworkingSystem.Client.Start();
             NetworkingSystem.Client.Connect("127.0.0.1", port, () => {

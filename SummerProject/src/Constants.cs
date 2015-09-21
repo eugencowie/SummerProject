@@ -19,14 +19,16 @@
 
 
         /// <summary>
-        /// The start of the network port range that the client/server should use.
+        /// The default network port that the client/server should use.
         /// </summary>
-        public const int NetworkPortStart = 14242;
+        public const int NetworkPort = 14242;
 
 
         /// <summary>
-        /// The end of the network port range that the client/server should use.
+        /// If set to a value greater than one, the server will attempt to use alternative
+        /// ports if NetworkPort is already in use. If set to one, will only attempt to use
+        /// NetworkPort.
         /// </summary>
-        public const int NetworkPortEnd = 14247;
+        public const int NetworkMaximumAttempts = 10;
     }
 }
