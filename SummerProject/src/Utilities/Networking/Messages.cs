@@ -13,6 +13,7 @@
         ///   int32 - number of players in the world
         ///   for 0..numOfPlayers {
         ///      int32 - the player id
+        ///      int32 - the player type
         ///      int32 - the player's position on the x axis
         ///      int32 - the player's position on the y axis
         ///   }
@@ -22,6 +23,7 @@
         /// <summary>
         /// The structure of this message is:
         ///   int32 - the unique player id
+        ///   int32 - the player type
         ///   int32 - the player's position on the x axis
         ///   int32 - the player's position on the y axis
         /// </summary>
@@ -65,6 +67,7 @@
         /// <summary>
         /// The structure of this message is:
         ///   int32 - the unique player id
+        ///   int32 - the player type
         ///   int32 - the destination on the x axis
         ///   int32 - the destination on the y axis
         /// </summary>

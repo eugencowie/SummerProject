@@ -17,17 +17,20 @@ namespace SummerProject
 
         Camera camera;
         EntityWorld entityManager;
+        readonly object mLock = new object();
 
         bool freeCamera;
 
         InputAction pauseAction;
         float pauseAlpha;
 
+        int playerType = 0;
+
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public GameplayScreen()
+        public GameplayScreen(int playerType)
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -36,6 +39,8 @@ namespace SummerProject
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Escape },
                 true);
+
+            this.playerType = playerType;
         }
 
 
@@ -83,15 +88,23 @@ namespace SummerProject
                 // Create the player entity.
                 NetworkingSystem.Client.RequestUniquePlayerId(id =>
                 {
-                    entityManager.CreateEntity("players", "player1")
-                        .AddPlayerComponents(content, id, playerStart.Value.ToVector2(), true);
-                    NetworkingSystem.Client.PlayerCreated(id, playerStart.Value.ToVector2());
+                    lock (mLock)
+                    {
+                        entityManager.CreateEntity("players", "player1")
+                            .AddPlayerComponents(content, id, playerType, playerStart.Value.ToVector2(), true);
+                        NetworkingSystem.Client.PlayerCreated(id, playerType, playerStart.Value.ToVector2());
+                    }
 
                     // Next, create any existing remote players.
-                    NetworkingSystem.Client.RequestWorldState((id2, position) => {
-                        if (id2 != entityManager.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId) {
-                            entityManager.CreateEntity(group: "players")
-                                .AddPlayerComponents(content, id2, position, false);
+                    NetworkingSystem.Client.RequestWorldState((id2, type, position) => {
+                        lock (mLock)
+                        {
+                            if (entityManager.TagManager.GetEntity("player1") != null &&
+                                id2 != entityManager.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId)
+                            {
+                                entityManager.CreateEntity(group: "players")
+                                    .AddPlayerComponents(content, id2, type, position, false);
+                            }
                         }
                     });
                 });
@@ -103,8 +116,11 @@ namespace SummerProject
                     SpriteEffects effects = levelTilemap.Tiles[position.X, position.Y].ObjectEffect;
 
                     // Create an enemy.
-                    entityManager.CreateEntity("enemies")
-                        .AddEnemyComponents(content, position.ToVector2(), rotation, effects);
+                    lock (mLock)
+                    {
+                        entityManager.CreateEntity("enemies")
+                            .AddEnemyComponents(content, position.ToVector2(), rotation, effects);
+                    }
                 }
 
                 // Center the camera on the player at the start.
@@ -151,15 +167,22 @@ namespace SummerProject
             if (!freeCamera)
             {
                 // Lock camera to player, even when the pause menu is showing.
-                Entity entity = entityManager.TagManager.GetEntity("player1");
-                if (entity != null) {
-                    Transform playerTransform = entity.GetComponent<Transform>();
-                    camera.Position = playerTransform.Position * Constants.UnitSize;
+                lock (mLock)
+                {
+                    Entity entity = entityManager.TagManager.GetEntity("player1");
+                    if (entity != null)
+                    {
+                        Transform playerTransform = entity.GetComponent<Transform>();
+                        camera.Position = playerTransform.Position * Constants.UnitSize;
+                    }
                 }
             }
 
             // Run the systems.
-            entityManager.Update();
+            lock (mLock)
+            {
+                entityManager.Update();
+            }
         }
 
 
@@ -182,7 +205,10 @@ namespace SummerProject
                 camera.GetTransformationMatrix(ScreenManager.GraphicsDevice));
 
             // Run the draw systems.
-            entityManager.Draw();
+            lock (mLock)
+            {
+                entityManager.Draw();
+            }
 
             // End the spritebatch.
             spriteBatch.End();
@@ -225,7 +251,13 @@ namespace SummerProject
             else
             {
                 // Get the player info.
-                Entity entity = entityManager.TagManager.GetEntity("player1");
+                Entity entity = null;
+
+                lock (mLock)
+                {
+                    entity = entityManager.TagManager.GetEntity("player1");
+                }
+
                 if (entity == null) return;
 
                 PlayerInfo playerInfo = entity.GetComponent<PlayerInfo>();

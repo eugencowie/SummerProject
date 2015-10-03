@@ -13,7 +13,7 @@
 
             NetworkingSystem.Client.Start();
             NetworkingSystem.Client.Connect("127.0.0.1", port, () => {
-                LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen());
+                LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen(0));
             });
         }
     }

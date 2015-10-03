@@ -68,6 +68,7 @@
     <Compile Include="src\Screens\MainMenuScreen.cs" />
     <Compile Include="src\Screens\MainMenu\HostGameMenuScreen.cs" />
     <Compile Include="src\Screens\MainMenu\JoinGameMenuScreen.cs" />
+    <Compile Include="src\Screens\MainMenu\JoinGameConfigMenuScreen.cs" />
     <Compile Include="src\Screens\MainMenu\OptionsMenuScreen.cs" />
     <Compile Include="src\Screens\PauseMenuScreen.cs" />
     <Compile Include="src\SummerProjectGame.cs" />

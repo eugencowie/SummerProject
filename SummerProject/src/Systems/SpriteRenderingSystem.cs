@@ -23,6 +23,9 @@ namespace SummerProject
 
         public override void Process(Entity entity, Sprite sprite, Transform transform)
         {
+            if (entity == null || sprite == null || transform == null)
+                return;
+
             if (sprite.Texture != null)
             {
                 Vector2 size = new Vector2(sprite.Texture.Width, sprite.Texture.Height);

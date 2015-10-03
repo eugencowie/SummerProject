@@ -161,8 +161,10 @@ namespace SummerProject
                     response.Write(numberOfEntries);
                     while ((--numberOfEntries) >= 0) {
                         int id = players.ElementAt(numberOfEntries).GetComponent<PlayerInfo>().PlayerId;
+                        int playerType = players.ElementAt(numberOfEntries).GetComponent<PlayerInfo>().PlayerType;
                         Point position = players.ElementAt(numberOfEntries).GetComponent<Transform>().Position.Round();
                         response.Write(id);
+                        response.Write(playerType);
                         response.Write(position.X);
                         response.Write(position.Y);
                     }
@@ -172,6 +174,7 @@ namespace SummerProject
 
                 case ClientMessage.PlayerCreated: {
                     int uniqueId = message.ReadInt32();
+                    int playerType = message.ReadInt32();
                     var playerPos = new Point {
                         X = message.ReadInt32(),
                         Y = message.ReadInt32()
@@ -179,6 +182,7 @@ namespace SummerProject
                     response = server.CreateMessage();
                     response.Write((byte)ServerMessage.PlayerCreated);
                     response.Write(uniqueId);
+                    response.Write(playerType);
                     response.Write(playerPos.X);
                     response.Write(playerPos.Y);
                     server.SendToAll(response, message.SenderConnection, NetDeliveryMethod.ReliableOrdered, 0);

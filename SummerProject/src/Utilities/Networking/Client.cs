@@ -3,6 +3,7 @@ using Artemis.System;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
 using System.Net;
@@ -23,7 +24,7 @@ namespace SummerProject
         public delegate void RequestUniquePlayerIdDelegate(int id);
         private RequestUniquePlayerIdDelegate requestUniquePlayerId;
 
-        public delegate void RequestWorldStateDelegate(int id, Vector2 position);
+        public delegate void RequestWorldStateDelegate(int id, int playerType, Vector2 position);
         private RequestWorldStateDelegate requestWorldState;
         
         NetClient client;
@@ -139,11 +140,12 @@ namespace SummerProject
                     while ((--numberOfEntries) >= 0)
                     {
                         int id = message.ReadInt32();
+                        int playerType = message.ReadInt32();
                         var position = new Vector2 {
                             X = message.ReadInt32(),
                             Y = message.ReadInt32()
                         };
-                        requestWorldState(id, position);
+                        requestWorldState(id, playerType, position);
                     }
                     requestWorldState = null;
                     break;
@@ -151,6 +153,8 @@ namespace SummerProject
 
                 case ServerMessage.PlayerCreated: {
                     int playerId = message.ReadInt32();
+                    int playerType = message.ReadInt32();
+
                     var playerPos = new Vector2 {
                         X = message.ReadInt32(),
                         Y = message.ReadInt32()
@@ -159,7 +163,7 @@ namespace SummerProject
                     ContentManager content = EntitySystem.BlackBoard.GetEntry<ContentManager>("Content");
                     if (playerId != entityWorld.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId) {
                         entityWorld.CreateEntity(group: "players")
-                            .AddPlayerComponents(content, playerId, playerPos, false);
+                            .AddPlayerComponents(content, playerId, playerType, playerPos, false);
                     }
                     break;
                 }
@@ -168,7 +172,7 @@ namespace SummerProject
                     int pid = message.ReadInt32();
                     EntityWorld world = EntitySystem.BlackBoard.GetEntry<EntityWorld>("EntityWorld");
                     foreach (Entity entity in world.GroupManager.GetEntities("players")
-                        .Where(entity => entity.GetComponent<PlayerInfo>().PlayerId == pid))
+                        .Where(entity => entity.HasComponent<PlayerInfo>() && entity.GetComponent<PlayerInfo>().PlayerId == pid))
                     {
                         world.EntityManager.Remove(entity);
                     }
@@ -185,10 +189,10 @@ namespace SummerProject
                     if (playerId != entityWorld.TagManager.GetEntity("player1").GetComponent<PlayerInfo>().PlayerId)
                     {
                         foreach (Entity entity in entityWorld.GroupManager.GetEntities("players")
-                            .Where(entity => entity.GetComponent<PlayerInfo>().PlayerId == playerId))
+                            .Where(entity => entity.HasComponent<PlayerInfo>() && entity.GetComponent<PlayerInfo>().PlayerId == playerId))
                         {
                             entity.GetComponent<Pathfinder>().Destination = playerPos;
-                            entity.GetComponent<Pathfinder>().Speed = 5.75f;
+                            entity.GetComponent<Pathfinder>().Speed = 4f;
                         }
                     }
                     break;
@@ -256,7 +260,7 @@ namespace SummerProject
         }
 
 
-        public void PlayerCreated(int uniqueId, Vector2 position)
+        public void PlayerCreated(int uniqueId, int playerType, Vector2 position)
         {
             if (client == null) throw new InvalidOperationException();
 
@@ -265,6 +269,7 @@ namespace SummerProject
             NetOutgoingMessage message = client.CreateMessage();
             message.Write((byte)ClientMessage.PlayerCreated);
             message.Write(uniqueId);
+            message.Write(playerType);
             message.Write(pos.X);
             message.Write(pos.Y);
             client.SendMessage(message, NetDeliveryMethod.ReliableOrdered);

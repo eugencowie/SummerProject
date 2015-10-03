@@ -38,9 +38,12 @@ namespace SummerProject
             this Entity entity,
             ContentManager content,
             int playerId,
+            int playerType,
             Vector2 position = default(Vector2),
             bool localPlayer = default(bool))
         {
+            string playerTexturePath = "textures/objects/class_" + (playerType == 0 ? "warrior" : (playerType == 1 ? "tank" : (playerType == 2 ? "support" : (playerType == 3 ? "mage" : ""))));
+
             entity.AddComponent(new Transform {
                 Position = position,
                 Size = Vector2.One,
@@ -48,7 +51,7 @@ namespace SummerProject
             });
 
             entity.AddComponent(new Sprite {
-                Texture = content.Load<Texture2D>("textures/objects/player"),
+                Texture = content.Load<Texture2D>(playerTexturePath),
                 Effects = SpriteEffects.None,
                 LayerDepth = LayerDepth.Player
             });
@@ -56,6 +59,7 @@ namespace SummerProject
             entity.AddComponent(new PlayerInfo {
                 PlayerId = playerId,
                 LocalPlayer = localPlayer,
+                PlayerType = playerType,
                 Level = 1,
                 Experience = 0,
                 Health = new Trait(100, 0),

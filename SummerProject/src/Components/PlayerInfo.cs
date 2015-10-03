@@ -39,6 +39,8 @@ namespace SummerProject
         public int PlayerId;
         public bool LocalPlayer;
 
+        public int PlayerType;
+
         public int Level = 1;
         public int Experience = 0;
 
