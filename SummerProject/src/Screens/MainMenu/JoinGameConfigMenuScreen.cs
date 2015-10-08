@@ -51,7 +51,7 @@ namespace SummerProject
 
             join.Selected += (sender, e) => {
                 NetworkingSystem.Client.Connect(address, port, () => {
-                    LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen(currentType));
+                    LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen((PlayerType)currentType));
                 });
             };
 

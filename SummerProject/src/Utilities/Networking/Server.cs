@@ -161,10 +161,10 @@ namespace SummerProject
                     response.Write(numberOfEntries);
                     while ((--numberOfEntries) >= 0) {
                         int id = players.ElementAt(numberOfEntries).GetComponent<PlayerInfo>().PlayerId;
-                        int playerType = players.ElementAt(numberOfEntries).GetComponent<PlayerInfo>().PlayerType;
+                        PlayerType playerType = players.ElementAt(numberOfEntries).GetComponent<PlayerInfo>().PlayerType;
                         Point position = players.ElementAt(numberOfEntries).GetComponent<Transform>().Position.Round();
                         response.Write(id);
-                        response.Write(playerType);
+                        response.Write((int)playerType);
                         response.Write(position.X);
                         response.Write(position.Y);
                     }

@@ -38,11 +38,29 @@ namespace SummerProject
             this Entity entity,
             ContentManager content,
             int playerId,
-            int playerType,
+            PlayerType playerType,
             Vector2 position = default(Vector2),
             bool localPlayer = default(bool))
         {
-            string playerTexturePath = "textures/objects/class_" + (playerType == 0 ? "warrior" : (playerType == 1 ? "tank" : (playerType == 2 ? "support" : (playerType == 3 ? "mage" : ""))));
+            string playerTexturePath = "textures/objects/class_";
+            switch (playerType)
+            {
+                case PlayerType.Warrior:
+                    playerTexturePath += "warrior";
+                    break;
+
+                case PlayerType.Tank:
+                    playerTexturePath += "tank";
+                    break;
+
+                case PlayerType.Support:
+                    playerTexturePath += "support";
+                    break;
+
+                case PlayerType.Mage:
+                    playerTexturePath += "mage";
+                    break;
+            }
 
             entity.AddComponent(new Transform {
                 Position = position,

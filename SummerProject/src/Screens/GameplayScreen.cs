@@ -24,13 +24,13 @@ namespace SummerProject
         InputAction pauseAction;
         float pauseAlpha;
 
-        int playerType = 0;
+        PlayerType playerType;
 
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public GameplayScreen(int playerType)
+        public GameplayScreen(PlayerType playerType)
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);

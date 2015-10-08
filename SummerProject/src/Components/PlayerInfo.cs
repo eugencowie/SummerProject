@@ -34,12 +34,20 @@ namespace SummerProject
         }
     }
 
+    enum PlayerType
+    {
+        Warrior,
+        Tank,
+        Support,
+        Mage
+    }
+
     class PlayerInfo : IComponent
     {
         public int PlayerId;
         public bool LocalPlayer;
 
-        public int PlayerType;
+        public PlayerType PlayerType;
 
         public int Level = 1;
         public int Experience = 0;
