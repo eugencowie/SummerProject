@@ -47,7 +47,11 @@ namespace SummerProject
         /// </summary>
         private void HostGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            ScreenManager.AddScreen(new HostGameMenuScreen(), e.PlayerIndex);
+            int port = NetworkingSystem.Server.Start(Constants.NetworkPort, Constants.NetworkMaximumAttempts);
+
+            NetworkingSystem.Client.Start();
+
+            ScreenManager.AddScreen(new JoinGameConfigMenuScreen("127.0.0.1", port), e.PlayerIndex);
         }
 
 

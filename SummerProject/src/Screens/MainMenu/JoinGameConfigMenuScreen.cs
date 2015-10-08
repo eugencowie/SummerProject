@@ -22,7 +22,7 @@ namespace SummerProject
         /// <summary>
         /// Constructor.
         /// </summary>
-        public JoinGameConfigMenuScreen(IPEndPoint endpoint)
+        public JoinGameConfigMenuScreen(string address, int port)
             : base("Character Customisation")
         {
             // Create menu entries.
@@ -50,7 +50,7 @@ namespace SummerProject
             };
 
             join.Selected += (sender, e) => {
-                NetworkingSystem.Client.Connect(endpoint.Address.ToString(), endpoint.Port, () => {
+                NetworkingSystem.Client.Connect(address, port, () => {
                     LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen(currentType));
                 });
             };

@@ -40,7 +40,7 @@ namespace SummerProject
             if (endpoint == null)
                 return;
 
-            ScreenManager.AddScreen(new JoinGameConfigMenuScreen(endpoint), e.PlayerIndex);
+            ScreenManager.AddScreen(new JoinGameConfigMenuScreen(endpoint.Address.ToString(), endpoint.Port), e.PlayerIndex);
         }
     }
 }
